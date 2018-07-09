@@ -1,3 +1,8 @@
+        /*
+            From https://gist.github.com/mrquincle/b11fff96209c9d1396b0
+            @mrquincle
+
+        */
         function fft2(X) {
           var N = X.length;
           if (!(N > 1)) {
