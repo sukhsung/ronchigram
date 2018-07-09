@@ -197,6 +197,17 @@
         }
 
         function randomize(){
+            document.getElementById("C10").value = Math.random()*100;
+            document.getElementById("C12").value = Math.random()*100;
+            document.getElementById("P12").value = Math.random()*180;
+            document.getElementById("C21").value = Math.random()*100;
+            document.getElementById("P21").value = Math.random()*180;
+            document.getElementById("C23").value = Math.random()*100;
+            document.getElementById("P23").value = Math.random()*180;
+            document.getElementById("C30").value = Math.random()*100;
 
+            calculate();
         }
+
+calculate();
 
