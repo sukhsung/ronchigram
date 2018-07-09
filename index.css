@@ -1,0 +1,93 @@
+* {
+	font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+	color: #FFFFFF;
+	background-color: #222222;
+	text-align: center;
+	font-size: large
+}
+
+h1 {
+	text-align: center;
+	vertical-align: middle;
+	font-weight: xx-large;
+	margin: 0;
+	padding: 20px;
+}
+
+#eq {
+	padding-top: 20px;
+}
+
+#aber {
+	padding-top:20px;
+}
+
+#buttons {
+	padding-top:20px;
+}
+
+#footer {
+   position:absolute;
+   bottom:0;
+   width:100%;
+   padding: 10px;
+   background:#111111;
+}
+
+.im{
+	width: 40vw;
+	height: 40vw;
+	padding: 2vw;
+}
+
+#rand{
+    background-color: #009FCC;
+    border: none;
+    color: #FFFFFF;
+}
+
+#calc{
+    background-color: #FFC431;
+    border: none;
+    color: #222222;
+}
+
+.col-xs-0, .col-sm-0, .col-md-0, .col-lg-0 {
+  position: relative;
+  min-height: 1px;
+}
+
+.col-xs-0 {
+ float: left; width: 0;
+ }
+
+@media (min-width: 768px) {
+  .col-sm-0 {
+ float: left; width: 0;
+ }
+}
+
+@media (min-width: 992px) {
+  .col-md-0 {
+ float: left; width: 0;
+ }
+}
+
+@media (min-width: 1200px) {
+  .col-lg-0 {
+ float: left; width: 0;
+ }
+}
+
+.row-fluid {
+    overflow:hidden;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.row-fluid div {
+    -webkit-transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+    -moz-transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+    -o-transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+    transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+}
