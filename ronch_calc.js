@@ -50,12 +50,38 @@
             var C23_in1 = Number(document.getElementById("C23").value);
             var C23_in2 = Number(document.getElementById("P23").value);
             var C30_in1 = Number(document.getElementById("C30").value);
-
+            var C32_in1 = Number(document.getElementById("C32").value);
+            var C32_in2 = Number(document.getElementById("P32").value);
+            var C34_in1 = Number(document.getElementById("C34").value);
+            var C34_in2 = Number(document.getElementById("P34").value);
+            var C41_in1 = Number(document.getElementById("C41").value);
+            var C41_in2 = Number(document.getElementById("P41").value);
+            var C43_in1 = Number(document.getElementById("C43").value);
+            var C43_in2 = Number(document.getElementById("P43").value);
+            var C45_in1 = Number(document.getElementById("C45").value);
+            var C45_in2 = Number(document.getElementById("P45").value);
+            var C50_in1 = Number(document.getElementById("C50").value);
+            var C52_in1 = Number(document.getElementById("C52").value);
+            var C52_in2 = Number(document.getElementById("P52").value);
+            var C54_in1 = Number(document.getElementById("C54").value);
+            var C54_in2 = Number(document.getElementById("P54").value);
+            var C56_in1 = Number(document.getElementById("C56").value);
+            var C56_in2 = Number(document.getElementById("P56").value);
             var C10 = [1,0,C10_in1*ang, 0];
             var C12 = [1,2,C12_in1*nm,C12_in2*deg];
             var C21 = [2,1,C21_in1*nm,C21_in2*deg];
             var C23 = [2,3,C23_in1*nm,C23_in2*deg];
             var C30 = [3,0,C30_in1*nm,0];
+            var C32 = [3,2,C32_in1*nm,C32_in2*deg]
+            var C34 = [3,2,C34_in1*nm,C34_in2*deg]
+            var C41 = [3,2,C41_in1*nm,C41_in2*deg]
+            var C43 = [3,2,C43_in1*nm,C43_in2*deg]
+            var C45 = [3,2,C45_in1*nm,C45_in2*deg]
+            var C50 = [3,2,C50_in1*nm,0]
+            var C52 = [3,2,C52_in1*nm,C52_in2*deg]
+            var C54 = [3,2,C54_in1*nm,C54_in2*deg]
+            var C56 = [3,2,C56_in1*nm,C56_in2*deg]
+
             return math.matrix([C10,C12,C21,C23,C30]);
 
             //return math.matrix([ [1,0,C10,0], [1,2,C12,Ph12] ]);
@@ -205,7 +231,23 @@
             document.getElementById("C23").value = Math.random()*100;
             document.getElementById("P23").value = Math.random()*180;
             document.getElementById("C30").value = Math.random()*100;
-
+            document.getElementById("C32").value = Math.random()*100;
+            document.getElementById("P32").value = Math.random()*100;
+            document.getElementById("C34").value = Math.random()*100;
+            document.getElementById("P34").value = Math.random()*100;
+            document.getElementById("C41").value = Math.random()*100;
+            document.getElementById("P41").value = Math.random()*100;
+            document.getElementById("C43").value = Math.random()*100;
+            document.getElementById("P43").value = Math.random()*100;
+            document.getElementById("C45").value = Math.random()*100;
+            document.getElementById("P45").value = Math.random()*100;
+            document.getElementById("C50").value = Math.random()*100;
+            document.getElementById("C52").value = Math.random()*100;
+            document.getElementById("P52").value = Math.random()*100;
+            document.getElementById("C54").value = Math.random()*100;
+            document.getElementById("P54").value = Math.random()*100;
+            document.getElementById("C56").value = Math.random()*100;
+            document.getElementById("P56").value = Math.random()*100;
             calculate();
         }
 
