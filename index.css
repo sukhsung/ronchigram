@@ -45,6 +45,12 @@ button {
   height: 40px;
   margin-left: 5vw;
   margin-right: 5vw;
+  box-shadow: 0 6px #444444;
+}
+
+.button:active {
+  box-shadow: 0 2px #222222;
+  transform: translateY(4px);
 }
 
 .footer {
@@ -61,25 +67,33 @@ button {
   padding: 0;
   background:#111111;
 }
-.im{
+.im {
 	width: 45vw;
 	height: 45vw;
 }
 
-.im_rapper{
+.im_rapper {
   padding-top: 2.5vw;
 }
 
-#rand{
+#rand {
     background-color: #009FCC;
     border: none;
     color: #FFFFFF;
 }
 
-#calc{
+#rand:hover {
+  background-color: #00637F;
+}
+
+#calc {
     background-color: #FFC431;
     border: none;
     color: #222222;
+}
+
+#calc:hover {
+  background-color: #B2871A;
 }
 
 
@@ -90,7 +104,7 @@ button {
 }
 
 
-@media screen and (max-aspect-ratio: 768px) {
+@media screen and (max-width: 768px) {
   .im{
     width: 80vw;
     height: 80vw;
@@ -102,6 +116,7 @@ button {
     border:0;
   }
    #can2div { 
+    padding-top: 10px;
     padding-right: 0;
   }
 }
