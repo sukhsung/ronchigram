@@ -40,84 +40,59 @@ function fft2_wrap(X) {
     return (X_pass);
 }
 
+
+
 function getAberrations(){
-//C10, C12, C21, C23, C30
-    //C10
+    var ab_list = [];
 
-    //Number(parseInt( value , 10))
+    for(var it = 0; it < aberrations.length; it++)
+    {
+        
+        var aberration = aberrations[it];
+        var mag_val = Number(aberration.mag_el.value)*aberration.mag_unit;
+        var arg_val = (aberration.arg_el ? Number(aberration.arg_el.value) : 0)*deg;
+        ab_list.push([aberration.m, aberration.n, mag_val, arg_val]);
+    }
 
-    //C10,C21, P21,...
-    var C10_in1 = Number(document.getElementById("C10").value);
-    var C12_in1 = Number(document.getElementById("C12").value);
-    var C12_in2 = Number(document.getElementById("P12").value);
-    var C21_in1 = Number(document.getElementById("C21").value);
-    var C21_in2 = Number(document.getElementById("P21").value);
-    var C23_in1 = Number(document.getElementById("C23").value);
-    var C23_in2 = Number(document.getElementById("P23").value);
-    var C30_in1 = Number(document.getElementById("C30").value);
-    var C32_in1 = Number(document.getElementById("C32").value);
-    var C32_in2 = Number(document.getElementById("P32").value);
-    var C34_in1 = Number(document.getElementById("C34").value);
-    var C34_in2 = Number(document.getElementById("P34").value);
-    var C41_in1 = Number(document.getElementById("C41").value);
-    var C41_in2 = Number(document.getElementById("P41").value);
-    var C43_in1 = Number(document.getElementById("C43").value);
-    var C43_in2 = Number(document.getElementById("P43").value);
-    var C45_in1 = Number(document.getElementById("C45").value);
-    var C45_in2 = Number(document.getElementById("P45").value);
-    var C50_in1 = Number(document.getElementById("C50").value);
-    var C52_in1 = Number(document.getElementById("C52").value);
-    var C52_in2 = Number(document.getElementById("P52").value);
-    var C54_in1 = Number(document.getElementById("C54").value);
-    var C54_in2 = Number(document.getElementById("P54").value);
-    var C56_in1 = Number(document.getElementById("C56").value);
-    var C56_in2 = Number(document.getElementById("P56").value);
-    var C10 = [1,0,C10_in1*ang, 0];
-    var C12 = [1,2,C12_in1*nm,C12_in2*deg];
-    var C21 = [2,1,C21_in1*nm,C21_in2*deg];
-    var C23 = [2,3,C23_in1*nm,C23_in2*deg];
-    var C30 = [3,0,C30_in1*nm,0];
-    var C32 = [3,2,C32_in1*nm,C32_in2*deg]
-    var C34 = [3,4,C34_in1*nm,C34_in2*deg]
-    var C41 = [4,1,C41_in1*um,C41_in2*deg]
-    var C43 = [4,3,C43_in1*um,C43_in2*deg]
-    var C45 = [4,5,C45_in1*um,C45_in2*deg]
-    var C50 = [5,0,C50_in1*mm,0]
-    var C52 = [5,2,C52_in1*mm,C52_in2*deg]
-    var C54 = [5,4,C54_in1*mm,C54_in2*deg]
-    var C56 = [5,6,C56_in1*mm,C56_in2*deg]
+    return math.matrix(ab_list);
 
-    return math.matrix([C10,C12,C21,C23,C30,C32,C34,C41,C43,C45,C50,C52,C54,C56]);
+}
+
+function drawGrayscaleBitmap(ctx,bitmap)
+{
+    for(var it = 0; it < numPx; it++)
+    {
+        for(var jt = 0; jt < numPx; jt++)
+        {
+            var value = bitmap[it][jt];
+            var part = Number(parseInt( value , 10)).toString(16);
+            if(part.length <2 )
+            {
+                part = "0"+part;
+            }
+            var color = '#' + part+part+part;
+            ctx.fillStyle=color;
+            ctx.fillRect(it,jt,1,1);
+        }
+    }
 }
 
 
 function calculate(){
-
-    ang = math.pow(10,-10);
-    nm = math.pow(10,-9);
-    um = math.pow(10,-6);
-    mm = math.pow(10,-3);
-    PI = math.pi;
-    deg = PI/180;
-
-    numPx = 256;
-    lambda = 12.3986/math.sqrt((2*511+300)*300)*ang; // 300 keV
-
-
-    //alpha meshgrid
-    al_max = 70*math.pow(10,-3);
-    al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
+    var lambda = 12.3986/math.sqrt((2*511+300)*300)*ang; // 300 keV
+    var al_max = 70*math.pow(10,-3);
+    var al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
     al_vec.resize([256,1])
 
-    alxx = math.multiply(math.ones(256,1),math.transpose(al_vec));
-    alyy = math.transpose(alxx);
+    var alxx = math.multiply(math.ones(256,1),math.transpose(al_vec));
+    var alyy = math.transpose(alxx);
 
 
-    alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
-    alpp = math.atan2(alyy,alxx);
+    var alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
+    var alpp = math.atan2(alyy,alxx);
 
-    obj_ap_r = 50 * math.pow(10,-3);
-    obj_ap = alrr.map(function (value, index, matrix) {
+    var obj_ap_r = 50 * math.pow(10,-3);
+    var obj_ap = alrr.map(function (value, index, matrix) {
         if(value < obj_ap_r)
         {
             return 1;
@@ -128,43 +103,25 @@ function calculate(){
         }
     });
 
-    trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25, math.matrix(math.random([numPx,numPx])))  );
+    var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25, math.matrix(math.random([numPx,numPx])))  );
     
-    aber = getAberrations();
-    numAber = aber.size()[0];
+    var aber = getAberrations();
+    var numAber = aber.size()[0];
 
-    chi = math.zeros(numPx,numPx);
+    var chi = math.zeros(numPx,numPx);
 
     for(var it = 0; it < numAber; it++)
     {
-        //n = aber.subset(math.index(it,0));
-        //m = aber.subset(math.index(it,1));
-       // Cnm = aber.subset(math.index(it,2));
-       // phinm = aber.subset(math.index(it,3));        
         chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(aber.subset(math.index(it,1)),math.subtract(alpp,aber.subset(math.index(it,3))))),math.dotPow(alrr,aber.subset(math.index(it,0))+1)), aber.subset(math.index(it,2))/(aber.subset(math.index(it,0))+1) ));
-        //chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(m,math.subtract(alpp,phinm))),math.dotPow(alrr,n+1)), Cnm/(n+1) ));
     }
-    chi0 = math.dotMultiply(2*PI/lambda, chi);
-    expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
-
-
-  //   psi_p = math.matrix(fft2_wrap(expchi0.toArray()));
-  //  psi_t = math.dotMultiply(trans,psi_p);
-  //    ronch = math.dotMultiply(math.matrix(fft2_wrap(psi_t.toArray())),obj_ap); // multiply with obj apperture
-  //  ronch = math.dotPow(math.abs(ronch),2);
-
-  //  psi_t = math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray())));    
-
-   // ronch = math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap); // multiply with obj apperture
-    out_ronch = math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2);
-
+    var chi0 = math.dotMultiply(2*PI/lambda, chi);
+    var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
+    var out_ronch = math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2);
     out_ronch = math.subtract(out_ronch, math.min(out_ronch));
     out_ronch = math.dotDivide(out_ronch,math.max(out_ronch)/255);
     out_ronch = math.round(out_ronch);
     out_ronch = out_ronch.toArray();
-
-
-    out_phase_map = chi0.map(function (value, index, matrix) {
+    var out_phase_map = chi0.map(function (value, index, matrix) {
         if(value < PI/4)
         {
             return 1;            
@@ -175,7 +132,7 @@ function calculate(){
         }
     });
 
-    rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
+    var rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
     rmax = math.min(rmax);
     rmax = -1/rmax*1000; //mrads
 
@@ -192,102 +149,83 @@ function calculate(){
     var ctx = canvas.getContext("2d");
     canvas.width = numPx;
     canvas.height = numPx;
-    for(var it = 0; it < numPx; it++)
-    {
-        for(var jt = 0; jt < numPx; jt++)
-        {
-            var value = out_ronch[it][jt];
-            var part = Number(parseInt( value , 10)).toString(16);
-            if(part.length <2 )
-            {
-                part = "0"+part;
-            }
-
-            var color = '#' + part+part+part;
-            ctx.fillStyle=color;
-            ctx.fillRect(it,jt,1,1);
-        }
-    }
-
+    drawGrayscaleBitmap(ctx,out_ronch);
 
     canvas = document.getElementById("canvas2");
     ctx = canvas.getContext("2d");        
     canvas.width = numPx;
     canvas.height = numPx;
-    for(var it = 0; it < numPx; it++)
-    {
-        for(var jt = 0; jt < numPx; jt++)
-        {
-            var value = out_phase_map[it][jt];
-            var part = Number(parseInt( value , 10)).toString(16);
-            if(part.length <2 )
-            {
-                part = "0"+part;
-            }
-
-            var color = '#' + part+part+part;
-            ctx.fillStyle=color;
-            ctx.fillRect(it,jt,1,1);
-        }
-    }
+    drawGrayscaleBitmap(ctx,out_phase_map);    
 
 }
 
 function randomize(){
-    document.getElementById("C10").value = Math.random()*100;
-    document.getElementById("C12").value = Math.random()*100;
-    document.getElementById("P12").value = Math.random()*180;
-    document.getElementById("C21").value = Math.random()*100;
-    document.getElementById("P21").value = Math.random()*180;
-    document.getElementById("C23").value = Math.random()*100;
-    document.getElementById("P23").value = Math.random()*180;
-    document.getElementById("C30").value = Math.random()*100;
-    document.getElementById("C32").value = Math.random()*100;
-    document.getElementById("P32").value = Math.random()*100;
-    document.getElementById("C34").value = Math.random()*100;
-    document.getElementById("P34").value = Math.random()*100;
-    document.getElementById("C41").value = Math.random()*100;
-    document.getElementById("P41").value = Math.random()*100;
-    document.getElementById("C43").value = Math.random()*100;
-    document.getElementById("P43").value = Math.random()*100;
-    document.getElementById("C45").value = Math.random()*100;
-    document.getElementById("P45").value = Math.random()*100;
-    document.getElementById("C50").value = Math.random()*100;
-    document.getElementById("C52").value = Math.random()*100;
-    document.getElementById("P52").value = Math.random()*100;
-    document.getElementById("C54").value = Math.random()*100;
-    document.getElementById("P54").value = Math.random()*100;
-    document.getElementById("C56").value = Math.random()*100;
-    document.getElementById("P56").value = Math.random()*100;
+
+    for(var it = 0; it < aberrations.length; it++)
+    {
+        var aberration = aberrations[it];
+        aberration.mag_el.value = Math.random()*100;
+        if(aberration.arg_el)
+        {
+            aberration.arg_el.value = Math.random()*100;
+        }
+    }
     calculate();
 }
 
 function allZero(){
-    document.getElementById("C10").value = 0;
-    document.getElementById("C12").value = 0;
-    document.getElementById("P12").value = 0;
-    document.getElementById("C21").value = 0;
-    document.getElementById("P21").value = 0;
-    document.getElementById("C23").value = 0;
-    document.getElementById("P23").value = 0;
-    document.getElementById("C30").value = 0;
-    document.getElementById("C32").value = 0;
-    document.getElementById("P32").value = 0;
-    document.getElementById("C34").value = 0;
-    document.getElementById("P34").value = 0;
-    document.getElementById("C41").value = 0;
-    document.getElementById("P41").value = 0;
-    document.getElementById("C43").value = 0;
-    document.getElementById("P43").value = 0;
-    document.getElementById("C45").value = 0;
-    document.getElementById("P45").value = 0;
-    document.getElementById("C50").value = 0;
-    document.getElementById("C52").value = 0;
-    document.getElementById("P52").value = 0;
-    document.getElementById("C54").value = 0;
-    document.getElementById("P54").value = 0;
-    document.getElementById("C56").value = 0;
-    document.getElementById("P56").value = 0;
+
+    for(var it = 0; it < aberrations.length; it++)
+    {
+        var aberration = aberrations[it];
+        aberration.mag_el.value = 0;
+        if(aberration.arg_el)
+        {
+            aberration.arg_el.value = 0;
+        }
+    }
+
+}
+var numPx = 256;
+
+var ang = math.pow(10,-10);
+var nm = math.pow(10,-9);
+var um = math.pow(10,-6);
+var mm = math.pow(10,-3);
+var PI = math.pi;
+var deg = PI/180;
+
+
+var aberration_list = ["C10","C12","C21","C23","C30","C32","C34","C41","C43","C45","C50","C52","C54","C56"];
+var aberrations = [];
+for(var it = 0; it < aberration_list.length; it++)
+{
+    var ab_name = aberration_list[it];
+    var ab_obj = {};
+    ab_obj.m = Number(ab_name[1]);
+    ab_obj.n = Number(ab_name[2]);
+    ab_obj.mag_el = document.getElementById(ab_name);
+    if(ab_obj.m==1 && ab_obj.n ==0)
+    {
+        ab_obj.mag_unit = ang;
+    }
+    else if(ab_obj.m < 4)
+    {
+        ab_obj.mag_unit = nm;
+    }
+    else if(ab_obj.m < 5)
+    {
+        ab_obj.mag_unit = um;
+    }
+    else
+    {
+        ab_obj.mag_unit = mm;
+    }
+    if(ab_obj.n != 0)
+    {
+        ab_obj.arg_el = document.getElementById("P"+ab_obj.m+ab_obj.n)
+    }
+    aberrations.push(ab_obj);
 }
 
 function setC10(){
