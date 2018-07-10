@@ -176,7 +176,10 @@ function calculate(){
     rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
 
     rmax = math.min(rmax);
-    rmax = -1/rmax;
+    rmax = -1/rmax*1000; //mrads
+
+    var max_display = document.getElementById("alpha_max");
+    max_display.value = math.round(rmax,2);
 
     out_phase_map = math.abs(out_phase_map);
     out_phase_map = math.subtract(out_phase_map, math.min(out_phase_map));
