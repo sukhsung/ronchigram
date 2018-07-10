@@ -24,19 +24,8 @@ h2 input{
   font-size: 1em;
 }
 
-
 body {
   margin:0;
-}
-
-input{
-  border:none;
-  background-color: #555555;
-  border-radius: 4px;
-}
-
-#alpha {
-  padding-top: 20px;
 }
 
 #title {
@@ -44,9 +33,74 @@ input{
   padding-bottom: 2.5vw;
 }
 
+.im {
+  width: 45vw;
+  height: 45vw;
+}
+
+.im_rapper {
+  padding-top: 1px;
+}
+
+#can1div {
+  float:left; 
+  padding-left: 2.5vw;
+  padding-right: 2.5vw;
+}
+
+#alpha {
+  padding-top: 20px;
+}
+
 #eq {
-	padding-top: 20px;
+  padding-top: 20px;
   width: 95vw;
+}
+
+
+#buttons {
+  padding-top:20px;
+  padding-bottom:0;
+}
+
+#buttons button {
+  width: 160px;
+  height: 40px;
+  margin-left: 5vw;
+  margin-right: 5vw;
+}
+
+button {
+  border-radius: 4px;
+  font-style: italic;
+  font-weight: bold;
+  box-shadow: 0 6px #444444;
+  border: none;
+}
+
+button:active {
+  box-shadow: 0 2px #222222;
+  transform: translateY(4px);
+}
+
+.blue {
+    background-color: #009FCC;
+    border: none;
+}
+
+.blue:hover {
+  background-color: #00637F;
+}
+
+
+.yellow {
+    background-color: #FFC431;
+    border: none;
+    color: #222222;
+}
+
+.yellow:hover {
+  background-color: #B2871A;
 }
 
 #aberrations{
@@ -98,26 +152,10 @@ input{
   display: inline;
 }
 
-
-#buttons {
-	padding-top:20px;
-  padding-bottom:0;
-}
-
-button {
+input {
+  border:none;
+  background-color: #555555;
   border-radius: 4px;
-  width: 160px;
-  height: 40px;
-  margin-left: 5vw;
-  margin-right: 5vw;
-  box-shadow: 0 6px #444444;
-  font-style: italic;
-  font-weight: bold;
-}
-
-.button:active {
-  box-shadow: 0 2px #222222;
-  transform: translateY(4px);
 }
 
 .footer {
@@ -133,42 +171,6 @@ button {
   margin: 0;
   padding: 0;
   background:#111111;
-}
-.im {
-	width: 45vw;
-	height: 45vw;
-}
-
-.im_rapper {
-  padding-top: 1px;
-}
-
-#rand {
-    background-color: #009FCC;
-    border: none;
-    color: #FFFFFF;
-}
-
-#rand:hover {
-  background-color: #00637F;
-}
-
-
-#calc {
-    background-color: #FFC431;
-    border: none;
-    color: #222222;
-}
-
-#calc:hover {
-  background-color: #B2871A;
-}
-
-
-#can1div {
-  float:left; 
-  padding-left: 2.5vw;
-  padding-right: 2.5vw;
 }
 
 
