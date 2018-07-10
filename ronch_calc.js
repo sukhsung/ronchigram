@@ -78,14 +78,14 @@ function getAberrations(){
     var C23 = [2,3,C23_in1*nm,C23_in2*deg];
     var C30 = [3,0,C30_in1*nm,0];
     var C32 = [3,2,C32_in1*nm,C32_in2*deg]
-    var C34 = [3,2,C34_in1*nm,C34_in2*deg]
-    var C41 = [3,2,C41_in1*nm,C41_in2*deg]
-    var C43 = [3,2,C43_in1*nm,C43_in2*deg]
-    var C45 = [3,2,C45_in1*nm,C45_in2*deg]
-    var C50 = [3,2,C50_in1*nm,0]
-    var C52 = [3,2,C52_in1*nm,C52_in2*deg]
-    var C54 = [3,2,C54_in1*nm,C54_in2*deg]
-    var C56 = [3,2,C56_in1*nm,C56_in2*deg]
+    var C34 = [3,4,C34_in1*nm,C34_in2*deg]
+    var C41 = [4,1,C41_in1*nm,C41_in2*deg]
+    var C43 = [4,3,C43_in1*nm,C43_in2*deg]
+    var C45 = [4,5,C45_in1*nm,C45_in2*deg]
+    var C50 = [5,0,C50_in1*nm,0]
+    var C52 = [5,2,C52_in1*nm,C52_in2*deg]
+    var C54 = [5,4,C54_in1*nm,C54_in2*deg]
+    var C56 = [5,6,C56_in1*nm,C56_in2*deg]
 
     return math.matrix([C10,C12,C21,C23,C30,C32,C34,C41,C43,C45,C50,C52,C54,C56]);
 }
