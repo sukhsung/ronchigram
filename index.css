@@ -52,10 +52,11 @@ input{
   width: 35%;
   float:left;
   text-align: right;
+  padding-right: 5%;
 }
 
 .alt_list {
-  width: 30%;
+  width: 15%;
   float:left;
   text-align: center;
 }
