@@ -40,6 +40,8 @@ input{
 }
 
 #aberrations{
+  padding-left: 5%;
+  padding-right: 5%;
 }
 
 .aber_wrapper{
@@ -52,13 +54,13 @@ input{
   width: 35%;
   float:left;
   text-align: right;
-  padding-right: 5%;
 }
 
 .alt_list {
   width: 15%;
   float:left;
   text-align: center;
+  padding-left: 5%;
 }
 .aber {
   width: 35%;
