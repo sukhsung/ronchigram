@@ -7,16 +7,27 @@
 }
 
 h1 {
-    font-style: italic;
+  font-style: italic;
 	text-align: center;
 	vertical-align: middle;
-	font-weight: xx-large;
 	margin: 0;
 	padding: 20px;
+  font-size: 2.5em;
+}
+
+body {
+  margin:0;
+}
+
+input{
+  border:none;
+  background-color: #555555;
+  border-radius: 4px;
 }
 
 #eq {
 	padding-top: 20px;
+  width: 95vw;
 }
 
 #aber {
@@ -25,21 +36,38 @@ h1 {
 
 #buttons {
 	padding-top:20px;
-  padding-bottom:20px;
-
+  padding-bottom:0;
 }
 
-footer {
-   bottom:0;
-   width:100%;
-   padding: 10px;
-   background:#111111;
+button {
+  border-radius: 4px;
+  width: 160px;
+  height: 40px;
+  margin-left: 5vw;
+  margin-right: 5vw;
 }
 
+.footer {
+  left:0;
+  bottom:0;
+  width:100%;
+  padding: 10px;
+  background:#111111;
+  margin-top: 10px;
+}
+
+.footer p {
+  margin: 0;
+  padding: 0;
+  background:#111111;
+}
 .im{
-	width: 40vw;
-	height: 40vw;
-	padding: 2vw;
+	width: 45vw;
+	height: 45vw;
+}
+
+.im_rapper{
+  padding-top: 2.5vw;
 }
 
 #rand{
@@ -54,42 +82,26 @@ footer {
     color: #222222;
 }
 
-.col-xs-0, .col-sm-0, .col-md-0, .col-lg-0 {
-  position: relative;
-  min-height: 1px;
+
+#can1div {
+  float:left; 
+  padding-left: 2.5vw;
+  padding-right: 2.5vw;
 }
 
-.col-xs-0 {
- float: left; width: 0;
- }
 
-@media (min-width: 768px) {
-  .col-sm-0 {
- float: left; width: 0;
- }
-}
-
-@media (min-width: 992px) {
-  .col-md-0 {
- float: left; width: 0;
- }
-}
-
-@media (min-width: 1200px) {
-  .col-lg-0 {
- float: left; width: 0;
- }
-}
-
-.row-fluid {
-    overflow:hidden;
-    margin-right: -15px;
-    margin-left: -15px;
-}
-
-.row-fluid div {
-    -webkit-transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
-    -moz-transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
-    -o-transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
-    transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+@media screen and (max-width: 400px) {
+  .im{
+    width: 80vw;
+    height: 80vw;
+  }
+   #can1div { 
+    float: none;
+    padding-left: 0;
+    padding-right: 0;
+    border:0;
+  }
+   #can2div { 
+    padding-right: 0;
+  }
 }

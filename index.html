@@ -3,7 +3,6 @@
 <head>
 	<title>Ronchigram</title>
 	<meta charset="utf-8"> 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="index.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.0.2/math.min.js"></script>
 	<link rel="icon" type="image/x-icon" href="hlabfavicon.png">
@@ -14,9 +13,13 @@
 	</div>
 
 
-	<div id="images">
-		<canvas id="canvas1" class ="im class-md-6 class-sm-12"> </canvas>
-		<canvas id="canvas2" class ="im class-md-6 class-sm-12"> </canvas>
+	<div class="im_rapper">
+		<div id ="can1div">
+			<canvas id="canvas1" class ="im"> </canvas>
+		</div>
+		<div id ="can2div">
+			<canvas id="canvas2" class ="im"> </canvas>
+		</div>
 	</div>
 
 	<div id="eq">
@@ -33,65 +36,68 @@
 
 	<div id="aber">
 		<div>
-			C<sub>10</sub>: <input type="text" id="C10" value="50" size="4"> Ang
+			C<sub>10</sub>: <input type="text" id="C10" value="50" size="4"> &#197;
 		</div>
 		<div>
 			C<sub>12</sub>: <input type="text" id="C12" value="15" size="4"> nm
-			&phi;<sub>12</sub>: <input type="text" id="P12" value="0" size="4"> deg
+			&phi;<sub>12</sub>: <input type="text" id="P12" value="0" size="4"> &deg;
 		</div>
 		<div>
 			C<sub>21</sub>: <input type="text" id="C21" value="15" size="4"> nm
-			&phi;<sub>21</sub>: <input type="text" id="P21" value="0" size="4"> deg
+			&phi;<sub>21</sub>: <input type="text" id="P21" value="0" size="4"> &deg;
 		</div>
 		<div>
 			C<sub>23</sub>: <input type="text" id="C23" value="15" size="4"> nm
-			&phi;<sub>23</sub>: <input type="text" id="P23" value="0" size="4"> deg
+			&phi;<sub>23</sub>: <input type="text" id="P23" value="0" size="4"> &deg;
 		</div>
 		<div>
 			C<sub>30</sub>: <input type="text" id="C30" value="15" size="4"> nm
 		</div>
 		<div>
 			C<sub>32</sub>: <input type="text" id="C32" value="15" size="4"> nm
-			&phi;<sub>32</sub>: <input type="text" id="P32" value="0" size="4"> deg
+			&phi;<sub>32</sub>: <input type="text" id="P32" value="0" size="4"> &deg;
 		</div>
 		<div>
 			C<sub>34</sub>: <input type="text" id="C34" value="15" size="4"> nm
-			&phi;<sub>34</sub>: <input type="text" id="P34" value="0" size="4"> deg
+			&phi;<sub>34</sub>: <input type="text" id="P34" value="0" size="4"> &deg;
 		</div>
 		<div>
 			C<sub>41</sub>: <input type="text" id="C41" value="15" size="4"> nm
-			&phi;<sub>41</sub>: <input type="text" id="P41" value="0" size="4"> deg
+			&phi;<sub>41</sub>: <input type="text" id="P41" value="0" size="4"> &deg;
 		</div>
 		<div>
 			C<sub>43</sub>: <input type="text" id="C43" value="15" size="4"> nm
-			&phi;<sub>43</sub>: <input type="text" id="P43" value="0" size="4"> deg
+			&phi;<sub>43</sub>: <input type="text" id="P43" value="0" size="4"> &deg;
 		</div>
 		<div>
 			C<sub>45</sub>: <input type="text" id="C45" value="15" size="4"> nm
-			&phi;<sub>45</sub>: <input type="text" id="P45" value="0" size="4"> deg
+			&phi;<sub>45</sub>: <input type="text" id="P45" value="0" size="4"> &deg;
 		</div>
 		<div>
 			C<sub>50</sub>: <input type="text" id="C50" value="15" size="4"> nm
 		</div>
 		<div>
 			C<sub>52</sub>: <input type="text" id="C52" value="15" size="4"> nm
-			&phi;<sub>52</sub>: <input type="text" id="P52" value="0" size="4"> deg
+			&phi;<sub>52</sub>: <input type="text" id="P52" value="0" size="4"> &deg;
 		</div>
 		<div>
 			C<sub>54</sub>: <input type="text" id="C54" value="15" size="4"> nm
-			&phi;<sub>54</sub>: <input type="text" id="P54" value="0" size="4"> deg
+			&phi;<sub>54</sub>: <input type="text" id="P54" value="0" size="4"> &deg;
 		</div>
 		<div>
 			C<sub>56</sub>: <input type="text" id="C56" value="15" size="4"> nm
-			&phi;<sub>56</sub>: <input type="text" id="P56" value="0" size="4"> deg
+			&phi;<sub>56</sub>: <input type="text" id="P56" value="0" size="4"> &deg;
 		</div>
 	</div>
 
+	<div class="footer">
+	  <p>By Suk Hyun Sung & Noah Schnitzer</p>
+	  <p>@ <a href="http://hovdenlab.com">Hovden lab</a></p>
+	</div>
+	
 	<script type="text/javascript" src="ronch_calc.js"></script>
-
 </body>
-<footer>
-  By Suk Hyun Sung & Noah Schnitzer @ <a href="http://hovdenlab.com">Hovden lab</a>
-</footer>
+
 </html>
+
 
