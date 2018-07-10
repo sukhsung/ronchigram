@@ -259,5 +259,5 @@ function randomize(){
     calculate();
 }
 
-calculate();
+window.onload = calculate();
 
