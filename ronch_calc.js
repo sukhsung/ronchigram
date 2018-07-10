@@ -19,7 +19,7 @@ function fft2(X) {
   }
   even = fft2(even);
   odd = fft2(odd);
-  var a = -2*math.pi;
+  var a = -2*PI;
   for (var k = 0; k < M; ++k) {
     var t = math.exp(math.complex(0, a*k/N));
     t = math.multiply(t, odd[k]);
@@ -97,21 +97,19 @@ function calculate(){
     nm = math.pow(10,-9);
     um = math.pow(10,-6);
     mm = math.pow(10,-3);
-    deg = math.pi/180;
+    PI = math.pi;
+    deg = PI/180;
 
     numPx = 256;
-    kev = 300;
-    lambda = 12.3986/math.sqrt((2*511+kev)*kev)*ang;
+    lambda = 12.3986/math.sqrt((2*511+300)*300)*ang; // 300 keV
 
 
     //alpha meshgrid
     al_max = 70*math.pow(10,-3);
-    al_step = (2*al_max)/(numPx);
-    al_vec = math.matrix(math.range(-al_max,al_max,al_step));
+    al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
     al_vec.resize([256,1])
-    ones = math.ones(256,1);
 
-    alxx = math.multiply(ones,math.transpose(al_vec));
+    alxx = math.multiply(math.ones(256,1),math.transpose(al_vec));
     alyy = math.transpose(alxx);
 
 
@@ -130,36 +128,36 @@ function calculate(){
         }
     });
 
-    //C10 = 50*ang;
-    //C12 = 15*nm;//30*math.random()*nm;
-    //Ph12 = 0*deg;//180*(2*math.random()-1)/2;
-
-
-    trans = math.exp(  math.multiply(math.complex(0,-1),math.pi,.25, math.matrix(math.random([numPx,numPx])))  );
+    trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25, math.matrix(math.random([numPx,numPx])))  );
+    
     aber = getAberrations();
-    //aber = math.matrix([ [1,0,C10,0], [1,2,C12,Ph12] ]);
+    numAber = aber.size()[0];
 
     chi = math.zeros(numPx,numPx);
 
-    for(var it = 0; it < aber.size()[0]; it++)
+    for(var it = 0; it < numAber; it++)
     {
-        n = aber.subset(math.index(it,0));
-        m = aber.subset(math.index(it,1));
-        Cnm = aber.subset(math.index(it,2));
-        phinm = aber.subset(math.index(it,3));
-        chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(m,math.subtract(alpp,phinm))),math.dotPow(alrr,n+1)), Cnm/(n+1) ));
+        //n = aber.subset(math.index(it,0));
+        //m = aber.subset(math.index(it,1));
+       // Cnm = aber.subset(math.index(it,2));
+       // phinm = aber.subset(math.index(it,3));        
+        chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(aber.subset(math.index(it,1)),math.subtract(alpp,aber.subset(math.index(it,3))))),math.dotPow(alrr,aber.subset(math.index(it,0))+1)), aber.subset(math.index(it,2))/(aber.subset(math.index(it,0))+1) ));
+        //chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(m,math.subtract(alpp,phinm))),math.dotPow(alrr,n+1)), Cnm/(n+1) ));
     }
-    chi0 = math.dotMultiply(2*math.pi/lambda, chi);
+    chi0 = math.dotMultiply(2*PI/lambda, chi);
     expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
 
-    psi_p = math.matrix(fft2_wrap(expchi0.toArray()));
-    psi_t = math.dotMultiply(trans,psi_p);
 
-    ronch = math.dotMultiply(math.matrix(fft2_wrap(psi_t.toArray())),obj_ap); // multiply with obj apperture
-    ronch = math.dotPow(math.abs(ronch),2);
+  //   psi_p = math.matrix(fft2_wrap(expchi0.toArray()));
+  //  psi_t = math.dotMultiply(trans,psi_p);
+  //    ronch = math.dotMultiply(math.matrix(fft2_wrap(psi_t.toArray())),obj_ap); // multiply with obj apperture
+  //  ronch = math.dotPow(math.abs(ronch),2);
 
+  //  psi_t = math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray())));    
 
-    out_ronch = math.abs(ronch);
+   // ronch = math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap); // multiply with obj apperture
+    out_ronch = math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2);
+
     out_ronch = math.subtract(out_ronch, math.min(out_ronch));
     out_ronch = math.dotDivide(out_ronch,math.max(out_ronch)/255);
     out_ronch = math.round(out_ronch);
@@ -167,7 +165,7 @@ function calculate(){
 
 
     out_phase_map = chi0.map(function (value, index, matrix) {
-        if(value < math.pi/4)
+        if(value < PI/4)
         {
             return 1;            
         }
@@ -178,12 +176,10 @@ function calculate(){
     });
 
     rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
-
     rmax = math.min(rmax);
     rmax = -1/rmax*1000; //mrads
 
-    var max_display = document.getElementById("alpha_max");
-    max_display.value = math.round(rmax,2);
+    document.getElementById("alpha_max").value = math.round(rmax,2);
 
     out_phase_map = math.abs(out_phase_map);
     out_phase_map = math.subtract(out_phase_map, math.min(out_phase_map));
