@@ -79,26 +79,30 @@ function getAberrations(){
     var C30 = [3,0,C30_in1*nm,0];
     var C32 = [3,2,C32_in1*nm,C32_in2*deg]
     var C34 = [3,4,C34_in1*nm,C34_in2*deg]
-    var C41 = [4,1,C41_in1*nm,C41_in2*deg]
-    var C43 = [4,3,C43_in1*nm,C43_in2*deg]
-    var C45 = [4,5,C45_in1*nm,C45_in2*deg]
-    var C50 = [5,0,C50_in1*nm,0]
-    var C52 = [5,2,C52_in1*nm,C52_in2*deg]
-    var C54 = [5,4,C54_in1*nm,C54_in2*deg]
-    var C56 = [5,6,C56_in1*nm,C56_in2*deg]
+    var C41 = [4,1,C41_in1*um,C41_in2*deg]
+    var C43 = [4,3,C43_in1*um,C43_in2*deg]
+    var C45 = [4,5,C45_in1*um,C45_in2*deg]
+    var C50 = [5,0,C50_in1*mm,0]
+    var C52 = [5,2,C52_in1*mm,C52_in2*deg]
+    var C54 = [5,4,C54_in1*mm,C54_in2*deg]
+    var C56 = [5,6,C56_in1*mm,C56_in2*deg]
 
     return math.matrix([C10,C12,C21,C23,C30,C32,C34,C41,C43,C45,C50,C52,C54,C56]);
 }
 
 
 function calculate(){
-    numPx = 256;
-    kev = 300;
-    lambda = 12.3986/math.sqrt((2*511+kev)*kev)*math.pow(10,-10);
 
     ang = math.pow(10,-10);
     nm = math.pow(10,-9);
+    um = math.pow(10,-6);
+    mm = math.pow(10,-3);
     deg = math.pi/180;
+
+    numPx = 256;
+    kev = 300;
+    lambda = 12.3986/math.sqrt((2*511+kev)*kev)*ang;
+
 
     //alpha meshgrid
     al_max = 70*math.pow(10,-3);
@@ -126,9 +130,9 @@ function calculate(){
         }
     });
 
-    C10 = 50*ang;
-    C12 = 15*nm;//30*math.random()*nm;
-    Ph12 = 0*deg;//180*(2*math.random()-1)/2;
+    //C10 = 50*ang;
+    //C12 = 15*nm;//30*math.random()*nm;
+    //Ph12 = 0*deg;//180*(2*math.random()-1)/2;
 
 
     trans = math.exp(  math.multiply(math.complex(0,-1),math.pi,.25, math.matrix(math.random([numPx,numPx])))  );
@@ -260,6 +264,34 @@ function randomize(){
     document.getElementById("C56").value = Math.random()*100;
     document.getElementById("P56").value = Math.random()*100;
     calculate();
+}
+
+function allZero(){
+    document.getElementById("C10").value = 0;
+    document.getElementById("C12").value = 0;
+    document.getElementById("P12").value = 0;
+    document.getElementById("C21").value = 0;
+    document.getElementById("P21").value = 0;
+    document.getElementById("C23").value = 0;
+    document.getElementById("P23").value = 0;
+    document.getElementById("C30").value = 0;
+    document.getElementById("C32").value = 0;
+    document.getElementById("P32").value = 0;
+    document.getElementById("C34").value = 0;
+    document.getElementById("P34").value = 0;
+    document.getElementById("C41").value = 0;
+    document.getElementById("P41").value = 0;
+    document.getElementById("C43").value = 0;
+    document.getElementById("P43").value = 0;
+    document.getElementById("C45").value = 0;
+    document.getElementById("P45").value = 0;
+    document.getElementById("C50").value = 0;
+    document.getElementById("C52").value = 0;
+    document.getElementById("P52").value = 0;
+    document.getElementById("C54").value = 0;
+    document.getElementById("P54").value = 0;
+    document.getElementById("C56").value = 0;
+    document.getElementById("P56").value = 0;
 }
 
 window.onload = calculate();
