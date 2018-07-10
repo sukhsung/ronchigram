@@ -90,7 +90,7 @@ button {
 }
 
 
-@media screen and (max-width: 400px) {
+@media screen and (max-aspect-ratio: 700px) {
   .im{
     width: 80vw;
     height: 80vw;
