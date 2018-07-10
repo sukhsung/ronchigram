@@ -16,7 +16,13 @@ h1 {
   font-size: 2.5em;
 }
 
+h2 {
+  font-size: 1.7em;
+}
 
+h2 input{
+  font-size: 1em;
+}
 
 
 body {
@@ -27,6 +33,10 @@ input{
   border:none;
   background-color: #555555;
   border-radius: 4px;
+}
+
+#alpha {
+  padding-top: 20px;
 }
 
 #title {
@@ -48,6 +58,26 @@ input{
   padding-top:20px;
   width: 100%;
   height: 30px;
+}
+
+.aber_wrapper_head{
+  margin-top:20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 100%;
+  background-color: #444444;
+  vertical-align: middle;
+  overflow: auto;
+}
+
+.aber_wrapper_head p{
+  margin:0;
+  padding: 0;
+  background-color: #444444;
+}
+
+.aber_wrapper_head div{
+  background-color: #444444;
 }
 
 .aber_list {
@@ -110,6 +140,7 @@ button {
 }
 
 .im_rapper {
+  padding-top: 1px;
 }
 
 #rand {
