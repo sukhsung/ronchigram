@@ -35,7 +35,7 @@
 	<div id="buttons">
 		<div>
 			<button onclick="randomize()" class ="blue">RANDOMIZE</button> 
-			<button onclick="calculate()" class ="yellow">CALCULATE</button>
+			<button onclick="calculate()" class ="red">CALCULATE</button>
 			<button onclick="allZero()"   class ="blue">ALL ZERO</button> 
 		</div>
 	</div>
@@ -66,7 +66,7 @@
 				C<sub>10</sub>: <input type="text" id="C10" value="20" size="4"> &#197;
 			</div>
 			<div class = "aber_button">
-				<button> ADD </button>
+				<button onclick="setC10()" class = "yellow"> SET </button>
 			</div>
 		</div>
 
@@ -81,6 +81,9 @@
 				C<sub>12</sub>: <input type="text" id="C12" value="0" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>12</sub>: <input type="text" id="P12" value="0" size="4"> &deg;
 			</div>
+			<div class = "aber_button">
+				<button onclick="setC12()" class = "yellow"> SET </button>
+			</div>
 		</div>
 
 		<div class ="aber_wrapper">
@@ -93,6 +96,9 @@
 			<div class = "aber">
 				C<sub>21</sub>: <input type="text" id="C21" value="0" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>21</sub>: <input type="text" id="P21" value="0" size="4"> &deg;
+			</div>
+			<div class = "aber_button">
+				<button onclick="setC21()" class = "yellow"> SET </button>
 			</div>
 		</div>
 
@@ -107,6 +113,9 @@
 				C<sub>23</sub>: <input type="text" id="C23" value="200" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>23</sub>: <input type="text" id="P23" value="35" size="4"> &deg;
 			</div>
+			<div class = "aber_button">
+				<button onclick="setC23()" class = "yellow"> SET </button>
+			</div>
 		</div>
 
 		<div class ="aber_wrapper">
@@ -118,6 +127,9 @@
 			</div>
 			<div class = "aber">
 				C<sub>30</sub>: <input type="text" id="C30" value="0" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
+			</div>
+			<div class = "aber_button">
+				<button onclick="setC30()" class = "yellow"> SET </button>
 			</div>
 		</div>
 
@@ -132,6 +144,9 @@
 				C<sub>32</sub>: <input type="text" id="C32" value="0" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>32</sub>: <input type="text" id="P32" value="0" size="4"> &deg;
 			</div>
+			<div class = "aber_button">
+				<button onclick="setC32()" class = "yellow"> SET </button>
+			</div>
 		</div>
 
 		<div class ="aber_wrapper">
@@ -144,6 +159,9 @@
 			<div class = "aber">
 				C<sub>34</sub>: <input type="text" id="C34" value="0" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>34</sub>: <input type="text" id="P34" value="0" size="4"> &deg;
+			</div>
+			<div class = "aber_button">
+				<button onclick="setC34()" class = "yellow"> SET </button>
 			</div>
 		</div>
 
@@ -158,6 +176,9 @@
 				C<sub>41</sub>: <input type="text" id="C41" value="0" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>41</sub>: <input type="text" id="P41" value="0" size="4"> &deg;
 			</div>
+			<div class = "aber_button">
+				<button onclick="setC41()" class = "yellow"> SET </button>
+			</div>
 		</div>		
 
 		<div class ="aber_wrapper">
@@ -170,6 +191,9 @@
 			<div class = "aber">
 				C<sub>43</sub>: <input type="text" id="C43" value="0" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>43</sub>: <input type="text" id="P43" value="0" size="4"> &deg;
+			</div>
+			<div class = "aber_button">
+				<button onclick="setC43()" class = "yellow"> SET </button>
 			</div>
 		</div>	
 
@@ -184,6 +208,9 @@
 				C<sub>45</sub>: <input type="text" id="C45" value="0" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>45</sub>: <input type="text" id="P45" value="0" size="4"> &deg;
 			</div>
+			<div class = "aber_button">
+				<button onclick="setC45()" class = "yellow"> SET </button>
+			</div>
 		</div>	
 
 		<div class ="aber_wrapper">
@@ -195,6 +222,9 @@
 			</div>
 			<div class = "aber">
 				C<sub>50</sub>: <input type="text" id="C50" value="0" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
+			</div>
+			<div class = "aber_button">
+				<button onclick="setC50()" class = "yellow"> SET </button>
 			</div>
 		</div>	
 
@@ -209,6 +239,9 @@
 				C<sub>52</sub>: <input type="text" id="C52" value="0" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>52</sub>: <input type="text" id="P52" value="0" size="4"> &deg;
 			</div>
+			<div class = "aber_button">
+				<button onclick="setC52()" class = "yellow"> SET </button>
+			</div>
 		</div>	
 
 		<div class ="aber_wrapper">
@@ -222,6 +255,9 @@
 				C<sub>54</sub>: <input type="text" id="C54" value="0" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>54</sub>: <input type="text" id="P54" value="0" size="4"> &deg;
 			</div>
+			<div class = "aber_button">
+				<button onclick="setC54()" class = "yellow"> SET </button>
+			</div>
 		</div>	
 
 		<div class ="aber_wrapper">
@@ -234,6 +270,9 @@
 			<div class = "aber">
 				C<sub>56</sub>: <input type="text" id="C56" value="0" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
 				&Phi;<sub>56</sub>: <input type="text" id="P56" value="0" size="4"> &deg;
+			</div>
+			<div class = "aber_button">
+				<button onclick="setC56()" class = "yellow"> SET </button>
 			</div>
 		</div>	
 	</div>

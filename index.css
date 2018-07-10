@@ -93,9 +93,19 @@ button:active {
 }
 
 
+.red {
+    background-color: #FF0058;
+    border: none;
+}
+
+.red:hover {
+  background-color: #B2871A;
+}
+
 .yellow {
     background-color: #FFC431;
     border: none;
+  box-shadow: 0 3px #444444;
     color: #222222;
 }
 
