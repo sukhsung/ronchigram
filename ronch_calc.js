@@ -132,7 +132,7 @@ function calculate(){
         }
     });
 
-    var rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
+     rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
     rmax = math.min(rmax);
     rmax = -1/rmax*1000; //mrads
 
@@ -150,12 +150,29 @@ function calculate(){
     canvas.width = numPx;
     canvas.height = numPx;
     drawGrayscaleBitmap(ctx,out_ronch);
+    ctx.font = "14px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText("30 mrad",numPx-70,numPx-10);
+
+    ctx.beginPath()
+    ctx.moveTo(numPx-70,numPx-30);
+    ctx.lineTo(numPx-15,numPx-30);
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 5;
+    ctx.stroke();
 
     canvas = document.getElementById("canvas2");
     ctx = canvas.getContext("2d");        
     canvas.width = numPx;
     canvas.height = numPx;
-    drawGrayscaleBitmap(ctx,out_phase_map);    
+    drawGrayscaleBitmap(ctx,out_phase_map);
+    ctx.beginPath();
+    ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max*1000),0,2*Math.PI);
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+
+    ctx.stroke();
+  
 
 }
 
