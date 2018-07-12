@@ -80,9 +80,9 @@ function drawGrayscaleBitmap(ctx,bitmap)
 
 function calculate(){
     var keV = Number(document.getElementById("beamvolt").value);
-    var lambda = 12.3986/Math.sqrt((2*511+keV)*keV); // 300 keV
+    var lambda = 12.3986/Math.sqrt((2*511+keV)*keV) *ang; // 300 keV
 
-    document.getElementById("wavlen").value = (lambda);
+    document.getElementById("wavlen").value = (lambda/ang * pm);
 
     var al_max = 70*math.pow(10,-3);
     var al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
@@ -192,6 +192,7 @@ function allZero(){
 }
 var numPx = 256;
 
+var pm = math.pow(10,-12);
 var ang = math.pow(10,-10);
 var nm = math.pow(10,-9);
 var um = math.pow(10,-6);
