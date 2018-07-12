@@ -314,5 +314,5 @@ for(var it = 0; it < aberration_list.length; it++)
 }
 
 
-window.onload = calculate();
+//window.onload = calculate();
 
