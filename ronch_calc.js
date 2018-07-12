@@ -77,12 +77,34 @@ function drawGrayscaleBitmap(ctx,bitmap)
     }
 }
 
-
-function calculate(){
+function calcWav(){
     var keV = Number(document.getElementById("beamvolt").value);
+    if(keV<0)
+    {
+        keV=0;
+        document.getElementById("beamvolt").value = 0;
+    }
+
     var lambda = 12.3986/Math.sqrt((2*511+keV)*keV) *ang; // 300 keV
 
     document.getElementById("wavlen").value = (lambda/ang * pm);
+
+    return lambda;
+}
+
+
+function calculate(){
+    lambda = calcWav()
+    /*var keV = Number(document.getElementById("beamvolt").value);
+    if(keV<0)
+    {
+        keV=0;
+        document.getElementById("beamvolt").value = 0;
+    }
+
+    var lambda = 12.3986/Math.sqrt((2*511+keV)*keV) *ang; // 300 keV
+
+    document.getElementById("wavlen").value = (lambda/ang * pm);*/
 
     var al_max = 70*math.pow(10,-3);
     var al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
@@ -96,6 +118,19 @@ function calculate(){
     var alpp = math.atan2(alyy,alxx);
 
     var obj_ap_r = Number(document.getElementById("aperture").value)* math.pow(10,-3);
+
+
+    if(obj_ap_r<0)
+    {
+        obj_ap_r=0;
+        document.getElementById("aperture").value = 0;
+    }
+    else if (obj_ap_r>65* math.pow(10,-3))
+    {
+        obj_ap_r=65* math.pow(10,-3);
+        document.getElementById("aperture").value = 65;
+    }
+
    //var obj_ap_r = 50* math.pow(10,-3);
     var obj_ap = alrr.map(function (value, index, matrix) {
         if(value < obj_ap_r)
@@ -164,6 +199,16 @@ function calculate(){
     ctx.lineTo(numPx-15,numPx-30);
     ctx.strokeStyle = "white";
     ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.beginPath()
+    ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max*1000),0,2*Math.PI);
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*Math.PI);
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
     ctx.stroke();
 
     canvas = document.getElementById("canvas2");

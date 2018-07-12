@@ -35,9 +35,9 @@
 
 
 	<div id = "settings">
-		<h2>Beam Energy = <input type="text" id="beamvolt" size = "3" value = "300"> keV &rArr; Wavelength = <input type="text" id="wavlen" size = "6" disabled> pm </h2>
-		<h2>Aperture = <input type="text" id="aperture" size = "3" value = "50"> mrad</h2>
-		<h2>&alpha;<sub>max</sub> = <input type="text" id="alpha_max" size = "6" disabled> mrad</h2>
+		<h2>e<sup>-</sup> Beam Energy = <input onchange="calcWav()" type="text" id="beamvolt" size = "3" value = "300"> keV &rArr; Wavelength = <input type="text" id="wavlen" size = "6" disabled class="disable"> pm </h2>
+		<h2><span style="color: #FF0000;font-size: 1em;">&#9675;</span> Objective Aperture = <input type="text" id="aperture" size = "3" value = "50"> mrad</h2>
+		<h2><span style="color: #0000FF;font-size: 1em">&#9675;</span> Optimal Aperture = <input type="text" id="alpha_max" size = "4" disabled class="disable"> mrad</h2>
 	</div>
 
 	<div id="eq">
