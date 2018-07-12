@@ -1,7 +1,6 @@
 /*
     From https://gist.github.com/mrquincle/b11fff96209c9d1396b0
     @mrquincle
-
 */
 function fft2(X) {
   var N = X.length;
@@ -79,59 +78,45 @@ function drawGrayscaleBitmap(ctx,bitmap)
 
 function calcWav(){
     var keV = Number(document.getElementById("beamvolt").value);
+
     if(keV<0)
     {
         keV=0;
         document.getElementById("beamvolt").value = 0;
     }
 
-    var lambda = 12.3986/Math.sqrt((2*511+keV)*keV) *ang; // 300 keV
-
+    var lambda = 12.3986/Math.sqrt((2*511+keV)*keV) *ang;
     document.getElementById("wavlen").value = (lambda/ang * pm);
-
     return lambda;
 }
 
 
 function calculate(){
-    lambda = calcWav()
-    /*var keV = Number(document.getElementById("beamvolt").value);
-    if(keV<0)
-    {
-        keV=0;
-        document.getElementById("beamvolt").value = 0;
-    }
+    lambda = calcWav();
 
-    var lambda = 12.3986/Math.sqrt((2*511+keV)*keV) *ang; // 300 keV
-
-    document.getElementById("wavlen").value = (lambda/ang * pm);*/
-
-    var al_max = 70*math.pow(10,-3);
+    var al_max = 70*mrad;
     var al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
     al_vec.resize([256,1])
 
     var alxx = math.multiply(math.ones(256,1),math.transpose(al_vec));
     var alyy = math.transpose(alxx);
 
-
     var alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
     var alpp = math.atan2(alyy,alxx);
 
-    var obj_ap_r = Number(document.getElementById("aperture").value)* math.pow(10,-3);
-
+    var obj_ap_r = Number(document.getElementById("aperture").value)* mrad;
 
     if(obj_ap_r<0)
     {
-        obj_ap_r=0;
+        obj_ap_r = 0;
         document.getElementById("aperture").value = 0;
     }
-    else if (obj_ap_r>65* math.pow(10,-3))
+    else if (obj_ap_r>65*mrad)
     {
-        obj_ap_r=65* math.pow(10,-3);
+        obj_ap_r= 65*mrad;
         document.getElementById("aperture").value = 65;
     }
 
-   //var obj_ap_r = 50* math.pow(10,-3);
     var obj_ap = alrr.map(function (value, index, matrix) {
         if(value < obj_ap_r)
         {
@@ -157,6 +142,7 @@ function calculate(){
     var chi0 = math.dotMultiply(2*PI/lambda, chi);
     var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
     var out_ronch = math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2);
+
     out_ronch = math.subtract(out_ronch, math.min(out_ronch));
     out_ronch = math.dotDivide(out_ronch,math.max(out_ronch)/255);
     out_ronch = math.round(out_ronch);
@@ -201,14 +187,9 @@ function calculate(){
     ctx.lineWidth = 5;
     ctx.stroke();
     ctx.beginPath()
-    ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max*1000),0,2*Math.PI);
+    ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
     ctx.strokeStyle = "blue";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*Math.PI);
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     ctx.stroke();
 
     canvas = document.getElementById("canvas2");
@@ -217,16 +198,15 @@ function calculate(){
     canvas.height = numPx;
     drawGrayscaleBitmap(ctx,out_phase_map);
     ctx.beginPath();
-    ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max*1000),0,2*Math.PI);
+    ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
     ctx.strokeStyle = "blue";
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*Math.PI);
+    ctx.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*PI);
     ctx.strokeStyle = "red";
     ctx.lineWidth = 2;
     ctx.stroke();
-
 
 }
 
@@ -263,7 +243,6 @@ function setC(c_in){
     {
         if(c_in == ""+aberrations[it].m+aberrations[it].n)
         {
-
             aberrations[it].mag_el.value = Number(aberrations[it].mag_el.value) + 50;
         }
     }
@@ -271,18 +250,18 @@ function setC(c_in){
 
 
 var numPx = 256;
-
 var pm = math.pow(10,-12);
 var ang = math.pow(10,-10);
 var nm = math.pow(10,-9);
 var um = math.pow(10,-6);
 var mm = math.pow(10,-3);
+var mrad = mm;
 var PI = math.pi;
 var deg = PI/180;
 
-
 var aberration_list = ["C10","C12","C21","C23","C30","C32","C34","C41","C43","C45","C50","C52","C54","C56"];
 var aberrations = [];
+
 for(var it = 0; it < aberration_list.length; it++)
 {
     var ab_name = aberration_list[it];
@@ -313,6 +292,4 @@ for(var it = 0; it < aberration_list.length; it++)
     aberrations.push(ab_obj);
 }
 
-
-//window.onload = calculate();
 
