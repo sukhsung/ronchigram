@@ -32,6 +32,11 @@
 		</div>
 	</div>
 
+	<div id ="beam">
+		<h2>Beam Energy = <input type="text" id="beamvolt" size = "3" value = "300"> keV</h2> 
+		<h2>Wavelength = <input type="text" id="wavlen" size = "6" disabled> &#197;</h2>
+	</div>
+
 	<div id = "alpha">
 		<h2>&alpha;<sub>max</sub> = <input type="text" id="alpha_max" size = "6" disabled> mrad</h2>
 	</div>
@@ -75,7 +80,7 @@
 				C<sub>10</sub>: <input type="text" id="C10" value="20" size="4"> &#197;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC10()" class = "yellow"> SET </button>
+				<button onclick="setC(10)" class = "yellow"> ADD </button>
 			</div>
 		</div>
 
@@ -91,7 +96,7 @@
 				&Phi;<sub>12</sub>: <input type="text" id="P12" value="0" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC12()" class = "yellow"> SET </button>
+				<button onclick="setC(12)" class = "yellow"> ADD </button>
 			</div>
 		</div>
 
@@ -107,7 +112,7 @@
 				&Phi;<sub>21</sub>: <input type="text" id="P21" value="0" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC21()" class = "yellow"> SET </button>
+				<button onclick="setC(21)" class = "yellow"> ADD </button>
 			</div>
 		</div>
 
@@ -123,7 +128,7 @@
 				&Phi;<sub>23</sub>: <input type="text" id="P23" value="35" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC23()" class = "yellow"> SET </button>
+				<button onclick="setC(23)" class = "yellow"> ADD </button>
 			</div>
 		</div>
 
@@ -138,7 +143,7 @@
 				C<sub>30</sub>: <input type="text" id="C30" value="0" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC30()" class = "yellow"> SET </button>
+				<button onclick="setC(30)" class = "yellow"> ADD </button>
 			</div>
 		</div>
 
@@ -154,7 +159,7 @@
 				&Phi;<sub>32</sub>: <input type="text" id="P32" value="0" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC32()" class = "yellow"> SET </button>
+				<button onclick="setC(32)" class = "yellow"> ADD </button>
 			</div>
 		</div>
 
@@ -170,7 +175,7 @@
 				&Phi;<sub>34</sub>: <input type="text" id="P34" value="0" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC34()" class = "yellow"> SET </button>
+				<button onclick="setC(34)" class = "yellow"> ADD </button>
 			</div>
 		</div>
 
@@ -186,7 +191,7 @@
 				&Phi;<sub>41</sub>: <input type="text" id="P41" value="0" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC41()" class = "yellow"> SET </button>
+				<button onclick="setC(41)" class = "yellow"> ADD </button>
 			</div>
 		</div>		
 
@@ -202,7 +207,7 @@
 				&Phi;<sub>43</sub>: <input type="text" id="P43" value="0" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC43()" class = "yellow"> SET </button>
+				<button onclick="setC(43)" class = "yellow"> ADD </button>
 			</div>
 		</div>	
 
@@ -218,7 +223,7 @@
 				&Phi;<sub>45</sub>: <input type="text" id="P45" value="0" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC45()" class = "yellow"> SET </button>
+				<button onclick="setC(45)" class = "yellow"> ADD </button>
 			</div>
 		</div>	
 
@@ -233,7 +238,7 @@
 				C<sub>50</sub>: <input type="text" id="C50" value="0" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC50()" class = "yellow"> SET </button>
+				<button onclick="setC(50)" class = "yellow"> ADD </button>
 			</div>
 		</div>	
 
@@ -249,7 +254,7 @@
 				&Phi;<sub>52</sub>: <input type="text" id="P52" value="0" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC52()" class = "yellow"> SET </button>
+				<button onclick="setC(52)" class = "yellow"> ADD </button>
 			</div>
 		</div>	
 
@@ -265,7 +270,7 @@
 				&Phi;<sub>54</sub>: <input type="text" id="P54" value="0" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC54()" class = "yellow"> SET </button>
+				<button onclick="setC(54)" class = "yellow"> ADD </button>
 			</div>
 		</div>	
 
@@ -281,7 +286,7 @@
 				&Phi;<sub>56</sub>: <input type="text" id="P56" value="0" size="4"> &deg;
 			</div>
 			<div class = "aber_button">
-				<button onclick="setC56()" class = "yellow"> SET </button>
+				<button onclick="setC(56)" class = "yellow"> ADD </button>
 			</div>
 		</div>	
 	</div>
