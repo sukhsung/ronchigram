@@ -137,7 +137,7 @@ function calculate(){
         }
     });
 
-     rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
+    var rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
     rmax = math.min(rmax);
     rmax = -1/rmax*1000; //mrads
 
@@ -175,9 +175,13 @@ function calculate(){
     ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max*1000),0,2*Math.PI);
     ctx.strokeStyle = "blue";
     ctx.lineWidth = 2;
-
     ctx.stroke();
-  
+    ctx.beginPath();
+    ctx.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*Math.PI);
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
 
 }
 
