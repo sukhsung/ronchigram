@@ -160,7 +160,7 @@ function calculate(){
 
     var rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
     rmax = math.min(rmax);
-    rmax = -1/rmax*1000; //mrads
+    rmax = -1/(rmax*mrad); //mrads
 
     document.getElementById("alpha_max").value = math.round(rmax,2);
 
@@ -215,10 +215,10 @@ function randomize(){
     for(var it = 0; it < aberrations.length; it++)
     {
         var aberration = aberrations[it];
-        aberration.mag_el.value = Math.random()*100;
+        aberration.mag_el.value = Math.round(Math.random()*100);
         if(aberration.arg_el)
         {
-            aberration.arg_el.value = Math.random()*100;
+            aberration.arg_el.value = Math.round(Math.random()*180);
         }
     }
     calculate();
