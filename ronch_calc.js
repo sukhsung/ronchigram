@@ -148,7 +148,7 @@ function calculate(){
     out_ronch = math.round(out_ronch);
     out_ronch = out_ronch.toArray();
     var out_phase_map = chi0.map(function (value, index, matrix) {
-        if(value < PI/4)
+        if(value < PI/4 && value > -PI/4)
         {
             return 1;            
         }
