@@ -95,7 +95,8 @@ function calculate(){
     var alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
     var alpp = math.atan2(alyy,alxx);
 
-    var obj_ap_r = 50 * math.pow(10,-3);
+   // var obj_ap_r = Number(document.getElementById("aperture"))* math.pow(10,-3);
+   var obj_ap_r = 50* math.pow(10,-3);
     var obj_ap = alrr.map(function (value, index, matrix) {
         if(value < obj_ap_r)
         {
