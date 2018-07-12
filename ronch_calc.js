@@ -207,6 +207,19 @@ function allZero(){
     }
 
 }
+
+function setC(c_in){
+    for(var it = 0; it < aberrations.length; it++)
+    {
+        if(c_in == ""+aberrations[it].m+aberrations[it].n)
+        {
+
+            aberrations[it].mag_el.value = Number(aberrations[it].mag_el.value) + 50;
+        }
+    }
+}
+
+
 var numPx = 256;
 
 var ang = math.pow(10,-10);
@@ -249,48 +262,6 @@ for(var it = 0; it < aberration_list.length; it++)
     aberrations.push(ab_obj);
 }
 
-function setC10(){
-    document.getElementById("C10").value = 50;
-}
-function setC12(){
-    document.getElementById("C12").value = 50;
-}
-function setC21(){
-    document.getElementById("C21").value = 50;
-}
-function setC23(){
-    document.getElementById("C23").value = 50;
-}
-function setC30(){
-    document.getElementById("C30").value = 50;
-}
-function setC32(){
-    document.getElementById("C32").value = 50;
-}
-function setC34(){
-    document.getElementById("C34").value = 50;
-}
-function setC41(){
-    document.getElementById("C41").value = 50;
-}
-function setC43(){
-    document.getElementById("C43").value = 50;
-}
-function setC45(){
-    document.getElementById("C45").value = 50;
-}
-function setC50(){
-    document.getElementById("C50").value = 50;
-}
-function setC52(){
-    document.getElementById("C52").value = 50;
-}
-function setC54(){
-    document.getElementById("C54").value = 50;
-}
-function setC56(){
-    document.getElementById("56").value = 50;
-}
 
 window.onload = calculate();
 
