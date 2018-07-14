@@ -90,6 +90,19 @@ function calcWav(){
     return lambda;
 }
 
+function calcButton(){
+     document.getElementById('loading').innerHTML = "Calculating..."
+     setTimeout(function(){
+        calculate();
+    },0);
+}
+
+function randButton(){
+     document.getElementById('loading').innerHTML = "Calculating..."
+     setTimeout(function(){
+        randomize();
+    },0);
+}
 
 function calculate(){
     lambda = calcWav();
@@ -208,6 +221,8 @@ function calculate(){
     ctx.lineWidth = 2;
     ctx.stroke();
 
+
+    document.getElementById('loading').innerHTML = " "
 }
 
 function randomize(){
