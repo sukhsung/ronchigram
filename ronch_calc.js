@@ -91,6 +91,46 @@ function calcWav(){
 }
 
 
+
+function loadSample(){
+
+    /*var rel_canvas = document.getElementById('sample_canvas');
+    var rel_img = document.getElementById('sample_img');
+
+    var ctx = rel_canvas.getContext('2d');
+    ctx.drawImage(rel_img,0,0);
+    var image_data =  ctx.getImageData(0,0,numPx,numPx);
+
+    var math_matrix = math.matrix(Array.from(image_data.data));
+    console.log(math_matrix.size())
+
+    math_matrix = math.reshape(math_matrix,[256,256]);
+    return math_matrix;*/
+    var scalefactor = 8;
+
+    var subsample = (math.random([numPx/scalefactor,numPx/scalefactor]));
+
+    var supersample = math.zeros(numPx,numPx);
+
+    supersample = supersample.map(function(value,index,matrix){
+        //console.log(index);
+
+        //idx = math.index(math.floor(index[0]/scalefactor),math.floor(index[1]/scalefactor));
+
+        //idx = math.index(index[0]%scalefactor,index[1]%scalefactor);
+        //console.log(idx);
+        //console.log(typeof subsample)
+        return subsample[math.floor(index[0]/scalefactor)][math.floor(index[1]/scalefactor)];//subsample.subset(idx);//subsample.subset(idx)
+    });
+
+    return supersample;
+
+    //return bicubic(mat,numPx,numPx,0,numPx);
+
+
+}
+
+
 function calculate(){
     lambda = calcWav();
 
@@ -128,7 +168,12 @@ function calculate(){
         }
     });
 
-    var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25, math.matrix(math.random([numPx,numPx])))  );
+    //var scalefactor = 8;
+
+    //var noise_kernel = math.random([numPx])
+    var sample = loadSample();
+    var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25, sample)  );
+    //var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25, math.matrix(math.random([numPx,numPx])))  );
     
     var aber = getAberrations();
     var numAber = aber.size()[0];
@@ -247,6 +292,35 @@ function setC(c_in){
         }
     }
 }
+//parses URL, returning object storing aberration identifiers and values
+function parseURL(){
+
+    return {};
+}
+//loads parsed aberrations into UI or sets defaults
+function loadAberrations(){
+    parsed_abs = parseURL();
+    //logic to go thru parsed abs and set in UI
+}
+
+//encodes current aberration values into a string, outputs to console (for now)
+function generateURL(){
+    var str = "?";
+     ab_snapshot = [];
+    for(var it = 0; it < aberrations.length; it++)
+    {
+        var aberration = aberrations[it];
+        var mag_val = aberration.mag_el.value;
+        var arg_val = (aberration.arg_el ? aberration.arg_el.value : "");
+        //more?
+        ab_snapshot.push([aberration.m, aberration.n, mag_val, arg_val]);
+
+    }
+    //ab_snap -> string -> base64 or some encoding?
+
+    return str;
+}
+
 
 
 var numPx = 256;
@@ -258,6 +332,7 @@ var mm = math.pow(10,-3);
 var mrad = mm;
 var PI = math.pi;
 var deg = PI/180;
+var correction_factor = 1;
 
 var aberration_list = ["C10","C12","C21","C23","C30","C32","C34","C41","C43","C45","C50","C52","C54","C56"];
 var aberrations = [];
@@ -289,6 +364,7 @@ for(var it = 0; it < aberration_list.length; it++)
     {
         ab_obj.arg_el = document.getElementById("P"+ab_obj.m+ab_obj.n)
     }
+    ab_obj.mag_unit = ab_obj.mag_unit * correction_factor;
     aberrations.push(ab_obj);
 }
 
