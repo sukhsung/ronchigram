@@ -1,3 +1,39 @@
+//from https://web.eecs.umich.edu/~fessler/course/451/l/pdf/c6.pdf
+/*function radix_fft(x)
+{
+
+    n = math.matrix(math.range(0,numPx)); //0...255
+    W_re = math.cos(math.multiply(2*math.pi/numPx,n));
+    W_im = math.sin(math.multiply(2*math.pi/numPx,n));// - i * math.sin(2*math.pi/numPx*n);
+
+    W = math.zeros(numPx);
+    W = W.map(function(value, index, matrix){
+        return math.complex(W_re.subset(math.index(index)), W_im.subset(math.index(index)));
+    });
+    X = math.zeros(numPx);
+    X = X.map(function(value, index, matrix){
+
+        k = index;
+        //console.log(k);
+        sum = 0;
+        for(var n = 0; n < numPx -1; n++)
+        {
+            m = math.mod(k*n,numPx);
+            sum = math.add(sum, math.multiply(x.subset(math.index(n)), W.subset(math.index(m))  ));
+        }
+        //m = k*n;
+        //sum = math.dotMultiply(x,W)
+        return sum
+    });
+    return X;
+    //W = math.complex(W_re, W_im);
+}
+
+function radix_fft2(x){
+
+}*/
+
+
 /*
     From https://gist.github.com/mrquincle/b11fff96209c9d1396b0
     @mrquincle
@@ -106,39 +142,18 @@ function randButton(){
 
 
 function loadSample(){
-
-    /*var rel_canvas = document.getElementById('sample_canvas');
-    var rel_img = document.getElementById('sample_img');
-
-    var ctx = rel_canvas.getContext('2d');
-    ctx.drawImage(rel_img,0,0);
-    var image_data =  ctx.getImageData(0,0,numPx,numPx);
-
-    var math_matrix = math.matrix(Array.from(image_data.data));
-    console.log(math_matrix.size())
-
-    math_matrix = math.reshape(math_matrix,[256,256]);
-    return math_matrix;*/
     var scalefactor = 8;
 
     var subsample = (math.random([numPx/scalefactor,numPx/scalefactor]));
 
     var supersample = math.zeros(numPx,numPx);
-
+    //quick nearest neightbours interpolation
     supersample = supersample.map(function(value,index,matrix){
-        //console.log(index);
-
-        //idx = math.index(math.floor(index[0]/scalefactor),math.floor(index[1]/scalefactor));
-
-        //idx = math.index(index[0]%scalefactor,index[1]%scalefactor);
-        //console.log(idx);
-        //console.log(typeof subsample)
-        return subsample[math.floor(index[0]/scalefactor)][math.floor(index[1]/scalefactor)];//subsample.subset(idx);//subsample.subset(idx)
+        return subsample[math.floor(index[0]/scalefactor)][math.floor(index[1]/scalefactor)];
     });
 
     return supersample;
 
-    //return bicubic(mat,numPx,numPx,0,numPx);
 
 
 }
@@ -149,9 +164,9 @@ function calculate(){
 
     var al_max = 70*mrad;
     var al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
-    al_vec.resize([256,1])
+    al_vec.resize([numPx,1])
 
-    var alxx = math.multiply(math.ones(256,1),math.transpose(al_vec));
+    var alxx = math.multiply(math.ones(numPx,1),math.transpose(al_vec));
     var alyy = math.transpose(alxx);
 
     var alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
@@ -181,12 +196,8 @@ function calculate(){
         }
     });
 
-    //var scalefactor = 8;
-
-    //var noise_kernel = math.random([numPx])
     var sample = loadSample();
     var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25, sample)  );
-    //var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25, math.matrix(math.random([numPx,numPx])))  );
     
     var aber = getAberrations();
     var numAber = aber.size()[0];
@@ -307,18 +318,18 @@ function setC(c_in){
         }
     }
 }
-//parses URL, returning object storing aberration identifiers and values
+//TODO: parses URL, returning object storing aberration identifiers and values
 function parseURL(){
 
     return {};
 }
-//loads parsed aberrations into UI or sets defaults
+//TODO: loads parsed aberrations into UI or sets defaults
 function loadAberrations(){
     parsed_abs = parseURL();
     //logic to go thru parsed abs and set in UI
 }
 
-//encodes current aberration values into a string, outputs to console (for now)
+//TODO: encodes current aberration values into a string, outputs to console (for now)
 function generateURL(){
     var str = "?";
      ab_snapshot = [];
@@ -338,7 +349,7 @@ function generateURL(){
 
 
 
-var numPx = 256;
+var numPx = 512;
 var pm = math.pow(10,-12);
 var ang = math.pow(10,-10);
 var nm = math.pow(10,-9);
