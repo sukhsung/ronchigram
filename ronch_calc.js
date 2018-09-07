@@ -112,7 +112,7 @@ function drawGrayscaleBitmap(ctx,bitmap)
     }
 }
 
-function calcWav(){
+function energyCalc(){
     var keV = Number(document.getElementById("beamvolt").value);
 
     if(keV<0)
@@ -122,7 +122,12 @@ function calcWav(){
     }
 
     var lambda = 12.3986/Math.sqrt((2*511+keV)*keV) *ang;
-    document.getElementById("wavlen").value = (lambda/ang * pm);
+    document.getElementById("wavlen").value = (lambda/pm);
+
+    var alpha = Number(document.getElementById("aperture").value)* mrad;
+    //resolution calculation:
+    var d = .61*lambda/pm/alpha;
+    document.getElementById("diffres").value = d;
     return lambda;
 }
 
@@ -160,18 +165,10 @@ function loadSample(){
 
 
 function calculate(){
-    lambda = calcWav();
-
-    var al_max = 70*mrad;
-    var al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
-    al_vec.resize([numPx,1])
-
-    var alxx = math.multiply(math.ones(numPx,1),math.transpose(al_vec));
-    var alyy = math.transpose(alxx);
-
-    var alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
-    var alpp = math.atan2(alyy,alxx);
-
+    lambda = energyCalc();
+    ////////
+    //reading in constants from ui:
+    ////////
     var obj_ap_r = Number(document.getElementById("aperture").value)* mrad;
 
     if(obj_ap_r<0)
@@ -184,6 +181,39 @@ function calculate(){
         obj_ap_r= 65*mrad;
         document.getElementById("aperture").value = 65;
     }
+
+    var disp_size_px = Number(document.getElementById("disp_size_px").value);
+    if((disp_size_px & (disp_size_px - 1)) != 0  || disp_size_px < 2)
+    {
+        alert("Select a display size in pixels that is a power of 2 greater than 0");
+        return;
+    }
+    else
+    {
+        numPx = disp_size_px;
+    }
+
+    var disp_size_mrad = Number(document.getElementById("disp_size_mrad").value)*mrad/2;
+    if(disp_size_mrad<.0000001  )
+    {
+        disp_size_mrad = .0000001
+    }
+
+
+    //var ill_angle = Number(document.getElementById("illumination").value)*mrad;
+    var draw_overlay = document.getElementById("draw_overlay").checked; //figure out how to read from checkbox
+
+    var al_max = disp_size_mrad;//70*mrad; //= ill_angle;
+    var al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
+    al_vec.resize([numPx,1])
+
+    var alxx = math.multiply(math.ones(numPx,1),math.transpose(al_vec));
+    var alyy = math.transpose(alxx);
+
+    var alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
+    var alpp = math.atan2(alyy,alxx);
+
+
 
     var obj_ap = alrr.map(function (value, index, matrix) {
         if(value < obj_ap_r)
@@ -245,37 +275,43 @@ function calculate(){
     canvas.width = numPx;
     canvas.height = numPx;
     drawGrayscaleBitmap(ctx,out_ronch);
-    ctx.font = "14px Arial";
-    ctx.fillStyle = "white";
-    ctx.fillText("30 mrad",numPx-70,numPx-10);
+    if(draw_overlay)
+    {
+        ctx.font = "14px Arial";
+        ctx.fillStyle = "white";
+        ctx.fillText("30 mrad",numPx-70,numPx-10);
 
-    ctx.beginPath()
-    ctx.moveTo(numPx-70,numPx-30);
-    ctx.lineTo(numPx-15,numPx-30);
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 5;
-    ctx.stroke();
-    ctx.beginPath()
-    ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
-    ctx.strokeStyle = "blue";
-    ctx.lineWidth = 1;
-    ctx.stroke();
+        ctx.beginPath()
+        ctx.moveTo(numPx-70,numPx-30);
+        ctx.lineTo(numPx-15,numPx-30);
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 5;
+        ctx.stroke();
+        ctx.beginPath()
+        ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
 
     canvas = document.getElementById("canvas2");
     ctx = canvas.getContext("2d");        
     canvas.width = numPx;
     canvas.height = numPx;
     drawGrayscaleBitmap(ctx,out_phase_map);
-    ctx.beginPath();
-    ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
-    ctx.strokeStyle = "blue";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*PI);
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    if(draw_overlay)
+    {
+        ctx.beginPath();
+        ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*PI);
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
 
 
     document.getElementById('loading').innerHTML = " "
@@ -349,7 +385,7 @@ function generateURL(){
 
 
 
-var numPx = 512;
+var numPx = 256;
 var pm = math.pow(10,-12);
 var ang = math.pow(10,-10);
 var nm = math.pow(10,-9);
