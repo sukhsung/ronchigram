@@ -277,20 +277,22 @@ function calculate(){
     drawGrayscaleBitmap(ctx,out_ronch);
     if(draw_overlay)
     {
-        ctx.font = "14px Arial";
+        var scalar = 256;
+        ctx.font = numPx/scalar*14+"px Arial";
         ctx.fillStyle = "white";
-        ctx.fillText("30 mrad",numPx-70,numPx-10);
+        ctx.fillText(math.round(disp_size_mrad/.07*30)+" mrad",numPx-70/scalar*numPx,numPx-10/scalar*numPx);
 
         ctx.beginPath()
-        ctx.moveTo(numPx-70,numPx-30);
-        ctx.lineTo(numPx-15,numPx-30);
+
+        ctx.moveTo(numPx-70/scalar*numPx,numPx-30/scalar*numPx);
+        ctx.lineTo(numPx-15/scalar*numPx,numPx-30/scalar*numPx);
         ctx.strokeStyle = "white";
-        ctx.lineWidth = 5;
+        ctx.lineWidth = 5*numPx/scalar;
         ctx.stroke();
         ctx.beginPath()
         ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
         ctx.strokeStyle = "blue";
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1*numPx/scalar;
         ctx.stroke();
     }
 
