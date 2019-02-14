@@ -148,8 +148,9 @@ function randButton(){
 
 function loadSample(){
     var scalefactor = 8;
+         //subsample = math.dotMultiply(math.subtract(math.random([numPx/scalefactor,numPx/scalefactor]),0.5),2);
 
-    var subsample = (math.random([numPx/scalefactor,numPx/scalefactor]));
+    var subsample = math.random([numPx/scalefactor,numPx/scalefactor]);
 
     var supersample = math.zeros(numPx,numPx);
     //quick nearest neightbours interpolation
