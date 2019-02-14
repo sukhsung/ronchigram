@@ -164,6 +164,19 @@ function loadSample(){
 
 }
 
+//Normalized to 300 keV
+function interactionParam(){
+    var c = 3e8;
+    var mass_e = 9.11e-31;
+    var charge_e = 1.602e-19;
+    var lambda = energyCalc();
+    var keV = Number(document.getElementById("beamvolt").value);
+
+    var param = 2*PI/(lambda*keV/charge_e*1000)*(mass_e*c*c+keV*1000)/(2*mass_e*c*c+keV*1000);
+    var param_300 = 2*PI/(lambda*300/charge_e*1000)*(mass_e*c*c+300*1000)/(2*mass_e*c*c+300*1000);
+    return param/param_300;
+}
+
 
 function calculate(){
     lambda = energyCalc();
@@ -228,7 +241,8 @@ function calculate(){
     });
 
     var sample = loadSample();
-    var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25, sample)  );
+    //console.log(interactionParam());
+    var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25,interactionParam(), sample)  );
     
     var aber = getAberrations();
     var numAber = aber.size()[0];
