@@ -1,5 +1,5 @@
 //from https://web.eecs.umich.edu/~fessler/course/451/l/pdf/c6.pdf
-/*function radix_fft(x)
+function radix_fft(x)
 {
 
     n = math.matrix(math.range(0,numPx)); //0...255
@@ -30,8 +30,217 @@
 }
 
 function radix_fft2(x){
+    var x_pass = radix_fft(x);
+    x_pass = math.transpose(x_pass);
+    return radix_fft(x_pass);
+}
 
-}*/
+//implementing fft42 from kirkland
+function new_fft(fr)
+{
+    TWOPI = 6.283185307;
+    n = math.size(fr);
+    fi = math.zeros(n)
+///////
+
+    kinc = n;
+    while( kinc >= 4 ) {    /* start radix-4 section */
+        kinc2 = kinc;
+        kinc = kinc / 4;
+        for( k0=0; k0<n; k0+=kinc2) {
+            k1 = k0 + kinc;
+            k2 = k1 + kinc;
+            k3 = k2 + kinc;
+
+            //rr =  fr[k0] + fr[k2];    ri = fi[k0] + fi[k2];
+            rr = fr.subset(math.index(k0)) + fr.subset(math.index(k2));
+            ri = fi.subset(math.index(k0)) + fi.subset(math.index(k2)); 
+            //sr =  fr[k0] - fr[k2];    si = fi[k0] - fi[k2];
+            sr = fr.subset(math.index(k0)) - fr.subset(math.index(k2));
+            si = fi.subset(math.index(k0)) - fi.subset(math.index(k2));
+            //tr =  fr[k1] + fr[k3];    ti = fi[k1] + fi[k3];
+            tr = fr.subset(math.index(k1))+fr.subset(math.index(k3));
+            ti = fi.subset(math.index(k1))+fi.subset(math.index(k3));
+            //ur = -fi[k1] + fi[k3];    ui = fr[k1] - fr[k3];
+            ur = -fi.subset(math.index(k1)) + fi.subset(math.index(k3));
+            ui = fr.subset(math.index(k1)) - fr.subset(math.index(k3));
+            
+            //fr[k0] = rr + tr;    fi[k0] = ri + ti;
+            fr.subset(math.index(k0),rr+tr);
+            fi.subset(math.index(k0),ri+ti);
+            //fr[k2] = sr + ur;    fi[k2] = si + ui;
+            fr.subset(math.index(k2),sr+ur);
+            fi.subset(math.index(k2),si+ui);
+            //fr[k1] = rr - tr;    fi[k1] = ri - ti;
+            fr.subset(math.index(k1),rr-tr);
+            fi.subset(math.index(k1),ri-ti);
+            //fr[k3] = sr - ur;    fi[k3] = si - ui;
+            fr.subset(math.index(k3),sr-ur);
+            fi.subset(math.index(k3),si-ui);
+        }
+
+        x1 = TWOPI/(kinc2 );
+        w0r = math.cos( x1 );   w0i = math.sin( x1 );
+        w1r = 1.0;   w1i = 0.0;
+        
+        for( i=1; i<kinc; i++) {
+             x1 = w0r*w1r - w0i*w1i;    w1i = w0r*w1i + w0i*w1r;
+            w1r = x1;
+            w2r = w1r*w1r - w1i*w1i;    w2i = w1r*w1i + w1i*w1r;
+            w3r = w2r*w1r - w2i*w1i;    w3i = w2r*w1i + w2i*w1r;
+
+            for( k0=i; k0<n; k0+=kinc2) {
+                k1 = k0 + kinc;
+                k2 = k1 + kinc;
+                k3 = k2 + kinc;
+            
+                //rr =  fr[k0] + fr[k2];    ri = fi[k0] + fi[k2];
+                //sr =  fr[k0] - fr[k2];    si = fi[k0] - fi[k2];
+                //tr =  fr[k1] + fr[k3];    ti = fi[k1] + fi[k3];
+                //ur = -fi[k1] + fi[k3];    ui = fr[k1] - fr[k3];
+
+
+                //rr =  fr[k0] + fr[k2];    ri = fi[k0] + fi[k2];
+                rr = fr.subset(math.index(k0)) + fr.subset(math.index(k2));
+                ri = fi.subset(math.index(k0)) + fi.subset(math.index(k2)); 
+                //sr =  fr[k0] - fr[k2];    si = fi[k0] - fi[k2];
+                sr = fr.subset(math.index(k0)) - fr.subset(math.index(k2));
+                si = fi.subset(math.index(k0)) - fi.subset(math.index(k2));
+                //tr =  fr[k1] + fr[k3];    ti = fi[k1] + fi[k3];
+                tr = fr.subset(math.index(k1))+fr.subset(math.index(k3));
+                ti = fi.subset(math.index(k1))+fi.subset(math.index(k3));
+                //ur = -fi[k1] + fi[k3];    ui = fr[k1] - fr[k3];
+                ur = -fi.subset(math.index(k1)) + fi.subset(math.index(k3));
+                ui = fr.subset(math.index(k1)) - fr.subset(math.index(k3));
+
+                //fr[k0] = rr + tr;    fi[k0] = ri + ti;
+                fr.subset(math.index(k0),rr+tr);
+                fi.subset(math.index(k0),ri+ti);
+                qr = sr + ur;    qi = si + ui;
+                //fr[k2] = (qr*w1r - qi*w1i);
+                fr.subset(math.index(k2), qr*w1r-qi*w1i);
+                //fi[k2] =  (qr*w1i + qi*w1r);
+                fi.subset(math.index(k2),qr*w1i+qi*w1r);
+
+                qr = rr - tr;    qi = ri - ti;
+                //fr[k1] =  (qr*w2r - qi*w2i);
+                fr.subset(math.index(k1),qr*w2r - qi*w2i);
+                //fi[k1] =  (qr*w2i + qi*w2r);
+                fi.subset(math.index(k1),qr*w2i + qi*w2r);
+                qr = sr - ur;    qi = si - ui;
+                //fr[k3] =  (qr*w3r - qi*w3i);
+                fr.subset(math.index(k3),qr*w3r - qi*w3i);
+                //fi[k3] =  (qr*w3i + qi*w3r);
+                fi.subset(math.index(k3),qr*w3i + qi*w3r);
+            }
+        }
+        
+    }  /*  end radix-4 section */
+
+    while( kinc >= 2 ) {    /* start radix-2 section */
+    
+        kinc2 = kinc;
+        kinc = kinc /2 ;
+        
+        x1 = TWOPI/( kinc2 );
+        w0r = math.cos( x1 );   w0i = math.sin( x1 );
+        w1r = 1.0;   w1i = 0.0;
+        
+        for( k0=0; k0<n; k0+=kinc2 ){
+            k1 = k0 + kinc;
+            //tr = fr[k0] - fr[k1];        ti = fi[k0] - fi[k1];
+            tr = fr.subset(math.index(k0)) - fr.subset(math.index(k1));
+            ti = fi.subset(math.index(k0)) - fi.subset(math.index(k1));
+            //fr[k0] = fr[k0] + fr[k1];    fi[k0] = fi[k0] + fi[k1];
+            fr.subset(math.index(k0),fr.subset(math.index(k0))  +   fr.subset(math.index(k1)) );
+            fi.subset(math.index(k0),fi.subset(math.index(k0))  +   fi.subset(math.index(k1)) );
+            //fr[k1] = tr;                 fi[k1] = ti;
+            fr.subset(math.index(k1),tr);
+            fi.subset(math.index(k1),ti);
+        }
+        
+        for( i=1; i<kinc; i++) {
+             x1 = w0r*w1r - w0i*w1i;  w1i = w0r*w1i + w0i*w1r;
+            w1r = x1;
+            for( k0=i; k0<n; k0+=kinc2 ){
+                k1 = k0 + kinc;
+                //tr = fr[k0] - fr[k1];        ti = fi[k0] - fi[k1];
+                tr = fr.subset(math.index(k0)) - fr.subset(math.index(k1));
+                ti = fi.subset(math.index(k0)) - fi.subset(math.index(k1));
+                //fr[k0] = fr[k0] + fr[k1];    fi[k0] = fi[k0] + fi[k1];
+                fr.subset(math.index(k0),fr.subset(math.index(k0))  +   fr.subset(math.index(k1)) );
+                fi.subset(math.index(k0),fi.subset(math.index(k0))  +   fi.subset(math.index(k1)) );
+                //fr[k1] =  (tr*w1r - ti*w1i);
+                fr.subset(math.index(k1), tr*w1r - ti*w1i);
+                //fi[k1] =  (tr*w1i + ti*w1r);
+                fi.subset(math.index(k1), tr*w1i + ti*w1r);
+            }
+        }
+            
+    }  /* end radix-2 section */
+
+    nv2 = n / 2;
+    nm1 = n - 1;
+    j = 0;
+
+    for (i=0; i< nm1; i++) {  /* reorder in bit reversed order */
+        if( i < j ){
+            //tr = fr[j];     ti = fi[j];
+            tr = fr.subset(math.index(j));
+            ti = fi.subset(math.index(j));
+            //fr[j] = fr[i];  fi[j] = fi[i];
+            fr.subset(math.index(j),fr.subset(math.index(i)));
+            fi.subset(math.index(j),fi.subset(math.index(i)));
+            //fr[i] = tr;     fi[i] = ti; }
+            fr.subset(math.index(i),tr);
+            fi.subset(math.index(i),ti);
+        }
+        k = nv2;
+        while ( k <= j ) { j -=  k;  k = k>>1; }
+        /* while ( k <= j ) { j = j - k;  k = k /2; }  is slower */
+        j += k;
+    }
+
+///////
+    ret = math.zeros(1,256);
+
+    for(var it = 0; it < n; it++)
+    {
+        //console.log(fr[it]);
+        //console.log(fi[it]);
+        ret[it] = math.complex(fr[it],fi[it]);
+        idx = math.index(it);
+        ret.subset(idx,math.complex(fr.subset(idx),fi.subset(idx)));
+        //ret.subset(math.index(it),  math.complex(fr.subset(math.index(i))));
+    }
+
+    //math.complex(fr,fi);
+    return ret;
+}
+
+function new_fft2(X)
+{
+    X = math.matrix(X);
+    sz = math.size(X).subset(math.index(0));
+
+    for(var it = 0; it < sz; it++)
+    {
+        row_idxs = math.index(it,math.range(0,sz));
+        X.subset(row_idxs,new_fft(math.squeeze(X.subset(row_idxs))));
+    }
+
+    X = math.transpose(X);
+
+    for(var it= 0; it < sz; it++)
+    {
+        col_idxs = math.index(it,math.range(0,sz));
+        X.subset(row_idxs,new_fft(math.squeeze(X.subset(col_idxs))));
+    }
+
+    return X;//new_fft(row);
+}
+
+
 
 
 /*
@@ -66,13 +275,16 @@ function fft2(X) {
 
 
 function fft2_wrap(X) {
-    //X_arr = X.toArray();
     X_pass = fft2(X);
     X_arr = math.matrix(X_pass);
     X_arr = math.transpose(X_arr);
     X_arr = X_arr.toArray();
     X_pass = fft2(X_arr);
     return (X_pass);
+
+    //console.log(math.sum(X));
+
+    ////////return new_fft2(X);
 }
 
 
@@ -146,23 +358,22 @@ function randButton(){
 }
 
 
-function loadSample(){
-    var scalefactor = 8;
-         //subsample = math.dotMultiply(math.subtract(math.random([numPx/scalefactor,numPx/scalefactor]),0.5),2);
-
+function loadSample(scalefactor){
     var subsample = math.random([numPx/scalefactor,numPx/scalefactor]);
-
     var supersample = math.zeros(numPx,numPx);
     //quick nearest neightbours interpolation
     supersample = supersample.map(function(value,index,matrix){
         return subsample[math.floor(index[0]/scalefactor)][math.floor(index[1]/scalefactor)];
     });
-
     return supersample;
-
-
-
 }
+
+function loadPremadeSample(){
+    var premade = [];
+    
+}
+
+
 
 //Normalized to 300 keV
 function interactionParam(){
@@ -213,6 +424,9 @@ function calculate(){
         disp_size_mrad = .0000001
     }
 
+    var scalefactor = Number(document.getElementById("sample_scale_factor").value);
+
+
 
     //var ill_angle = Number(document.getElementById("illumination").value)*mrad;
     var draw_overlay = document.getElementById("draw_overlay").checked; //figure out how to read from checkbox
@@ -240,23 +454,27 @@ function calculate(){
         }
     });
 
-    var sample = loadSample();
-    //console.log(interactionParam());
-    var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25,interactionParam(), sample)  );
-    
-    var aber = getAberrations();
-    var numAber = aber.size()[0];
 
-    var chi = math.zeros(numPx,numPx);
-
-    for(var it = 0; it < numAber; it++)
+    var out_ronch = math.zeros(numPx,numPx);
+    for(var qt = 0; qt < 1; qt++)
     {
-        chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(aber.subset(math.index(it,1)),math.subtract(alpp,aber.subset(math.index(it,3))))),math.dotPow(alrr,aber.subset(math.index(it,0))+1)), aber.subset(math.index(it,2))/(aber.subset(math.index(it,0))+1) ));
-    }
-    var chi0 = math.dotMultiply(2*PI/lambda, chi);
-    var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
-    var out_ronch = math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2);
 
+        var sample = loadSample(scalefactor);
+        var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25,interactionParam(), sample)  );
+        
+        var aber = getAberrations();
+        var numAber = aber.size()[0];
+
+        var chi = math.zeros(numPx,numPx);
+
+        for(var it = 0; it < numAber; it++)
+        {
+            chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(aber.subset(math.index(it,1)),math.subtract(alpp,aber.subset(math.index(it,3))))),math.dotPow(alrr,aber.subset(math.index(it,0))+1)), aber.subset(math.index(it,2))/(aber.subset(math.index(it,0))+1) ));
+        }
+        var chi0 = math.dotMultiply(2*PI/lambda, chi);
+        var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
+        out_ronch = math.add(out_ronch,  math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2));
+    }
     out_ronch = math.subtract(out_ronch, math.min(out_ronch));
     out_ronch = math.dotDivide(out_ronch,math.max(out_ronch)/255);
     out_ronch = math.round(out_ronch);
@@ -371,35 +589,6 @@ function setC(c_in){
         }
     }
 }
-//TODO: parses URL, returning object storing aberration identifiers and values
-function parseURL(){
-
-    return {};
-}
-//TODO: loads parsed aberrations into UI or sets defaults
-function loadAberrations(){
-    parsed_abs = parseURL();
-    //logic to go thru parsed abs and set in UI
-}
-
-//TODO: encodes current aberration values into a string, outputs to console (for now)
-function generateURL(){
-    var str = "?";
-     ab_snapshot = [];
-    for(var it = 0; it < aberrations.length; it++)
-    {
-        var aberration = aberrations[it];
-        var mag_val = aberration.mag_el.value;
-        var arg_val = (aberration.arg_el ? aberration.arg_el.value : "");
-        //more?
-        ab_snapshot.push([aberration.m, aberration.n, mag_val, arg_val]);
-
-    }
-    //ab_snap -> string -> base64 or some encoding?
-
-    return str;
-}
-
 
 
 var numPx = 256;
