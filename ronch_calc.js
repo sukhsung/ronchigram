@@ -370,8 +370,10 @@ function loadSample(scalefactor){
 
 function loadPremadeSample(){
     var premade = [];
-
+    
 }
+
+
 
 
 
@@ -475,7 +477,6 @@ function calculate(){
         //To place objective before sample:
         //var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
         var expchi0 = math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) );
-
         out_ronch = math.add(out_ronch,  math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2));
     }
     out_ronch = math.subtract(out_ronch, math.min(out_ronch));
