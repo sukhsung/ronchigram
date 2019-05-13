@@ -403,11 +403,11 @@ function calculate(){
         obj_ap_r = 0;
         document.getElementById("aperture").value = 0;
     }
-    else if (obj_ap_r>65*mrad)
+    /*else if (obj_ap_r>65*mrad)
     {
         obj_ap_r= 65*mrad;
         document.getElementById("aperture").value = 65;
-    }
+    }*/
 
     var disp_size_px = Number(document.getElementById("disp_size_px").value);
     if((disp_size_px & (disp_size_px - 1)) != 0  || disp_size_px < 2)
