@@ -29,8 +29,15 @@ body {
 }
 
 #title {
-  padding-top: 2.5vw;
-  padding-bottom: 2.5vw;
+  padding-top: 1vw;
+  padding-bottom: 1vw;
+}
+#subtitle {
+  font-size:0.9em;
+}
+
+#paperlink {
+  font-size:0.9em;
 }
 
 .im {
