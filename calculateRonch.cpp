@@ -239,9 +239,11 @@ extern "C" {
     }
 
 
-    float* calcRonch(int numPx,float al_max, float objApR) {
-        float obj_ap_r = objApR; //mrad
-        float simdim = al_max; //mrad
+    //float* calcRonch(int numPx,float al_max, float objApR) {
+    float* calcRonch(float *buffer, int bufSize) {
+        int numPx = static_cast<int>(buffer[0]);
+        float obj_ap_r = buffer[2]; //mrad
+        float simdim = buffer[1]; //mrad
 
 
         //numPx x numPx x 2 meshgrid, index into w/ sub2ind
@@ -262,7 +264,7 @@ extern "C" {
 
         alrr = normalize(alrr, 255, numPx, numPx);
         alpp = normalize(alpp, 255, numPx, numPx);
-        auto arrayPtr = mergeTwoImages(alrr, alpp, numPx, numPx);
+        auto arrayPtr = mergeTwoImages(oapp, alpp, numPx, numPx);
         //delete res;
         return arrayPtr;
 

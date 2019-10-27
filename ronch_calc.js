@@ -251,6 +251,44 @@ function calculate(){
     
 
 ///
+///////
+    //const arrayDataToPass = [1,2,3,4,5]
+    //let buffer
+    //let error
+    //let result
+
+//try {
+    // Init the typed array with the same length as the number of items in the array parameter
+    //const typedArray = new Float32Array(arrayDataToPass.length)
+
+    // Populate the array with the values
+
+    //for (let i=0; i<arrayDataToPass.length; i++) {
+    //    typedArray[i] = arrayDataToPass[i]
+    //}
+
+    // Allocate some space in the heap for the data (making sure to use the appropriate memory size of the elements)
+    //buffer = Module._malloc(typedArray.length * typedArray.BYTES_PER_ELEMENT)
+
+    // Assign the data to the heap - Keep in mind bytes per element
+    //Module.HEAPF32.set(typedArray, buffer >> 2)
+
+    // Finally, call the function with "number" parameter type for the array (the pointer), and an extra length parameter
+    //result = Module.ccall("addNums", null, ["number", "number"], [buffer, arrayDataToPass.length])
+
+//} catch (e) {
+//    error = e
+//} finally {
+    // To avoid memory leaks we need to always clear out the allocated heap data
+    // This needs to happen in the finally block, otherwise thrown errors will stop code execution before this happens
+//    Module._free(buffer)
+//}
+
+// Finally, throw any errors so that we know when something goes wrong
+//if (error) throw error
+
+//console.log(result)
+/////////
     canvas1.width = numPx;
     canvas1.height = numPx;
     canvas2.width = numPx;
@@ -260,13 +298,33 @@ function calculate(){
     let arrayData2 = []
     let imData1 = []
     let imData2 = []
-    arrayPointer = Module.ccall("calcRonch", "null", ["number","number","number"], [numPx,al_max,obj_ap_r])
-    
+
+    const arrayDataToPass = [numPx,al_max,obj_ap_r]
+    let buffer
+    let error
+    let result
+    try {
+        const typedArray = new Float32Array(arrayDataToPass.length)
+        for (let i=0; i<arrayDataToPass.length; i++) {
+                typedArray[i] = arrayDataToPass[i]
+            }
+        buffer = Module._malloc(typedArray.length * typedArray.BYTES_PER_ELEMENT)
+        Module.HEAPF32.set(typedArray, buffer >> 2)
+        result = Module.ccall("calcRonch", null, ["number", "number"], [buffer, arrayDataToPass.length])
+    //arrayPointer = Module.ccall("calcRonch", "null", ["number","number","number"], [numPx,al_max,obj_ap_r])
+    } catch (e) {
+        error = e
+    } finally {
+        // To avoid memory leaks we need to always clear out the allocated heap data
+        // This needs to happen in the finally block, otherwise thrown errors will stop code execution before this happens
+        Module._free(buffer)
+    }
+    if (error) throw error
     let im2Offset = numPx*numPx;
     for (let j=0; j<numPx;j++) {
         for (let i=0; i<numPx; i++) {
-            arrayData1.push(Module.HEAPF32[arrayPointer/Float32Array.BYTES_PER_ELEMENT+ i+numPx*j])
-            arrayData2.push(Module.HEAPF32[arrayPointer/Float32Array.BYTES_PER_ELEMENT+ i+numPx*j + im2Offset])
+            arrayData1.push(Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ i+numPx*j])
+            arrayData2.push(Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ i+numPx*j + im2Offset])
         }
         imData1.push(arrayData1)
         imData2.push(arrayData2)
