@@ -264,18 +264,20 @@ extern "C" {
         return diffInt;
     }
 
-    float getPi4Aperture(float * chi0, float* alrr, int numPx)
-    {
-        float rmax = 0;
+    float getPi4Aperture(float * chi0, float* alrr, int numPx){
+
+
+        float rmax = 1e5;
         for(int i = 0; i < numPx*numPx; i++)
         {
+            //1 outside, 0 inside
             float cv = (1-chi0[i])*alrr[i];
-            if(cv > rmax)
+            if(cv > 0 && cv < rmax)
             {
                 rmax = cv;
             }
         }
-        return rmax;
+        return rmax*1000;
     }
 
     float* calcRonch(float *buffer, int bufSize) {
