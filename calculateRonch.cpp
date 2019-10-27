@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <complex>
 #include "kiss_fftnd.h"
-#include "kiss_fft.h"
+//#include "kiss_fft.h"
 
 
 using namespace std;
@@ -240,6 +240,25 @@ extern "C" {
         return comp;
     }
 
+    kiss_fft_cpx* complexToKiss(complex<float>* orig, int dimX, int dimY) {
+        kiss_fft_cpx* kisscpx = new kiss_fft_cpx[dimX*dimY];
+        kiss_fft_cpx holder;
+        for (int i=0; i <dimX*dimY; i++) {
+            holder.r = real(orig[i]);
+            holder.i = imag(orig[i]);
+            kisscpx[i] = holder;
+        }
+        return kisscpx;
+    }
+
+    complex<float>*  kissToComplex(kiss_fft_cpx* orig, int dimX, int dimY) {
+        complex<float>* comp = new complex<float>[dimX*dimY];
+        for (int i =0; i <dimX*dimY; i++) {
+            comp[i] = (orig[i].r,orig[i].i);
+        }
+        return comp;
+    }
+
 
     float* mergeTwoImages(float* base1, float* base2, int dimX, int dimY)
     {
@@ -288,29 +307,39 @@ extern "C" {
         return chi;
     }
 
-    int testFFT(float* realIm, int dimX, int dimY) {
+    float* testFFT(float* realIm, int dimX, int dimY) {
         int isInverseFFT = 0;
         int ndims = 2;
         int dims[2];
         dims[0] = dimX;
         dims[1] = dimY;
         int nbytes = sizeof(kiss_fft_cpx);
-        kiss_fft_cpx * cxin;
-        kiss_fft_cpx * cxout;
-
-        cxin=(kiss_fft_cpx*)KISS_FFT_MALLOC(nbytes*dimX*dimY);
-        cxout=(kiss_fft_cpx*)KISS_FFT_MALLOC(nbytes*dimX*dimY);
+        kiss_fft_cpx* cxin;
+        kiss_fft_cpx* cxout;
+        complex<float>* fftResult;
+        float* fftMag;
+        
 
         std::cout << "TESTING FFT" << std::endl;
-        std::cout << dims[0] << std::endl;
-        std::cout << dims[1] << std::endl;
+        
         kiss_fftnd_cfg cfg = kiss_fftnd_alloc(dims,ndims,isInverseFFT,0,0);
         complex<float>* comp = realToComplex(realIm, dimX, dimY);
+
+        std::cout << realIm[0] << std::endl;
+        std::cout << comp[0] << std::endl;
+
+        //cxin = (kiss_fft_cpx) comp;
         
+        cxin = complexToKiss(comp,dimX,dimY);
+        cxout = complexToKiss(comp,dimX,dimY);
+        //cxin = comp;
+
         kiss_fftnd(cfg,cxin, cxout);
+        fftResult = kissToComplex(cxout,dimX,dimY);
+        fftMag = complexToReal(fftResult,dimX,dimY);
         //kiss_fft_cpx* = realToKissComplex(realIm, numPx, numPx);
-        std::cout << cfg << std::endl;
-        return 0;
+        //std::cout << cfg << std::endl;
+        return fftMag;
     }
 
     //float* calcRonch(int numPx,float al_max, float objApR) {
@@ -340,10 +369,13 @@ extern "C" {
 
         alrr = normalize(alrr, 255, numPx, numPx);
         alpp = normalize(alpp, 255, numPx, numPx);
-        auto arrayPtr = mergeTwoImages(oapp, res, numPx, numPx);
+        float* fftResult = testFFT(oapp,numPx,numPx);
+        fftResult = normalize(fftResult, 255, numPx, numPx);
+
+        auto arrayPtr = mergeTwoImages(oapp, fftResult, numPx, numPx);
         //delete res;
 
-        testFFT(oapp,numPx, numPx);
+        //float* testFFT(oapp,numPx, numPx);
         return arrayPtr;
 
     }
