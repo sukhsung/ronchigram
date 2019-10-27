@@ -1,4 +1,4 @@
- emcc calculateRonch.cpp kiss_fft.c -o index.js \
+ emcc calculateRonch.cpp kiss_fftnd.c -o index.js \
  -s WASM=1 \
  -s EXPORTED_FUNCTIONS='["_calcRonch"]' \
  -s SAFE_HEAP=1 \
