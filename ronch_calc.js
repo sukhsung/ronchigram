@@ -1,3 +1,5 @@
+var peek = [];
+
 function getAberrations(){
     var ab_list = [];
 
@@ -265,6 +267,7 @@ function calculate(){
         imData.push(arrayData)
         arrayData = []
     }
+    peek = imData;
     imData = math.subtract(imData,math.min(imData));
     imData = math.multiply(math.divide(imData,math.max(imData)),255);
 

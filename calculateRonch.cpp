@@ -1,106 +1,204 @@
+
 #include <math.h>
 #include <stdint.h>
 #include <iostream>
-#include <emscripten.h>
+#include <stdlib.h>
+
+
 
 extern "C" {
 
-float* findMinMax(float *image,int numPx) {
-    float minmax[2] = {image[0], image[0]};
-    float valCur;
+    float* deepCopyFloat(float* base, int dimX, int dimY)
+    {
+        int sz = dimX*dimY;
+        float* deepCopy = new float[sz];
+        for(size_t i = 0; i < sz; i++)
+            deepCopy[i] = base[i]; // copy the allocated memory 
+        return deepCopy;
+    }
 
-    for (int j=0; j<numPx; j++) {
-        for (int i=0; i<numPx; i++) {
-            valCur = *(image+ i + (j*numPx));
-            if (valCur < minmax[0]) {
-                minmax[0] = valCur;
-            }
-            if (valCur > minmax[1]) {
-                minmax[1] = valCur;
-            }
-        }
-        std::cout << "\n" <<std::endl;
-    }
-    auto minmaxPtr = &minmax[0];
-    return minmaxPtr;
-}
 
-int normalizeImage0255 (float* image, int numPx) {
-    float* minmaxPtr = findMinMax(image, numPx);
-    for (int j=0; j<numPx; j++) {
-        for (int i=0; i<numPx; i++) {
-            image[i + (j*numPx)] = image[i + (j*numPx)]-minmaxPtr[0];
-            image[i + (j*numPx)] = image[i + (j*numPx)]/minmaxPtr[1]*255;
-        }
-    }
-    return 0;
-}
+    int sub2ind(int x, int y, int z, int dimX, int dimY, int dimZ) {
 
-float* createMeshXX (int numPx) {
-    float xx[numPx][numPx];
-    for (int j=0; j<numPx; j++) {
-        for (int i=0; i<numPx; i++) {
-            xx[i][j] = i-(numPx/2+1);
-        }
+        return dimX*dimY*z+dimX*y+x;
     }
-    auto imagePtr = &xx[0][0];
-    return imagePtr;
-}
-float* createMeshYY (int numPx) {
-    float yy[numPx][numPx];
-    for (int j=0; j<numPx; j++) {
-        for (int i=0; i<numPx; i++) {
-            yy[i][j] = j-(numPx/2+1);
-        }
-    }
-    auto imagePtr = &yy[0][0];
-    return imagePtr;
-}
 
-float* createMeshRR (int numPx, float al_max) {
-    float rr[numPx][numPx];
-    int center = numPx/2;
-    for (int j=0; j < numPx; j++) {
-        for (int i=0; i < numPx; i++) {
-            rr[i][j] = sqrt( pow(i-center,2)+pow(j-center,2) )*al_max/center;
-            }        
-    }
-    auto imagePtr = &rr[0][0];
-    return imagePtr;
-}
 
-float* createMeshPP (int numPx) {
-    float pp[numPx][numPx];
-    int center = numPx/2;
-    for (int j=0; j < numPx; j++) {
-        for (int i=0; i < numPx; i++) {
-            pp[i][j] = atan2( j-center,i-center );
-            }        
-    }
-    auto imagePtr = &pp[0][0];
-    return imagePtr;
-}
-float* createObjAp (float *imageRR, int numPx, float objApR) {
-    float objAp[numPx][numPx];
-    for (int j=0; j < numPx; j++) {
-        for (int i=0; i < numPx; i++) {
-            if (imageRR[ j+i*numPx] < objApR) {
-                objAp[i][j] = 1;
-            } else {
-                objAp[i][j] = 0;
+    float getMin(float* base, int dimX, int dimY)
+    {
+        float minV = base[sub2ind(0,0,0,dimX,dimY,1)];
+        for(int j=0; j<dimY; j++)
+        {
+            for(int i = 0; i < dimX; i++)
+            {
+                float trial = base[sub2ind(i,j,0,dimX,dimY,1)];
+                if( trial < minV)
+                {
+                    minV = trial;
+                }
             }
         }
+        return minV;
     }
-    auto imagePtr = &objAp[0][0];
-    return imagePtr;
 
-}
+    float getMax(float* base, int dimX, int dimY)
+    {
+        float maxV = base[sub2ind(0,0,0,dimX,dimY,1)];
+        for(int j=0; j<dimY; j++)
+        {
+            for(int i = 0; i < dimX; i++)
+            {
+                float trial = base[sub2ind(i,j,0,dimX,dimY,1)];
+                if( trial > maxV)
+                {
+                    maxV = trial;
+                }
+            }
+        }
+        return maxV;
+    }
+
+    float* normalize(float* base, float scale, int dimX, int dimY)
+    {
+        float minV = getMin(base, dimX, dimY);
+        for(int j=0; j<dimY; j++)
+        {
+            for(int i = 0; i < dimX; i++)
+            {
+                int idx = sub2ind(i,j,0,dimX,dimY,1);
+                base[idx] = base[idx] - minV;
+            }
+        }
+        float maxV = getMax(base, dimX, dimY);
+        for(int j=0; j<dimY; j++)
+        {
+            for(int i = 0; i < dimX; i++)
+            {
+                int idx = sub2ind(i,j,0,dimX,dimY,1);
+                base[idx] = base[idx] / maxV * scale;
+            }
+        }
+    return base;
+
+    }
+
+    float* linspace (float start, float stop, int steps){
+        float* vals = new float[steps];
+        for(int i = 0; i < steps; i++)
+        {
+            vals[i] = start + (stop-start)/(steps-1)*i;
+        }
+
+        return vals;
+    }
+
+    float* meshgrid(float* x, float* y, int sizeX, int sizeY)
+    {
+        float* vals = new float[sizeX*sizeY*2];
+        for(int j=0; j<sizeX; j++)
+        {
+            for(int i=0; i<sizeY; i++)
+            {
+                vals[sub2ind(i,j,0,sizeX,sizeY,2)] = x[i];
+                vals[sub2ind(i,j,1,sizeX,sizeY,2)] = y[j];
+            }
+        }
+        return vals;
+    }
+
+    float* cValArray(float val, int dimX, int dimY) {
+        float* vals = new float[dimX*dimY];
+        for(int j=0; j<dimX; j++)
+        {
+            for(int i=0; i<dimY; i++)
+            {
+                vals[sub2ind(i,j,0,dimX,dimY,1)] = val;
+            }
+        }
+        return vals;
+    }
+
+    float* inPlaceAperture(float* base, float* alrr, float limit, int dimX, int dimY)
+    {
+        for(int j=0; j<dimY; j++)
+        {
+            for(int i = 0; i < dimX; i++)
+            {
+                //float x = mesh[sub2ind(i,j,0,dimX,dimY,2)];
+                //float y = mesh[sub2ind(i,j,1,dimX,dimY,2)];
+                if(alrr[sub2ind(i,j,0,dimX,dimY,1)]> limit)
+                {
+                    base[sub2ind(i,j,0,dimX,dimY,1)] = 0;
+                }
+            }
+        }
+        return base;
+    }
+
+    float* meshToRadii(float* cart_mesh, int dimX, int dimY)
+    {
+        float* vals = new float[dimX*dimY];
+        for(int j=0; j<dimX; j++)
+        {
+            for(int i=0; i<dimY; i++)
+            {
+                int idxX = sub2ind(i,j,0,dimX,dimY,1);
+                int idxY = sub2ind(i,j,1,dimX,dimY,1);
+                float vX = cart_mesh[idxX];
+                float vY = cart_mesh[idxY];
+                vals[sub2ind(i,j,0,dimX,dimY,1)] =sqrt( vX*vX+vY*vY);
+            }
+        }
+        return vals;
+
+    }
+    float* meshToAngles(float* cart_mesh, int dimX, int dimY)
+    {
+        float* vals = new float[dimX*dimY];
+        for(int j=0; j<dimX; j++)
+        {
+            for(int i=0; i<dimY; i++)
+            {
+                int idxX = sub2ind(i,j,0,dimX,dimY,1);
+                int idxY = sub2ind(i,j,1,dimX,dimY,1);
+                float vX = cart_mesh[idxX];
+                float vY = cart_mesh[idxY];
+                vals[sub2ind(i,j,0,dimX,dimY,1)] =atan2(vY,vX);
+            }
+        }
+        return vals;    
+    }
 
 
-float* calcRonch (int numPx, float al_max, float objApR) {
-    float* rrPtr = createMeshRR(numPx, al_max);
-    float* imagePtr = createObjAp(rrPtr,numPx, objApR);
-    return imagePtr;
-}   
+
+    float* calcRonch(int numPx,float al_max, float objApR) {
+        float obj_ap_r = objApR; //mrad
+        float simdim = al_max; //mrad
+
+
+        //numPx x numPx x 2 meshgrid, index into w/ sub2ind
+        float* cart_mesh = meshgrid(linspace(-simdim,simdim,numPx),linspace(-simdim,simdim,numPx),numPx,numPx);
+        float* oapp = cValArray(1,numPx,numPx);
+        float* alrr = meshToRadii(cart_mesh,numPx,numPx);
+        float* alpp = meshToAngles(cart_mesh,numPx,numPx);
+        float values[numPx][numPx];
+
+        oapp = inPlaceAperture(oapp,alrr,obj_ap_r,numPx,numPx);
+
+        float* res = alpp;
+        oapp = normalize(oapp, 255, numPx, numPx);
+        for (int j=0; j<numPx; j++) {
+            for (int i=0; i<numPx; i++) {
+
+                values[i][j] = res[sub2ind(i,j,0,numPx,numPx,1)];
+            }
+        }
+        auto arrayPtr = &values[0][0];
+
+        //delete res;
+        return arrayPtr;
+
+    }
+
 
 }
