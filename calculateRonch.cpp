@@ -361,6 +361,26 @@ extern "C" {
         return fftMag;
     }
 
+    float* fftShift(float* original, int numPx)
+    {
+        // only for square matrices...
+        float* shifted = new float[numPx*numPx];
+
+        for (int j=0; j<numPx/2; j++) {
+            for (int i=0; i<numPx/2; i++) {
+                int idx_q1 = sub2ind(i,j,0,numPx,numPx,1);
+                int idx_q3 = sub2ind(i+numPx/2,j+numPx/2,0,numPx,numPx,1);
+                int idx_q2 = sub2ind(i+numPx/2,j,0,numPx,numPx,1);
+                int idx_q4 = sub2ind(i,j+numPx/2,0,numPx,numPx,1);
+                shifted[idx_q1] = original[idx_q3];
+                shifted[idx_q3] = original[idx_q1];
+                shifted[idx_q4] = original[idx_q2];
+                shifted[idx_q2] = original[idx_q4];
+            }
+        }
+        return shifted;
+    }
+
     //float* calcRonch(int numPx,float al_max, float objApR) {
     float* calcRonch(float *buffer, int bufSize) {
         int numPx = static_cast<int>(buffer[0]);
@@ -389,7 +409,7 @@ extern "C" {
         alrr = normalize(alrr, 255, numPx, numPx);
         alpp = normalize(alpp, 255, numPx, numPx);
         float* fftResult = testFFT(oapp,numPx,numPx);
-        fftResult = normalize(fftResult, 255, numPx, numPx);
+        fftResult = fftShift(normalize(fftResult, 255, numPx, numPx),numPx);
 
         auto arrayPtr = mergeTwoImages(oapp, fftResult, numPx, numPx);
         //delete res;
