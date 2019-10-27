@@ -3,8 +3,10 @@
 #include <stdint.h>
 #include <iostream>
 #include <stdlib.h>
+#include <complex>
 
 
+using namespace std;
 
 extern "C" {
 
@@ -142,8 +144,8 @@ extern "C" {
         {
             for(int i=0; i<dimY; i++)
             {
-                int idxX = sub2ind(i,j,0,dimX,dimY,1);
-                int idxY = sub2ind(i,j,1,dimX,dimY,1);
+                int idxX = sub2ind(i,j,0,dimX,dimY,2);
+                int idxY = sub2ind(i,j,1,dimX,dimY,2);
                 float vX = cart_mesh[idxX];
                 float vY = cart_mesh[idxY];
                 vals[sub2ind(i,j,0,dimX,dimY,1)] =sqrt( vX*vX+vY*vY);
@@ -159,14 +161,69 @@ extern "C" {
         {
             for(int i=0; i<dimY; i++)
             {
-                int idxX = sub2ind(i,j,0,dimX,dimY,1);
-                int idxY = sub2ind(i,j,1,dimX,dimY,1);
+                int idxX = sub2ind(i,j,0,dimX,dimY,2);
+                int idxY = sub2ind(i,j,1,dimX,dimY,2);
                 float vX = cart_mesh[idxX];
                 float vY = cart_mesh[idxY];
                 vals[sub2ind(i,j,0,dimX,dimY,1)] =atan2(vY,vX);
             }
         }
         return vals;    
+    }
+
+    float* noisyGrating(int dimX, int dimY)
+    {
+        float* vals = new float[dimX*dimY];
+        for(int j=0; j<dimX; j++)
+        {
+            for(int i=0; i<dimY; i++)
+            {
+                int idx = sub2ind(i,j,0,dimX,dimY,1);
+                vals[idx] = rand() / float(RAND_MAX);
+                //vals[idxX]
+            }
+        }
+        return vals;
+    }
+
+    float* generateSample(int dimX, int dimY, int scaleFactor)
+    {
+        float* subsample = noisyGrating(dimX/scaleFactor,dimX/scaleFactor);
+        float* supersample = new float[dimX*dimY];
+        for (int j=0; j<dimY; j++) {
+            for (int i=0; i<dimX; i++) {
+                int idx = sub2ind(i,j,0,dimX,dimY,1);
+                int idxsub = sub2ind(i/scaleFactor,j/scaleFactor,0,dimX/scaleFactor,dimY/scaleFactor,1);
+                supersample[idx] = subsample[idxsub];
+            }
+        }
+        return supersample;
+    }
+
+    complex<float>* generateTransmissionFn(float* sample, int dimX, int dimY, float interactionParam )
+    {
+        complex<float> * trans = new complex<float>[dimX*dimY];
+        for (int j=0; j<dimY; j++) {
+            for (int i=0; i<dimX; i++) {
+                int idx = sub2ind(i,j,0,dimX,dimY,1);
+                complex<float> imag(0.0,1.0);
+                complex<float> real_part(M_PI/4*sample[idx]*interactionParam,0.0);
+                trans[idx] = exp(-imag*real_part);
+            }
+        }
+        return trans;
+    }
+
+    float * complexToReal(complex<float>* orig, int dimX, int dimY)
+    {
+        float * real = new float[dimX*dimY];
+        for (int j=0; j<dimY; j++) {
+            for (int i=0; i<dimX; i++) {
+                int idx = sub2ind(i,j,0,dimX,dimY,1);
+                real[idx] = abs(orig[idx]);
+            }
+        }
+        return real;
     }
 
 
@@ -185,7 +242,11 @@ extern "C" {
 
         oapp = inPlaceAperture(oapp,alrr,obj_ap_r,numPx,numPx);
 
-        float* res = alpp;
+        float* sample = generateSample(numPx,numPx,8);
+
+        complex<float>* trans = generateTransmissionFn(sample,numPx,numPx,1);
+
+        float* res = complexToReal(trans,numPx,numPx);
         oapp = normalize(oapp, 255, numPx, numPx);
         for (int j=0; j<numPx; j++) {
             for (int i=0; i<numPx; i++) {
