@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <complex>
+#include "kiss_fft.h"
 
 
 using namespace std;
@@ -274,6 +275,13 @@ extern "C" {
         return chi;
     }
 
+    int testFFT(int numPx) {
+        int isInverseFFT = 0;
+        kiss_fft_cfg cfg = kiss_fft_alloc(numPx,isInverseFFT,0,0);
+        std::cout << "TESTING FFT" << std::endl;
+        std::cout << cfg << std::endl;
+        return 0;
+    }
 
     //float* calcRonch(int numPx,float al_max, float objApR) {
     float* calcRonch(float *buffer, int bufSize) {
@@ -304,6 +312,8 @@ extern "C" {
         alpp = normalize(alpp, 255, numPx, numPx);
         auto arrayPtr = mergeTwoImages(oapp, res, numPx, numPx);
         //delete res;
+
+        testFFT(numPx);
         return arrayPtr;
 
     }
