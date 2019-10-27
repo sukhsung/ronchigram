@@ -413,8 +413,6 @@ extern "C" {
         return diffInt;
     }
 
-<<<<<<< HEAD
-=======
     float getPi4Aperture(float * chi0, float* alrr, int numPx)
     {
         float rmax = 0;
@@ -429,10 +427,6 @@ extern "C" {
         return rmax;
     }
 
-
-
-    //float* calcRonch(int numPx,float al_max, float objApR) {
->>>>>>> noah_wasm
     float* calcRonch(float *buffer, int bufSize) {
         int numPx = static_cast<int>(buffer[0]);
         float al_max = buffer[1]; //mrad
@@ -449,7 +443,6 @@ extern "C" {
         complex<float>* trans = generateTransmissionFn(sample,numPx,numPx,1);
 
         float* chi0 = calculateChi0(&buffer[3], &buffer[17], alrr, alpp, numPx, 14);
-<<<<<<< HEAD
         complex<float> * chi = calculateChi(chi0, numPx);
         chi0 = maskChi0(chi0,numPx,M_PI/4);
         float* res = normalize(chi0,255,numPx,numPx);
@@ -457,19 +450,6 @@ extern "C" {
         float* ronch = normalize(calcDiffract(chi,trans,oapp,numPx),255,numPx,numPx);
         auto arrayPtr = mergeTwoImages(ronch, chi0, numPx, numPx);
 
-=======
-
-        float* outputScalars = new float[1];
-        outputScalars[0] = getPi4Aperture(chi0, alrr, numPx);
-
-
-        complex<float> * chi = calculateChi(chi0, numPx);
-        chi0 = normalize(maskChi0(chi0,numPx,M_PI/4),255,numPx,numPx);
-
-        float* ronch = normalize(calcDiffract(chi,trans,oapp,numPx),255,numPx,numPx);
-
-        auto arrayPtr = packageOutput(ronch, chi0, outputScalars, numPx, numPx,1);
->>>>>>> noah_wasm
         return arrayPtr;
     }
 
