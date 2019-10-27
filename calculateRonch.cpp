@@ -378,6 +378,47 @@ extern "C" {
         return shifted;
     }
 
+    complex<float>* cmplxFFT(complex<float>* comp, int dimX, int dimY) {
+        int isInverseFFT = 0;
+        int ndims = 2;
+        int dims[2];
+        dims[0] = dimX;
+        dims[1] = dimY;
+        int nbytes = sizeof(kiss_fft_cpx);
+        kiss_fft_cpx* cxin;
+        kiss_fft_cpx* cxout;
+        complex<float>* fftResult;
+        float* fftMag;
+        kiss_fftnd_cfg cfg = kiss_fftnd_alloc(dims,ndims,isInverseFFT,0,0);
+        //complex<float>* comp = realToComplex(realIm, dimX, dimY);
+        cxin = complexToKiss(comp,dimX,dimY);
+        cxout = complexToKiss(comp,dimX,dimY);
+        kiss_fftnd(cfg,cxin, cxout);
+        fftResult = kissToComplex(cxout,dimX,dimY);
+        //fftMag = complexToReal(fftResult,dimX,dimY);
+        return fftResult;
+    }
+
+    float* calcDiffract(complex<float>* chi, complex<float>* trans, float* oapp, int numPx)
+    {
+        // want: abs(fft(trans*fft(chi)))
+
+        //in place b/c chi won't be reused
+        chi = cmplxFFT(chi,numPx,numPx);
+        for(int i = 0; i < numPx*numPx; i++)
+        {
+            chi[i] = chi[i]*trans[i];
+        }
+        chi = cmplxFFT(chi,numPx,numPx);
+        float* diffInt = new float[numPx*numPx];
+        diffInt = complexToReal(chi,numPx,numPx);
+        for(int i = 0; i < numPx*numPx; i++)
+        {
+            diffInt[i] = diffInt[i]*oapp[i]*diffInt[i];
+        }
+        return diffInt;
+    }
+
     //float* calcRonch(int numPx,float al_max, float objApR) {
     float* calcRonch(float *buffer, int bufSize) {
         int numPx = static_cast<int>(buffer[0]);
@@ -401,14 +442,15 @@ extern "C" {
         complex<float> * chi = calculateChi(chi0, numPx);
         chi0 = maskChi0(chi0,numPx,M_PI/4);
         float* res = normalize(chi0,255,numPx,numPx);
-        oapp = normalize(oapp, 255, numPx, numPx);
+        //oapp = normalize(oapp, 255, numPx, numPx);
 
-        alrr = normalize(alrr, 255, numPx, numPx);
-        alpp = normalize(alpp, 255, numPx, numPx);
-        float* fftResult = testFFT(oapp,numPx,numPx);
-        fftResult = fftShift(normalize(fftResult, 255, numPx, numPx),numPx);
+        //alrr = normalize(alrr, 255, numPx, numPx);
+        //alpp = normalize(alpp, 255, numPx, numPx);
+        //float* fftResult = testFFT(oapp,numPx,numPx);
+        //fftResult = fftShift(normalize(fftResult, 255, numPx, numPx),numPx);
 
-        auto arrayPtr = mergeTwoImages(oapp, fftResult, numPx, numPx);
+        float* ronch = normalize(calcDiffract(chi,trans,oapp,numPx),255,numPx,numPx);
+        auto arrayPtr = mergeTwoImages(ronch, chi0, numPx, numPx);
         //delete res;
 
         //float* testFFT(oapp,numPx, numPx);
