@@ -200,7 +200,7 @@ function calculate(Module){
 
     // rmax = Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ 2*(numPx*numPx)]
     //temporaray holder for rmax
-    let rmax = 25;
+    let rmax = Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ 2*(numPx*numPx)]/2;//25;
     if(draw_overlay)
     {
         var scalar = 256;

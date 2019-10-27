@@ -3,5 +3,10 @@
  -s EXPORTED_FUNCTIONS='["_calcRonch","_free", "_malloc"]' \
  -s DEMANGLE_SUPPORT=1 \
  -s MODULARIZE=1 \
+<<<<<<< HEAD
  -s EXPORT_NAME="ronchModule" \
  -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
+=======
+ -s EXPORT_NAME="MyCode" \
+ -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
+>>>>>>> noah_wasm
