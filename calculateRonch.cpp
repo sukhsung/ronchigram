@@ -274,6 +274,23 @@ extern "C" {
         return chi;
     }
 
+    float* maskChi0(float* chi0, int numPx, float threshold)
+    {
+        float* maskedChi0 = new float[numPx*numPx];
+        for(int i = 0; i < numPx*numPx; i++)
+        {
+            if(chi0[i]< threshold && chi0[i] > -threshold)
+            {
+                maskedChi0[i] = 1;
+            }
+            else
+            {
+                maskedChi0[i] = 0;
+            }
+        }
+        return maskedChi0;
+    }
+
 
     //float* calcRonch(int numPx,float al_max, float objApR) {
     float* calcRonch(float *buffer, int bufSize) {
@@ -296,8 +313,8 @@ extern "C" {
 
         float* chi0 = calculateChi0(&buffer[3], &buffer[17], alrr, alpp, numPx, 14);
         complex<float> * chi = calculateChi(chi0, numPx);
-
-        float* res = chi0;
+        chi0 = maskChi0(chi0,numPx,M_PI/4);
+        float* res = normalize(chi0,255,numPx,numPx);
         oapp = normalize(oapp, 255, numPx, numPx);
 
         alrr = normalize(alrr, 255, numPx, numPx);
