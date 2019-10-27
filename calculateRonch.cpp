@@ -425,16 +425,19 @@ extern "C" {
 
     float getPi4Aperture(float * chi0, float* alrr, int numPx)
     {
-        float rmax = 0;
+
+
+        float rmax = 1e5;
         for(int i = 0; i < numPx*numPx; i++)
         {
+            //1 outside, 0 inside
             float cv = (1-chi0[i])*alrr[i];
-            if(cv > rmax)
+            if(cv > 0 && cv < rmax)
             {
                 rmax = cv;
             }
         }
-        return rmax;
+        return rmax*1000;
     }
 
 
@@ -460,13 +463,11 @@ extern "C" {
 
         float* chi0 = calculateChi0(&buffer[3], &buffer[17], alrr, alpp, numPx, 14);
 
+        complex<float> * chi = calculateChi(chi0, numPx);
+        chi0 = maskChi0(chi0,numPx,M_PI/4);
         float* outputScalars = new float[1];
         outputScalars[0] = getPi4Aperture(chi0, alrr, numPx);
-
-
-        complex<float> * chi = calculateChi(chi0, numPx);
-        chi0 = normalize(maskChi0(chi0,numPx,M_PI/4),255,numPx,numPx);
-
+        chi0 = normalize(chi0, 255, numPx,numPx);
         float* ronch = normalize(calcDiffract(chi,trans,oapp,numPx),255,numPx,numPx);
 
         auto arrayPtr = packageOutput(ronch, chi0, outputScalars, numPx, numPx,1);
