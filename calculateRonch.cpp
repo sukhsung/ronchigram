@@ -238,13 +238,48 @@ extern "C" {
         return imageStack;
     }
 
+    float* calculateChi0(float* magptr, float* angleptr, float * alrr, float* alpp, int numPx, int numAbs)
+    {
+        float* chi0 = new float[numPx*numPx];
+        int n[14] = {1,1,2,2,3,3,3,4,4,4,5,5,5,5};
+        int m[14] = {0,2,1,3,0,2,4,1,3,5,0,2,4,6};
+        float lambda = 1.97e-12;
+        for (int j=0; j<numPx; j++) {
+            for (int i=0; i<numPx; i++) {
+                int idx = sub2ind(i,j,0,numPx,numPx,1);
+                chi0[idx] = 0;
+            }
+        }
+
+        for (int j=0; j<numPx; j++) {
+            for (int i=0; i<numPx; i++) {
+                int idx = sub2ind(i,j,0,numPx,numPx,1);
+                for(int k = 0; k < numAbs; k++)
+                {
+                    chi0[idx] = chi0[idx]+2*M_PI/lambda*magptr[k]*pow(alrr[idx],n[k]+1)*cos(m[k]*(alpp[idx]-angleptr[k]))/(n[k]+1);
+                }
+            }
+        }
+        return chi0;
+    }
+
+    complex<float>* calculateChi(float* chi0, int numPx)
+    {
+        complex<float>*chi = new complex<float>[numPx*numPx];
+        complex<float> imag(0.0,1.0);
+        for(int i = 0; i < numPx*numPx; i++)
+        {
+            chi[i] = exp(-imag * chi0[i]);
+        }
+        return chi;
+    }
+
 
     //float* calcRonch(int numPx,float al_max, float objApR) {
     float* calcRonch(float *buffer, int bufSize) {
         int numPx = static_cast<int>(buffer[0]);
         float obj_ap_r = buffer[2]; //mrad
         float simdim = buffer[1]; //mrad
-
 
         //numPx x numPx x 2 meshgrid, index into w/ sub2ind
         float* cart_mesh = meshgrid(linspace(-simdim,simdim,numPx),linspace(-simdim,simdim,numPx),numPx,numPx);
@@ -259,12 +294,15 @@ extern "C" {
 
         complex<float>* trans = generateTransmissionFn(sample,numPx,numPx,1);
 
-        float* res = complexToReal(trans,numPx,numPx);
+        float* chi0 = calculateChi0(&buffer[3], &buffer[17], alrr, alpp, numPx, 14);
+        complex<float> * chi = calculateChi(chi0, numPx);
+
+        float* res = chi0;
         oapp = normalize(oapp, 255, numPx, numPx);
 
         alrr = normalize(alrr, 255, numPx, numPx);
         alpp = normalize(alpp, 255, numPx, numPx);
-        auto arrayPtr = mergeTwoImages(oapp, alpp, numPx, numPx);
+        auto arrayPtr = mergeTwoImages(oapp, res, numPx, numPx);
         //delete res;
         return arrayPtr;
 
