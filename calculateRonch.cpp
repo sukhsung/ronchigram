@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <complex>
 #include "kiss_fftnd.h"
-//#include "kiss_fft.h"
+#include <time.h>
 
 
 using namespace std;
@@ -175,15 +175,11 @@ extern "C" {
 
     float* noisyGrating(int dimX, int dimY)
     {
+        srand(time(NULL));
         float* vals = new float[dimX*dimY];
-        for(int j=0; j<dimX; j++)
+        for(int i=0; i<dimX*dimY; i++)
         {
-            for(int i=0; i<dimY; i++)
-            {
-                int idx = sub2ind(i,j,0,dimX,dimY,1);
-                vals[idx] = rand() / float(RAND_MAX);
-                //vals[idxX]
-            }
+            vals[i] = rand() / float(RAND_MAX);
         }
         return vals;
     }
@@ -205,13 +201,10 @@ extern "C" {
     complex<float>* generateTransmissionFn(float* sample, int dimX, int dimY, float interactionParam )
     {
         complex<float> * trans = new complex<float>[dimX*dimY];
-        for (int j=0; j<dimY; j++) {
-            for (int i=0; i<dimX; i++) {
-                int idx = sub2ind(i,j,0,dimX,dimY,1);
-                complex<float> imag(0.0,1.0);
-                complex<float> real_part(M_PI/4*sample[idx]*interactionParam,0.0);
-                trans[idx] = exp(-imag*real_part);
-            }
+        complex<float> imag(0.0,1.0);
+        for (int i=0; i<dimX*dimY; i++) {
+            complex<float> real_part(M_PI/4*sample[i]*interactionParam,0.0);
+            trans[i] = exp(-imag*real_part);
         }
         return trans;
     }

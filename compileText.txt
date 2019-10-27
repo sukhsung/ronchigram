@@ -1,11 +1,7 @@
- emcc calculateRonch.cpp kiss_fftnd.c kiss_fft.c -o index.js \
+ emcc -O3 calculateRonch.cpp kiss_fftnd.c kiss_fft.c -o index.js \
  -s WASM=1 \
  -s EXPORTED_FUNCTIONS='["_calcRonch"]' \
- -s SAFE_HEAP=1 \
- -s ASSERTIONS=2 \
- -s STACK_OVERFLOW_CHECK=2 \
  -s DEMANGLE_SUPPORT=1 \
- -s AGGRESSIVE_VARIABLE_ELIMINATION=1 \
  -s MODULARIZE=1 \
  -s EXPORT_NAME="MyCode" \
  -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
