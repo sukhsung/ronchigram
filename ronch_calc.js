@@ -61,7 +61,7 @@ function calcButton(){
     //  setTimeout(function(){
     //     let curInstance = MyCode().then(function(Module){ calculate(Module)});
     // },0);
-    MyCode().then(function(Module){ calculate(Module)});
+    ronchModule().then(function(Module){ calculate(Module) });
 }
 
 function randButton(){
@@ -128,7 +128,7 @@ function getDispSizeMrad() {
 
 function calculate(Module){
     let t0 = performance.now();
-
+    console.log(Module)
     ////////
     //reading in constants from ui:
     ////////

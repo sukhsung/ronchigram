@@ -86,6 +86,38 @@ extern "C" {
 
     }
 
+    int polarMeshnOapp (float* rr, float* pp, float* oapp, float r_max, float obj_ap_r, int numPx) {
+        float center = numPx/2;
+        int idx;
+        float xval;
+        float yval;
+        for(int j = 0; j <numPx; j++) {
+            for( int i=0; i<numPx; i++) {
+                idx = i + numPx*j;
+                xval = (i-center)/center*r_max;
+                yval = (j-center)/center*r_max;
+                rr[idx] = sqrt( pow(xval,2) + pow(yval,2));
+                pp[idx] = atan2(yval,xval);
+                if (rr[idx] > obj_ap_r) {
+                    oapp[idx] = 0;
+                } else {
+                    oapp[idx] = 1;
+                }
+            }
+        }
+        return 0;
+    }
+    float* createObjAp(float* alrr,float obj_ap_r,int numPx) {
+        float* oapp = new float[numPx*numPx];
+        for (int i=0; i< numPx*numPx; i++) {
+            if (alrr[i] > obj_ap_r) {
+                oapp[i] = 0;
+            } else {
+                oapp[i] = 1;
+            }
+        }
+        return oapp;
+    }
     float* linspace (float start, float stop, int steps){
         float* vals = new float[steps];
         for(int i = 0; i < steps; i++)
@@ -202,7 +234,7 @@ extern "C" {
     {
         complex<float> * trans = new complex<float>[dimX*dimY];
         complex<float> imag(0.0,1.0);
-        for (int i=0; i<dimX*dimY; i++) {
+        for (int i=0; i< dimX*dimY; i++) {
             complex<float> real_part(M_PI/4*sample[i]*interactionParam,0.0);
             trans[i] = exp(-imag*real_part);
         }
@@ -316,41 +348,6 @@ extern "C" {
         return maskedChi0;
     }
 
-    float* testFFT(float* realIm, int dimX, int dimY) {
-        int isInverseFFT = 0;
-        int ndims = 2;
-        int dims[2];
-        dims[0] = dimX;
-        dims[1] = dimY;
-        int nbytes = sizeof(kiss_fft_cpx);
-        kiss_fft_cpx* cxin;
-        kiss_fft_cpx* cxout;
-        complex<float>* fftResult;
-        float* fftMag;
-        
-
-        std::cout << "TESTING FFT" << std::endl;
-        
-        kiss_fftnd_cfg cfg = kiss_fftnd_alloc(dims,ndims,isInverseFFT,0,0);
-        complex<float>* comp = realToComplex(realIm, dimX, dimY);
-
-        std::cout << realIm[32950] << std::endl;
-        std::cout << comp[32950] << std::endl;
-
-        //cxin = (kiss_fft_cpx) comp;
-        
-        cxin = complexToKiss(comp,dimX,dimY);
-        cxout = complexToKiss(comp,dimX,dimY);
-        //cxin = comp;
-
-        kiss_fftnd(cfg,cxin, cxout);
-        fftResult = kissToComplex(cxout,dimX,dimY);
-        fftMag = complexToReal(fftResult,dimX,dimY);
-        //kiss_fft_cpx* = realToKissComplex(realIm, numPx, numPx);
-        //std::cout << cfg << std::endl;
-        return fftMag;
-    }
-
     float* fftShift(float* original, int numPx)
     {
         // only for square matrices...
@@ -412,20 +409,16 @@ extern "C" {
         return diffInt;
     }
 
-    //float* calcRonch(int numPx,float al_max, float objApR) {
     float* calcRonch(float *buffer, int bufSize) {
         int numPx = static_cast<int>(buffer[0]);
+        float al_max = buffer[1]; //mrad
         float obj_ap_r = buffer[2]; //mrad
-        float simdim = buffer[1]; //mrad
 
         //numPx x numPx x 2 meshgrid, index into w/ sub2ind
-        float* cart_mesh = meshgrid(linspace(-simdim,simdim,numPx),linspace(-simdim,simdim,numPx),numPx,numPx);
-        float* oapp = cValArray(1,numPx,numPx);
-        float* alrr = meshToRadii(cart_mesh,numPx,numPx);
-        float* alpp = meshToAngles(cart_mesh,numPx,numPx);
-        float values[numPx][numPx];
-
-        oapp = inPlaceAperture(oapp,alrr,obj_ap_r,numPx,numPx);
+        float alrr[numPx*numPx];
+        float alpp[numPx*numPx];
+        float oapp[numPx*numPx];
+        polarMeshnOapp(alrr,alpp, oapp, al_max, obj_ap_r, numPx);
 
         float* sample = generateSample(numPx,numPx,8);
 
@@ -435,18 +428,10 @@ extern "C" {
         complex<float> * chi = calculateChi(chi0, numPx);
         chi0 = maskChi0(chi0,numPx,M_PI/4);
         float* res = normalize(chi0,255,numPx,numPx);
-        //oapp = normalize(oapp, 255, numPx, numPx);
-
-        //alrr = normalize(alrr, 255, numPx, numPx);
-        //alpp = normalize(alpp, 255, numPx, numPx);
-        //float* fftResult = testFFT(oapp,numPx,numPx);
-        //fftResult = fftShift(normalize(fftResult, 255, numPx, numPx),numPx);
 
         float* ronch = normalize(calcDiffract(chi,trans,oapp,numPx),255,numPx,numPx);
         auto arrayPtr = mergeTwoImages(ronch, chi0, numPx, numPx);
-        //delete res;
 
-        //float* testFFT(oapp,numPx, numPx);
         return arrayPtr;
 
     }
