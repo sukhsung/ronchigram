@@ -128,7 +128,6 @@ function getDispSizeMrad() {
 
 function calculate(Module){
     let t0 = performance.now();
-    console.log(Module)
     ////////
     //reading in constants from ui:
     ////////

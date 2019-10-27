@@ -7,83 +7,33 @@
 #include "kiss_fftnd.h"
 #include <time.h>
 
-
 using namespace std;
-
 extern "C" {
-
-    float* deepCopyFloat(float* base, int dimX, int dimY)
-    {
-        int sz = dimX*dimY;
-        float* deepCopy = new float[sz];
-        for(size_t i = 0; i < sz; i++)
-            deepCopy[i] = base[i]; // copy the allocated memory 
-        return deepCopy;
-    }
-
-
     int sub2ind(int x, int y, int z, int dimX, int dimY, int dimZ) {
-
         return dimX*dimY*z+dimX*y+x;
     }
 
+    float* getMinMax(float* base, int dimX, int dimY) {
+        float minMax[2];
+        minMax[0] = base[0]; //min
+        minMax[1] = base[0]; //max
 
-    float getMin(float* base, int dimX, int dimY)
-    {
-        float minV = base[sub2ind(0,0,0,dimX,dimY,1)];
-        for(int j=0; j<dimY; j++)
-        {
-            for(int i = 0; i < dimX; i++)
-            {
-                float trial = base[sub2ind(i,j,0,dimX,dimY,1)];
-                if( trial < minV)
-                {
-                    minV = trial;
-                }
+        for (int i=0; i < dimX*dimY; i++) {
+            if ( base[i] < minMax[0] ) {
+                minMax[0] = base[i];
+            } else if ( base[i] > minMax[1]) {
+                minMax[1] = base[i];
             }
         }
-        return minV;
+        return minMax;
     }
 
-    float getMax(float* base, int dimX, int dimY)
-    {
-        float maxV = base[sub2ind(0,0,0,dimX,dimY,1)];
-        for(int j=0; j<dimY; j++)
-        {
-            for(int i = 0; i < dimX; i++)
-            {
-                float trial = base[sub2ind(i,j,0,dimX,dimY,1)];
-                if( trial > maxV)
-                {
-                    maxV = trial;
-                }
-            }
+    float* normalize(float* base, float scale, int dimX, int dimY) {
+        float* minMax = getMinMax(base, dimX, dimY);
+        for (int i=0; i<dimX*dimY; i++ ) {
+            base[i] = (base[i]-minMax[0])/ minMax[1]*scale;
         }
-        return maxV;
-    }
-
-    float* normalize(float* base, float scale, int dimX, int dimY)
-    {
-        float minV = getMin(base, dimX, dimY);
-        for(int j=0; j<dimY; j++)
-        {
-            for(int i = 0; i < dimX; i++)
-            {
-                int idx = sub2ind(i,j,0,dimX,dimY,1);
-                base[idx] = base[idx] - minV;
-            }
-        }
-        float maxV = getMax(base, dimX, dimY);
-        for(int j=0; j<dimY; j++)
-        {
-            for(int i = 0; i < dimX; i++)
-            {
-                int idx = sub2ind(i,j,0,dimX,dimY,1);
-                base[idx] = base[idx] / maxV * scale;
-            }
-        }
-    return base;
-
+        return base;
     }
 
     int polarMeshnOapp (float* rr, float* pp, float* oapp, float r_max, float obj_ap_r, int numPx) {
@@ -107,106 +57,8 @@ extern "C" {
         }
         return 0;
     }
-    float* createObjAp(float* alrr,float obj_ap_r,int numPx) {
-        float* oapp = new float[numPx*numPx];
-        for (int i=0; i< numPx*numPx; i++) {
-            if (alrr[i] > obj_ap_r) {
-                oapp[i] = 0;
-            } else {
-                oapp[i] = 1;
-            }
-        }
-        return oapp;
-    }
-    float* linspace (float start, float stop, int steps){
-        float* vals = new float[steps];
-        for(int i = 0; i < steps; i++)
-        {
-            vals[i] = start + (stop-start)/(steps-1)*i;
-        }
-
-        return vals;
-    }
-
-    float* meshgrid(float* x, float* y, int sizeX, int sizeY)
-    {
-        float* vals = new float[sizeX*sizeY*2];
-        for(int j=0; j<sizeX; j++)
-        {
-            for(int i=0; i<sizeY; i++)
-            {
-                vals[sub2ind(i,j,0,sizeX,sizeY,2)] = x[i];
-                vals[sub2ind(i,j,1,sizeX,sizeY,2)] = y[j];
-            }
-        }
-        return vals;
-    }
-
-    float* cValArray(float val, int dimX, int dimY) {
-        float* vals = new float[dimX*dimY];
-        for(int j=0; j<dimX; j++)
-        {
-            for(int i=0; i<dimY; i++)
-            {
-                vals[sub2ind(i,j,0,dimX,dimY,1)] = val;
-            }
-        }
-        return vals;
-    }
-
-    float* inPlaceAperture(float* base, float* alrr, float limit, int dimX, int dimY)
-    {
-        for(int j=0; j<dimY; j++)
-        {
-            for(int i = 0; i < dimX; i++)
-            {
-                //float x = mesh[sub2ind(i,j,0,dimX,dimY,2)];
-                //float y = mesh[sub2ind(i,j,1,dimX,dimY,2)];
-                if(alrr[sub2ind(i,j,0,dimX,dimY,1)]> limit)
-                {
-                    base[sub2ind(i,j,0,dimX,dimY,1)] = 0;
-                }
-            }
-        }
-        return base;
-    }
-
-    float* meshToRadii(float* cart_mesh, int dimX, int dimY)
-    {
-        float* vals = new float[dimX*dimY];
-        for(int j=0; j<dimX; j++)
-        {
-            for(int i=0; i<dimY; i++)
-            {
-                int idxX = sub2ind(i,j,0,dimX,dimY,2);
-                int idxY = sub2ind(i,j,1,dimX,dimY,2);
-                float vX = cart_mesh[idxX];
-                float vY = cart_mesh[idxY];
-                vals[sub2ind(i,j,0,dimX,dimY,1)] =sqrt( vX*vX+vY*vY);
-            }
-        }
-        return vals;
-
-    }
-    float* meshToAngles(float* cart_mesh, int dimX, int dimY)
-    {
-        float* vals = new float[dimX*dimY];
-        for(int j=0; j<dimX; j++)
-        {
-            for(int i=0; i<dimY; i++)
-            {
-                int idxX = sub2ind(i,j,0,dimX,dimY,2);
-                int idxY = sub2ind(i,j,1,dimX,dimY,2);
-                float vX = cart_mesh[idxX];
-                float vY = cart_mesh[idxY];
-                vals[sub2ind(i,j,0,dimX,dimY,1)] =atan2(vY,vX);
-            }
-        }
-        return vals;    
-    }
-
-    float* noisyGrating(int dimX, int dimY)
-    {
+    
+    float* noisyGrating(int dimX, int dimY){
         srand(time(NULL));
         float* vals = new float[dimX*dimY];
         for(int i=0; i<dimX*dimY; i++)
@@ -241,7 +93,7 @@ extern "C" {
         return trans;
     }
 
-    float * complexToReal(complex<float>* orig, int dimX, int dimY)
+    float* complexToReal(complex<float>* orig, int dimX, int dimY)
     {
         float * real = new float[dimX*dimY];
         for(int i =0; i < dimX*dimY; i++)
@@ -378,18 +230,17 @@ extern "C" {
         int dims[2];
         dims[0] = dimX;
         dims[1] = dimY;
-        int nbytes = sizeof(kiss_fft_cpx);
+
         kiss_fft_cpx* cxin;
         kiss_fft_cpx* cxout;
-        complex<float>* fftResult;
-        float* fftMag;
+        
         kiss_fftnd_cfg cfg = kiss_fftnd_alloc(dims,ndims,isInverseFFT,0,0);
-        //complex<float>* comp = realToComplex(realIm, dimX, dimY);
-        cxin = complexToKiss(comp,dimX,dimY);
+        // preallocation
+        cxin  = complexToKiss(comp,dimX,dimY);
         cxout = complexToKiss(comp,dimX,dimY);
         kiss_fftnd(cfg,cxin, cxout);
-        fftResult = kissToComplex(cxout,dimX,dimY);
-        //fftMag = complexToReal(fftResult,dimX,dimY);
+        complex<float>* fftResult = kissToComplex(cxout,dimX,dimY);
+
         return fftResult;
     }
 
@@ -432,7 +283,6 @@ extern "C" {
         float al_max = buffer[1]; //mrad
         float obj_ap_r = buffer[2]; //mrad
 
-        //numPx x numPx x 2 meshgrid, index into w/ sub2ind
         float alrr[numPx*numPx];
         float alpp[numPx*numPx];
         float oapp[numPx*numPx];
@@ -443,13 +293,15 @@ extern "C" {
         complex<float>* trans = generateTransmissionFn(sample,numPx,numPx,1);
 
         float* chi0 = calculateChi0(&buffer[3], &buffer[17], alrr, alpp, numPx, 14);
+
         complex<float> * chi = calculateChi(chi0, numPx);
         chi0 = maskChi0(chi0,numPx,M_PI/4);
-        float* res = normalize(chi0,255,numPx,numPx);
-
+        float* outputScalars = new float[1];
+        outputScalars[0] = getPi4Aperture(chi0, alrr, numPx);
+        chi0 = normalize(chi0, 255, numPx,numPx);
         float* ronch = normalize(calcDiffract(chi,trans,oapp,numPx),255,numPx,numPx);
-        auto arrayPtr = mergeTwoImages(ronch, chi0, numPx, numPx);
 
+        auto arrayPtr = packageOutput(ronch, chi0, outputScalars, numPx, numPx,1);
         return arrayPtr;
     }
 
