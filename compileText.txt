@@ -1,0 +1,8 @@
+ emcc calculateRonch.cpp -o index.js \
+ -s WASM=1 -std=c++11 \
+ -s EXPORTED_FUNCTIONS='["_calcRonch"]' \
+ -s SAFE_HEAP=1 \
+ -s ASSERTIONS=2 \
+ -s STACK_OVERFLOW_CHECK=2 \
+ -s DEMANGLE_SUPPORT=1 \
+ -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
