@@ -305,10 +305,8 @@ function calculate(){
         arrayData1 = []
         arrayData2 = []
     }
-    
     drawGrayscaleBitmap(ctx1,imData1,numPx);
     drawGrayscaleBitmap(ctx2,imData2,numPx);
-
     document.getElementById('loading').innerHTML = " "
 }
 
