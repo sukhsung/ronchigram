@@ -1338,8 +1338,6 @@ assert(typeof Int32Array !== 'undefined' && typeof Float64Array !== 'undefined' 
   {
     wasmMemory = new WebAssembly.Memory({
       'initial': INITIAL_TOTAL_MEMORY / WASM_PAGE_SIZE
-      ,
-      'maximum': INITIAL_TOTAL_MEMORY / WASM_PAGE_SIZE
     });
   }
 
@@ -2486,6 +2484,17 @@ function copyTempDouble(ptr) {
           }
           return size;
         },write:function(stream, buffer, offset, length, position, canOwn) {
+          // If memory can grow, we don't want to hold on to references of
+          // the memory Buffer, as they may get invalidated. That means
+          // we need to do a copy here.
+          // FIXME: this is inefficient as the file packager may have
+          //        copied the data into memory already - we may want to
+          //        integrate more there and let the file packager loading
+          //        code be able to query if memory growth is on or off.
+          if (canOwn) {
+            warnOnce('file packager has copied file data into memory, but in memory growth we are forced to copy it again (see --no-heap-copy)');
+          }
+          canOwn = false;
   
           if (!length) return 0;
           var node = stream.node;
@@ -5289,8 +5298,59 @@ function copyTempDouble(ptr) {
   
   function abortOnCannotGrowMemory(requestedSize) {
       abort('Cannot enlarge memory arrays to size ' + requestedSize + ' bytes (OOM). Either (1) compile with  -s TOTAL_MEMORY=X  with X higher than the current value ' + HEAP8.length + ', (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ');
+    }
+  
+  function emscripten_realloc_buffer(size) {
+      try {
+        // round size grow request up to wasm page size (fixed 64KB per spec)
+        wasmMemory.grow((size - buffer.byteLength + 65535) >> 16); // .grow() takes a delta compared to the previous size
+        updateGlobalBufferAndViews(wasmMemory.buffer);
+        return 1 /*success*/;
+      } catch(e) {
+        console.error('emscripten_realloc_buffer: Attempted to grow heap from ' + buffer.byteLength  + ' bytes to ' + size + ' bytes, but got error: ' + e);
+      }
     }function _emscripten_resize_heap(requestedSize) {
-      abortOnCannotGrowMemory(requestedSize);
+      var oldSize = _emscripten_get_heap_size();
+      // With pthreads, races can happen (another thread might increase the size in between), so return a failure, and let the caller retry.
+      assert(requestedSize > oldSize);
+  
+  
+      var PAGE_MULTIPLE = 65536;
+      var LIMIT = 2147483648 - PAGE_MULTIPLE; // We can do one page short of 2GB as theoretical maximum.
+  
+      if (requestedSize > LIMIT) {
+        err('Cannot enlarge memory, asked to go up to ' + requestedSize + ' bytes, but the limit is ' + LIMIT + ' bytes!');
+        return false;
+      }
+  
+      var MIN_TOTAL_MEMORY = 16777216;
+      var newSize = Math.max(oldSize, MIN_TOTAL_MEMORY); // So the loop below will not be infinite, and minimum asm.js memory size is 16MB.
+  
+      // TODO: see realloc_buffer - for PTHREADS we may want to decrease these jumps
+      while (newSize < requestedSize) { // Keep incrementing the heap size as long as it's less than what is requested.
+        if (newSize <= 536870912) {
+          newSize = alignUp(2 * newSize, PAGE_MULTIPLE); // Simple heuristic: double until 1GB...
+        } else {
+          // ..., but after that, add smaller increments towards 2GB, which we cannot reach
+          newSize = Math.min(alignUp((3 * newSize + 2147483648) / 4, PAGE_MULTIPLE), LIMIT);
+        }
+  
+        if (newSize === oldSize) {
+          warnOnce('Cannot ask for more memory since we reached the practical limit in browsers (which is just below 2GB), so the request would have failed. Requesting only ' + HEAP8.length);
+        }
+      }
+  
+  
+  
+      var replacement = emscripten_realloc_buffer(newSize);
+      if (!replacement) {
+        err('Failed to grow the heap from ' + oldSize + ' bytes to ' + newSize + ' bytes, not enough memory!');
+        return false;
+      }
+  
+  
+  
+      return true;
     } 
 
   
@@ -5823,6 +5883,7 @@ var asmLibraryArg = {
   "abortOnCannotGrowMemory": abortOnCannotGrowMemory,
   "demangle": demangle,
   "demangleAll": demangleAll,
+  "emscripten_realloc_buffer": emscripten_realloc_buffer,
   "jsStackTrace": jsStackTrace,
   "stackTrace": stackTrace,
   "tempDoublePtr": tempDoublePtr,
@@ -5867,6 +5928,12 @@ var _calcRonch = Module["_calcRonch"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_calcRonch"].apply(null, arguments)
+};
+
+var _emscripten_replace_memory = Module["_emscripten_replace_memory"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_emscripten_replace_memory"].apply(null, arguments)
 };
 
 var _fflush = Module["_fflush"] = function() {

@@ -128,6 +128,9 @@ function getDispSizeMrad() {
 }
 
 function calculate(){
+
+    let t0 = performance.now();
+
     ////////
     //reading in constants from ui:
     ////////
@@ -308,6 +311,9 @@ function calculate(){
     drawGrayscaleBitmap(ctx1,imData1,numPx);
     drawGrayscaleBitmap(ctx2,imData2,numPx);
     document.getElementById('loading').innerHTML = " "
+    let tf = performance.now();
+    console.log("deltaT="+(tf-t0)+" ms");
+
 }
 
 function randomize(){
