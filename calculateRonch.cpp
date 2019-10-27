@@ -227,6 +227,17 @@ extern "C" {
     }
 
 
+    float* mergeTwoImages(float* base1, float* base2, int dimX, int dimY)
+    {
+        int sz = dimX*dimY;
+        float* imageStack = new float[sz*2];
+        for(size_t i = 0; i < sz; i++) {
+            imageStack[i] = base1[i]; // copy the allocated memory
+            imageStack[sz+i] = base2[i]; 
+        }
+        return imageStack;
+    }
+
 
     float* calcRonch(int numPx,float al_max, float objApR) {
         float obj_ap_r = objApR; //mrad
@@ -248,14 +259,10 @@ extern "C" {
 
         float* res = complexToReal(trans,numPx,numPx);
         oapp = normalize(oapp, 255, numPx, numPx);
-        for (int j=0; j<numPx; j++) {
-            for (int i=0; i<numPx; i++) {
 
-                values[i][j] = res[sub2ind(i,j,0,numPx,numPx,1)];
-            }
-        }
-        auto arrayPtr = &values[0][0];
-
+        alrr = normalize(alrr, 255, numPx, numPx);
+        alpp = normalize(alpp, 255, numPx, numPx);
+        auto arrayPtr = mergeTwoImages(alrr, alpp, numPx, numPx);
         //delete res;
         return arrayPtr;
 

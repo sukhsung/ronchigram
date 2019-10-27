@@ -256,22 +256,26 @@ function calculate(){
     canvas2.width = numPx;
     canvas2.height = numPx;
     let arrayPointer
-    let arrayData =[]
-    let imData = []
+    let arrayData1 =[]
+    let arrayData2 = []
+    let imData1 = []
+    let imData2 = []
     arrayPointer = Module.ccall("calcRonch", "null", ["number","number","number"], [numPx,al_max,obj_ap_r])
     
+    let im2Offset = numPx*numPx;
     for (let j=0; j<numPx;j++) {
         for (let i=0; i<numPx; i++) {
-        arrayData.push(Module.HEAPF32[arrayPointer/Float32Array.BYTES_PER_ELEMENT+ i+numPx*j])
+            arrayData1.push(Module.HEAPF32[arrayPointer/Float32Array.BYTES_PER_ELEMENT+ i+numPx*j])
+            arrayData2.push(Module.HEAPF32[arrayPointer/Float32Array.BYTES_PER_ELEMENT+ i+numPx*j + im2Offset])
         }
-        imData.push(arrayData)
-        arrayData = []
+        imData1.push(arrayData1)
+        imData2.push(arrayData2)
+        arrayData1 = []
+        arrayData2 = []
     }
-    peek = imData;
-    imData = math.subtract(imData,math.min(imData));
-    imData = math.multiply(math.divide(imData,math.max(imData)),255);
-
-    drawGrayscaleBitmap(ctx1,imData,numPx);
+    
+    drawGrayscaleBitmap(ctx1,imData1,numPx);
+    drawGrayscaleBitmap(ctx2,imData2,numPx);
 
     document.getElementById('loading').innerHTML = " "
 }
