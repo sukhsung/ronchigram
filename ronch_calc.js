@@ -127,6 +127,8 @@ function getDispSizeMrad() {
 }
 
 function calculate(Module){
+    let t0 = performance.now();
+
     ////////
     //reading in constants from ui:
     ////////
@@ -236,6 +238,7 @@ function calculate(Module){
     document.getElementById('loading').innerHTML = " "
 
     delete Module
+    console.log("dT="+(performance.now()-t0)+" ms");
 }
 
 function randomize(){
