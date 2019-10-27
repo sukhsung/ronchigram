@@ -219,24 +219,19 @@ extern "C" {
     float * complexToReal(complex<float>* orig, int dimX, int dimY)
     {
         float * real = new float[dimX*dimY];
-        for (int j=0; j<dimY; j++) {
-            for (int i=0; i<dimX; i++) {
-                int idx = sub2ind(i,j,0,dimX,dimY,1);
-                real[idx] = abs(orig[idx]);
-            }
+        for(int i =0; i < dimX*dimY; i++)
+        {
+            real[i] = abs(orig[i]);
         }
         return real;
     }
 
     complex<float>* realToComplex(float* orig, int dimX, int dimY) {
         complex<float>* comp = new complex<float>[dimX*dimY];
-        for (int j=0; j<dimY; j++) {
-            for (int i=0; i<dimX; i++) {
-                int idx = sub2ind(i,j,0,dimX,dimY,1);
-                //comp[idx] = (orig[idx],0);
-                comp[idx].real(orig[idx]);
-                comp[idx].imag(0);
-            }
+        for(int i = 0; i<dimX*dimY; i++)
+        {
+            comp[i].real(orig[i]);
+            comp[i].imag(0);
         }
 
         return comp;
@@ -256,7 +251,9 @@ extern "C" {
     complex<float>*  kissToComplex(kiss_fft_cpx* orig, int dimX, int dimY) {
         complex<float>* comp = new complex<float>[dimX*dimY];
         for (int i =0; i <dimX*dimY; i++) {
-            comp[i] = (orig[i].r,orig[i].i);
+            //comp[i] = (orig[i].r,orig[i].i);
+            comp[i].real(orig[i].r);
+            comp[i].imag(orig[i].i);
         }
         return comp;
     }
@@ -404,7 +401,7 @@ extern "C" {
         complex<float> * chi = calculateChi(chi0, numPx);
         chi0 = maskChi0(chi0,numPx,M_PI/4);
         float* res = normalize(chi0,255,numPx,numPx);
-        oapp = complexToReal(realToComplex(normalize(oapp, 255, numPx, numPx),numPx,numPx),numPx,numPx);
+        oapp = normalize(oapp, 255, numPx, numPx);
 
         alrr = normalize(alrr, 255, numPx, numPx);
         alpp = normalize(alpp, 255, numPx, numPx);
