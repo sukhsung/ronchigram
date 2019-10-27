@@ -259,13 +259,17 @@ extern "C" {
     }
 
 
-    float* mergeTwoImages(float* base1, float* base2, int dimX, int dimY)
+    float* packageOutput(float* base1, float* base2, float* scalars, int dimX, int dimY, int nScal)
     {
         int sz = dimX*dimY;
-        float* imageStack = new float[sz*2];
+        float* imageStack = new float[sz*2+nScal];
         for(size_t i = 0; i < sz; i++) {
             imageStack[i] = base1[i]; // copy the allocated memory
             imageStack[sz+i] = base2[i]; 
+        }
+        for(size_t i = 0; i < nScal; i++)
+        {
+            imageStack[2*sz+i] = scalars[i];
         }
         return imageStack;
     }
@@ -419,6 +423,22 @@ extern "C" {
         return diffInt;
     }
 
+    float getPi4Aperture(float * chi0, float* alrr, int numPx)
+    {
+        float rmax = 0;
+        for(int i = 0; i < numPx*numPx; i++)
+        {
+            float cv = (1-chi0[i])*alrr[i];
+            if(cv > rmax)
+            {
+                rmax = cv;
+            }
+        }
+        return rmax;
+    }
+
+
+
     //float* calcRonch(int numPx,float al_max, float objApR) {
     float* calcRonch(float *buffer, int bufSize) {
         int numPx = static_cast<int>(buffer[0]);
@@ -439,23 +459,18 @@ extern "C" {
         complex<float>* trans = generateTransmissionFn(sample,numPx,numPx,1);
 
         float* chi0 = calculateChi0(&buffer[3], &buffer[17], alrr, alpp, numPx, 14);
-        complex<float> * chi = calculateChi(chi0, numPx);
-        chi0 = maskChi0(chi0,numPx,M_PI/4);
-        float* res = normalize(chi0,255,numPx,numPx);
-        //oapp = normalize(oapp, 255, numPx, numPx);
 
-        //alrr = normalize(alrr, 255, numPx, numPx);
-        //alpp = normalize(alpp, 255, numPx, numPx);
-        //float* fftResult = testFFT(oapp,numPx,numPx);
-        //fftResult = fftShift(normalize(fftResult, 255, numPx, numPx),numPx);
+        float* outputScalars = new float[1];
+        outputScalars[0] = getPi4Aperture(chi0, alrr, numPx);
+
+
+        complex<float> * chi = calculateChi(chi0, numPx);
+        chi0 = normalize(maskChi0(chi0,numPx,M_PI/4),255,numPx,numPx);
 
         float* ronch = normalize(calcDiffract(chi,trans,oapp,numPx),255,numPx,numPx);
-        auto arrayPtr = mergeTwoImages(ronch, chi0, numPx, numPx);
-        //delete res;
 
-        //float* testFFT(oapp,numPx, numPx);
+        auto arrayPtr = packageOutput(ronch, chi0, outputScalars, numPx, numPx,1);
         return arrayPtr;
-
     }
 
 
