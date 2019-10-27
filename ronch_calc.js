@@ -1,5 +1,3 @@
-var peek = [];
-
 function getAberrations(){
     var ab_list = [];
 
@@ -60,9 +58,10 @@ function energyCalc(){
 
 function calcButton(){
      document.getElementById('loading').innerHTML = "Calculating..."
-     setTimeout(function(){
-        calculate();
-    },0);
+    //  setTimeout(function(){
+    //     let curInstance = MyCode().then(function(Module){ calculate(Module)});
+    // },0);
+    MyCode().then(function(Module){ calculate(Module)});
 }
 
 function randButton(){
@@ -127,8 +126,7 @@ function getDispSizeMrad() {
     return disp_size_mrad
 }
 
-function calculate(){
-
+function calculate(Module){
     let t0 = performance.now();
 
     ////////
@@ -142,115 +140,6 @@ function calculate(){
     let draw_overlay = document.getElementById("draw_overlay").checked; //figure out how to read from checkbox
     let al_max = disp_size_mrad;
 
-
-
-    // var obj_ap = alrr.map(function (value, index, matrix) {
-    //     if(value < obj_ap_r)
-    //     {
-    //         return 1;
-    //     }
-    //     else
-    //     {
-    //         return 0;
-    //     }
-    // });
-
-
-    // var out_ronch = math.zeros(numPx,numPx);
-    // for(var qt = 0; qt < 1; qt++)
-    // {
-
-    //     var sample = loadSample(scalefactor);
-    //     var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25,interactionParam(), sample)  );
-        
-    //     var aber = getAberrations();
-    //     var numAber = aber.size()[0];
-
-    //     var chi = math.zeros(numPx,numPx);
-
-    //     for(var it = 0; it < numAber; it++)
-    //     {
-    //         chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(aber.subset(math.index(it,1)),math.subtract(alpp,aber.subset(math.index(it,3))))),math.dotPow(alrr,aber.subset(math.index(it,0))+1)), aber.subset(math.index(it,2))/(aber.subset(math.index(it,0))+1) ));
-    //     }
-    //     var chi0 = math.dotMultiply(2*PI/lambda, chi);
-    //     //To place objective before sample:
-    //     //var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
-    //     var expchi0 = math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) );
-    //     out_ronch = math.add(out_ronch,  math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2));
-    // }
-    // out_ronch = math.subtract(out_ronch, math.min(out_ronch));
-    // out_ronch = math.dotDivide(out_ronch,math.max(out_ronch)/255);
-    // out_ronch = math.round(out_ronch);
-    // out_ronch = out_ronch.toArray();
-    // var out_phase_map = chi0.map(function (value, index, matrix) {
-    //     if(value < PI/4 && value > -PI/4)
-    //     {
-    //         return 1;            
-    //     }
-    //     else
-    //     {
-    //         return 0;
-    //     }
-    // });
-
-    // var rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
-    // rmax = math.min(rmax);
-    // rmax = -1/(rmax*mrad); //mrads
-
-    // document.getElementById("alpha_max").value = math.round(rmax,2);
-
-    // out_phase_map = math.abs(out_phase_map);
-    // out_phase_map = math.subtract(out_phase_map, math.min(out_phase_map));
-    // out_phase_map = math.dotDivide(out_phase_map,math.max(out_phase_map)/255);
-    // out_phase_map = math.round(out_phase_map);
-    // out_phase_map = out_phase_map.toArray();
-
-
-    // var canvas = document.getElementById("canvas1");
-    // var ctx = canvas.getContext("2d");
-    // canvas.width = numPx;
-    // canvas.height = numPx;
-    // drawGrayscaleBitmap(ctx,out_ronch);
-    // if(draw_overlay)
-    // {
-    //     var scalar = 256;
-    //     ctx.font = numPx/scalar*14+"px Arial";
-    //     ctx.fillStyle = "white";
-    //     ctx.fillText(math.round(disp_size_mrad/.07*30)+" mrad",numPx-70/scalar*numPx,numPx-10/scalar*numPx);
-
-    //     ctx.beginPath()
-
-    //     ctx.moveTo(numPx-70/scalar*numPx,numPx-30/scalar*numPx);
-    //     ctx.lineTo(numPx-15/scalar*numPx,numPx-30/scalar*numPx);
-    //     ctx.strokeStyle = "white";
-    //     ctx.lineWidth = 5*numPx/scalar;
-    //     ctx.stroke();
-    //     ctx.beginPath()
-    //     ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
-    //     ctx.strokeStyle = "blue";
-    //     ctx.lineWidth = 1*numPx/scalar;
-    //     ctx.stroke();
-    // }
-
-    // canvas = document.getElementById("canvas2");
-    // ctx = canvas.getContext("2d");        
-    // canvas.width = numPx;
-    // canvas.height = numPx;
-    // drawGrayscaleBitmap(ctx,out_phase_map);
-    // if(draw_overlay)
-    // {
-    //     ctx.beginPath();
-    //     ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
-    //     ctx.strokeStyle = "blue";
-    //     ctx.lineWidth = 2;
-    //     ctx.stroke();
-    //     ctx.beginPath();
-    //     ctx.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*PI);
-    //     ctx.strokeStyle = "red";
-    //     ctx.lineWidth = 2;
-    //     ctx.stroke();
-    // }
-
     // getting aberrations into tidy arrays of magnitude, angle. degree, order  are assumed based on order in C++ section, units are baked in!
     let ab_mags = [];
     let ab_angles = [];
@@ -263,8 +152,6 @@ function calculate(){
         ab_mags.push(mag_val);
         ab_angles.push(arg_val);
     }
-
-
 
     canvas1.width = numPx;
     canvas1.height = numPx;
@@ -288,7 +175,6 @@ function calculate(){
         buffer = Module._malloc(typedArray.length * typedArray.BYTES_PER_ELEMENT)
         Module.HEAPF32.set(typedArray, buffer >> 2)
         result = Module.ccall("calcRonch", null, ["number", "number"], [buffer, arrayDataToPass.length])
-    //arrayPointer = Module.ccall("calcRonch", "null", ["number","number","number"], [numPx,al_max,obj_ap_r])
     } catch (e) {
         error = e
     } finally {
@@ -297,6 +183,7 @@ function calculate(){
         Module._free(buffer)
     }
     if (error) throw error
+
     let im2Offset = numPx*numPx;
     for (let j=0; j<numPx;j++) {
         for (let i=0; i<numPx; i++) {
@@ -310,10 +197,48 @@ function calculate(){
     }
     drawGrayscaleBitmap(ctx1,imData1,numPx);
     drawGrayscaleBitmap(ctx2,imData2,numPx);
-    document.getElementById('loading').innerHTML = " "
-    let tf = performance.now();
-    console.log("deltaT="+(tf-t0)+" ms");
 
+    // rmax = Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ 2*(numPx*numPx)]
+    //temporaray holder for rmax
+    let rmax = 25;
+    if(draw_overlay)
+    {
+        var scalar = 256;
+        ctx1.font = numPx/scalar*14+"px Arial";
+        ctx1.fillStyle = "white";
+        ctx1.fillText(math.round(disp_size_mrad/.07*30)+" mrad",numPx-70/scalar*numPx,numPx-10/scalar*numPx);
+
+        ctx1.beginPath()
+        ctx1.moveTo(numPx-70/scalar*numPx,numPx-30/scalar*numPx);
+        ctx1.lineTo(numPx-15/scalar*numPx,numPx-30/scalar*numPx);
+        ctx1.strokeStyle = "white";
+        ctx1.lineWidth = 5*numPx/scalar;
+        ctx1.stroke();
+        ctx1.beginPath()
+        ctx1.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
+        ctx1.strokeStyle = "blue";
+        ctx1.lineWidth = 1*numPx/scalar;
+        ctx1.stroke();
+    }
+
+    if(draw_overlay)
+    {
+        ctx2.beginPath();
+        ctx2.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
+        ctx2.strokeStyle = "blue";
+        ctx2.lineWidth = 2;
+        ctx2.stroke();
+        ctx2.beginPath();
+        ctx2.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*PI);
+        ctx2.strokeStyle = "red";
+        ctx2.lineWidth = 2;
+        ctx2.stroke();
+    }
+
+    document.getElementById('loading').innerHTML = " "
+
+    delete Module
+    console.log("dT="+(performance.now()-t0)+" ms");
 }
 
 function randomize(){
@@ -327,7 +252,7 @@ function randomize(){
             aberration.arg_el.value = Math.round(Math.random()*180);
         }
     }
-    calculate();
+    calcButton();
 }
 
 function allZero(){
@@ -403,6 +328,4 @@ for(var it = 0; it < aberration_list.length; it++)
     aberrations.push(ab_obj);
 }
 
-Module.onRuntimeInitialized = function() {
-    calculate()
-}
+calcButton();
