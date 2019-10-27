@@ -392,6 +392,8 @@ function interactionParam(){
 
 
 function calculate(){
+    let  t0 = performance.now();
+
     lambda = energyCalc();
     ////////
     //reading in constants from ui:
@@ -554,6 +556,11 @@ function calculate(){
 
 
     document.getElementById('loading').innerHTML = " "
+
+    let  tf = performance.now();
+
+    console.log("deltaT="+(tf-t0)+" ms");
+
 }
 
 function randomize(){
