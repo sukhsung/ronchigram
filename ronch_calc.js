@@ -132,9 +132,8 @@ function energyCalc(){
     return lambda;
 }
 
-
 function randButton(){
-     document.getElementById('loading').innerHTML = "Calculating..."
+     //document.getElementById('loading').innerHTML = "Calculating..."
      setTimeout(function(){
         randomize();
     },0);
@@ -339,14 +338,13 @@ function calculateWASM(Module){
 
     for(let it = 0; it < aberrations.length; it++)
     {
-        var aberration = aberrations[it];
-        var mag_val = Number(aberration.mag_el.value)*aberration.mag_unit;
-        var arg_val = (aberration.arg_el ? Number(aberration.arg_el.value) : 0)*deg;
+        let aberration = aberrations[it];
+        let mag_val = Number(aberration.mag_el.value)*aberration.mag_unit;
+        let arg_val = (aberration.arg_el ? Number(aberration.arg_el.value) : 0)*deg;
         ab_mags.push(mag_val);
         ab_angles.push(arg_val);
     }
 
-    let arrayPointer
     let arrayData1 =[]
     let arrayData2 = []
     let imData1 = []
