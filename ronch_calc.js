@@ -1,3 +1,42 @@
+function fft2_wrap(X) {
+    X_pass = fft2(X);
+    X_arr = math.matrix(X_pass);
+    X_arr = math.transpose(X_arr);
+    X_arr = X_arr.toArray();
+    X_pass = fft2(X_arr);
+    return (X_pass);
+}
+/*
+    From https://gist.github.com/mrquincle/b11fff96209c9d1396b0
+    @mrquincle
+*/
+function fft2(X) {
+  var N = X.length;
+  if (!(N > 1)) {
+    return X;
+  }
+  var M = N/2;
+  var even = [];
+  var odd = [];
+  even.length = M;
+  odd.length = M;
+  for (var i = 0; i < M; ++i) {
+    even[i] = X[i*2];
+    odd[i] = X[i*2+1];
+  }
+  even = fft2(even);
+  odd = fft2(odd);
+  var a = -2*PI;
+  for (var k = 0; k < M; ++k) {
+    var t = math.exp(math.complex(0, a*k/N));
+    t = math.multiply(t, odd[k]);
+    X[k] = odd[k] = math.add(even[k], t);
+    X[k+M] = even[k] = math.subtract(even[k], t);
+  }
+  return X;
+}
+
+
 function getAberrations(){
     var ab_list = [];
 
@@ -56,13 +95,6 @@ function energyCalc(){
     return lambda;
 }
 
-function calcButton(){
-     document.getElementById('loading').innerHTML = "Calculating..."
-    //  setTimeout(function(){
-    //     let curInstance = MyCode().then(function(Module){ calculate(Module)});
-    // },0);
-    ronchModule().then(function(Module){ calculate(Module) });
-}
 
 function randButton(){
      document.getElementById('loading').innerHTML = "Calculating..."
@@ -126,8 +158,214 @@ function getDispSizeMrad() {
     return disp_size_mrad
 }
 
-function calculate(Module){
+function hasWASM()
+{
+    //per @JF-Bastien https://stackoverflow.com/questions/47879864/how-can-i-check-if-a-browser-supports-webassembly
+
+    const supported = (() => {
+        try {
+            if (typeof WebAssembly === "object"
+                && typeof WebAssembly.instantiate === "function") {
+                const module = new WebAssembly.Module(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
+                if (module instanceof WebAssembly.Module)
+                    return new WebAssembly.Instance(module) instanceof WebAssembly.Instance;
+            }
+        } catch (e) {
+        }
+        return false;
+    })();
+
+    return supported;
+}
+
+function calcButton(){
+     document.getElementById('loading').innerHTML = "Calculating..."
+    //  setTimeout(function(){
+    //     let curInstance = MyCode().then(function(Module){ calculate(Module)});
+    // },0);
     let t0 = performance.now();
+
+    if(hasWASM())
+    {
+        console.log("wasm supported");
+        ronchModule().then(function(Module){ calculateWASM(Module) });
+    }
+    else
+    {
+        console.log("wasm not supported");
+        calculateJS();
+    }
+    console.log("dT="+(performance.now()-t0)+" ms");
+
+}
+
+
+function calculateJS(){
+    lambda = energyCalc();
+    ////////
+    //reading in constants from ui:
+    ////////
+    var obj_ap_r = Number(document.getElementById("aperture").value)* mrad;
+
+    if(obj_ap_r<0)
+    {
+        obj_ap_r = 0;
+        document.getElementById("aperture").value = 0;
+    }
+    /*else if (obj_ap_r>65*mrad)
+    {
+        obj_ap_r= 65*mrad;
+        document.getElementById("aperture").value = 65;
+    }*/
+
+    var disp_size_px = Number(document.getElementById("disp_size_px").value);
+    if((disp_size_px & (disp_size_px - 1)) != 0  || disp_size_px < 2)
+    {
+        alert("Select a display size in pixels that is a power of 2 greater than 0");
+        return;
+    }
+    else
+    {
+        numPx = disp_size_px;
+    }
+
+    var disp_size_mrad = Number(document.getElementById("disp_size_mrad").value)*mrad/2;
+    if(disp_size_mrad<.0000001  )
+    {
+        disp_size_mrad = .0000001
+    }
+
+    var scalefactor = Number(document.getElementById("sample_scale_factor").value);
+
+
+
+    //var ill_angle = Number(document.getElementById("illumination").value)*mrad;
+    var draw_overlay = document.getElementById("draw_overlay").checked; //figure out how to read from checkbox
+
+    var al_max = disp_size_mrad;//70*mrad; //= ill_angle;
+    var al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
+    al_vec.resize([numPx,1])
+
+    var alxx = math.multiply(math.ones(numPx,1),math.transpose(al_vec));
+    var alyy = math.transpose(alxx);
+
+    var alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
+    var alpp = math.atan2(alyy,alxx);
+
+
+
+    var obj_ap = alrr.map(function (value, index, matrix) {
+        if(value < obj_ap_r)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    });
+
+
+    var out_ronch = math.zeros(numPx,numPx);
+    for(var qt = 0; qt < 1; qt++)
+    {
+
+        var sample = loadSample(scalefactor);
+        var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25,interactionParam(), sample)  );
+        
+        var aber = getAberrations();
+        var numAber = aber.size()[0];
+
+        var chi = math.zeros(numPx,numPx);
+
+        for(var it = 0; it < numAber; it++)
+        {
+            chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(aber.subset(math.index(it,1)),math.subtract(alpp,aber.subset(math.index(it,3))))),math.dotPow(alrr,aber.subset(math.index(it,0))+1)), aber.subset(math.index(it,2))/(aber.subset(math.index(it,0))+1) ));
+        }
+        var chi0 = math.dotMultiply(2*PI/lambda, chi);
+        //To place objective before sample:
+        //var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
+        var expchi0 = math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) );
+        out_ronch = math.add(out_ronch,  math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2));
+    }
+    out_ronch = math.subtract(out_ronch, math.min(out_ronch));
+    out_ronch = math.dotDivide(out_ronch,math.max(out_ronch)/255);
+    out_ronch = math.round(out_ronch);
+    out_ronch = out_ronch.toArray();
+    var out_phase_map = chi0.map(function (value, index, matrix) {
+        if(value < PI/4 && value > -PI/4)
+        {
+            return 1;            
+        }
+        else
+        {
+            return 0;
+        }
+    });
+
+    var rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
+    rmax = math.min(rmax);
+    rmax = -1/(rmax*mrad); //mrads
+
+    document.getElementById("alpha_max").value = math.round(rmax,2);
+
+    out_phase_map = math.abs(out_phase_map);
+    out_phase_map = math.subtract(out_phase_map, math.min(out_phase_map));
+    out_phase_map = math.dotDivide(out_phase_map,math.max(out_phase_map)/255);
+    out_phase_map = math.round(out_phase_map);
+    out_phase_map = out_phase_map.toArray();
+
+
+    var canvas = document.getElementById("canvas1");
+    var ctx = canvas.getContext("2d");
+    canvas.width = numPx;
+    canvas.height = numPx;
+    drawGrayscaleBitmap(ctx,out_ronch,numPx);
+    if(draw_overlay)
+    {
+        var scalar = 256;
+        ctx.font = numPx/scalar*14+"px Arial";
+        ctx.fillStyle = "white";
+        ctx.fillText(math.round(disp_size_mrad/.07*30)+" mrad",numPx-70/scalar*numPx,numPx-10/scalar*numPx);
+
+        ctx.beginPath()
+
+        ctx.moveTo(numPx-70/scalar*numPx,numPx-30/scalar*numPx);
+        ctx.lineTo(numPx-15/scalar*numPx,numPx-30/scalar*numPx);
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 5*numPx/scalar;
+        ctx.stroke();
+        ctx.beginPath()
+        ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 1*numPx/scalar;
+        ctx.stroke();
+    }
+
+    canvas = document.getElementById("canvas2");
+    ctx = canvas.getContext("2d");        
+    canvas.width = numPx;
+    canvas.height = numPx;
+    drawGrayscaleBitmap(ctx,out_phase_map,numPx);
+    if(draw_overlay)
+    {
+        ctx.beginPath();
+        ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*PI);
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+
+    document.getElementById('loading').innerHTML = " "
+}
+
+function calculateWASM(Module){
     ////////
     //reading in constants from ui:
     ////////
@@ -235,7 +473,6 @@ function calculate(Module){
     document.getElementById('loading').innerHTML = " "
     document.getElementById("alpha_max").value = math.round(rmax,2);
     delete Module
-    console.log("dT="+(performance.now()-t0)+" ms");
 }
 
 function randomize(){
