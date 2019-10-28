@@ -36,6 +36,43 @@ function fft2(X) {
   return X;
 }
 
+function normalizeScale(matharray,scale) {
+    let output = math.subtract(matharray,math.min(matharray))
+    output = math.dotDivide(output,math.max(output)/scale)
+    return output;
+}
+
+function drawOverlays(ctx1, ctx2, numPx,al_max, disp_size_mrad, obj_ap_r, rmax) {
+    let scalar = 256;
+    ctx1.font = numPx/scalar*14+"px Arial";
+    ctx1.fillStyle = "white";
+    ctx1.fillText(math.round(disp_size_mrad/.07*30)+" mrad",numPx-70/scalar*numPx,numPx-10/scalar*numPx);
+
+    ctx1.beginPath()
+    ctx1.moveTo(numPx-70/scalar*numPx,numPx-30/scalar*numPx);
+    ctx1.lineTo(numPx-15/scalar*numPx,numPx-30/scalar*numPx);
+    ctx1.strokeStyle = "white";
+    ctx1.lineWidth = 5*numPx/scalar;
+    ctx1.stroke();
+    ctx1.beginPath()
+    ctx1.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
+    ctx1.strokeStyle = "blue";
+    ctx1.lineWidth = 1*numPx/scalar;
+    ctx1.stroke();
+
+    /// right panel
+    ctx2.beginPath();
+    ctx2.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
+    ctx2.strokeStyle = "blue";
+    ctx2.lineWidth = 2;
+    ctx2.stroke();
+    ctx2.beginPath();
+    ctx2.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*PI);
+    ctx2.strokeStyle = "red";
+    ctx2.lineWidth = 2;
+    ctx2.stroke();
+
+}
 
 function getAberrations(){
     var ab_list = [];
@@ -103,7 +140,7 @@ function randButton(){
     },0);
 }
 
-function loadSample(scalefactor){
+function loadSample(scalefactor,numPx){
     var subsample = math.random([numPx/scalefactor,numPx/scalefactor]);
     var supersample = math.zeros(numPx,numPx);
     //quick nearest neightbours interpolation
@@ -179,19 +216,17 @@ function hasWASM()
 }
 
 function calcButton(){
-     document.getElementById('loading').innerHTML = "Calculating..."
-    //  setTimeout(function(){
-    //     let curInstance = MyCode().then(function(Module){ calculate(Module)});
-    // },0);
     let t0 = performance.now();
 
     if(hasWASM())
     {
+        document.getElementById('loading').innerHTML = "Calculating with WebAssembly..."
         console.log("wasm supported");
         ronchModule().then(function(Module){ calculateWASM(Module) });
     }
     else
     {
+        document.getElementById('loading').innerHTML = "Calculating with Javascript..."
         console.log("wasm not supported");
         calculateJS();
     }
@@ -201,60 +236,27 @@ function calcButton(){
 
 
 function calculateJS(){
-    lambda = energyCalc();
     ////////
     //reading in constants from ui:
     ////////
-    var obj_ap_r = Number(document.getElementById("aperture").value)* mrad;
+    let lambda = energyCalc()
+    let obj_ap_r = getObjAperture()
+    let numPx = getDispSizePx()
+    let disp_size_mrad = getDispSizeMrad()
+    let scalefactor = Number(document.getElementById("sample_scale_factor").value);
+    let draw_overlay = document.getElementById("draw_overlay").checked; //figure out how to read from checkbox
+    let al_max = disp_size_mrad;
 
-    if(obj_ap_r<0)
-    {
-        obj_ap_r = 0;
-        document.getElementById("aperture").value = 0;
-    }
-    /*else if (obj_ap_r>65*mrad)
-    {
-        obj_ap_r= 65*mrad;
-        document.getElementById("aperture").value = 65;
-    }*/
-
-    var disp_size_px = Number(document.getElementById("disp_size_px").value);
-    if((disp_size_px & (disp_size_px - 1)) != 0  || disp_size_px < 2)
-    {
-        alert("Select a display size in pixels that is a power of 2 greater than 0");
-        return;
-    }
-    else
-    {
-        numPx = disp_size_px;
-    }
-
-    var disp_size_mrad = Number(document.getElementById("disp_size_mrad").value)*mrad/2;
-    if(disp_size_mrad<.0000001  )
-    {
-        disp_size_mrad = .0000001
-    }
-
-    var scalefactor = Number(document.getElementById("sample_scale_factor").value);
-
-
-
-    //var ill_angle = Number(document.getElementById("illumination").value)*mrad;
-    var draw_overlay = document.getElementById("draw_overlay").checked; //figure out how to read from checkbox
-
-    var al_max = disp_size_mrad;//70*mrad; //= ill_angle;
-    var al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
+    let al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
     al_vec.resize([numPx,1])
 
-    var alxx = math.multiply(math.ones(numPx,1),math.transpose(al_vec));
-    var alyy = math.transpose(alxx);
+    let alxx = math.multiply(math.ones(numPx,1),math.transpose(al_vec));
+    let alyy = math.transpose(alxx);
 
-    var alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
-    var alpp = math.atan2(alyy,alxx);
+    let alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
+    let alpp = math.atan2(alyy,alxx);
 
-
-
-    var obj_ap = alrr.map(function (value, index, matrix) {
+    let obj_ap = alrr.map(function (value, index, matrix) {
         if(value < obj_ap_r)
         {
             return 1;
@@ -265,34 +267,28 @@ function calculateJS(){
         }
     });
 
+    let out_ronch = math.zeros(numPx,numPx);
+    let sample = loadSample(scalefactor,numPx);
+    let trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25,interactionParam(), sample)  );
+    
+    let aber = getAberrations();
+    let numAber = aber.size()[0];
 
-    var out_ronch = math.zeros(numPx,numPx);
-    for(var qt = 0; qt < 1; qt++)
+    let chi = math.zeros(numPx,numPx);
+
+    for(let it = 0; it < numAber; it++)
     {
-
-        var sample = loadSample(scalefactor);
-        var trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25,interactionParam(), sample)  );
-        
-        var aber = getAberrations();
-        var numAber = aber.size()[0];
-
-        var chi = math.zeros(numPx,numPx);
-
-        for(var it = 0; it < numAber; it++)
-        {
-            chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(aber.subset(math.index(it,1)),math.subtract(alpp,aber.subset(math.index(it,3))))),math.dotPow(alrr,aber.subset(math.index(it,0))+1)), aber.subset(math.index(it,2))/(aber.subset(math.index(it,0))+1) ));
-        }
-        var chi0 = math.dotMultiply(2*PI/lambda, chi);
-        //To place objective before sample:
-        //var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
-        var expchi0 = math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) );
-        out_ronch = math.add(out_ronch,  math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2));
+        chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(aber.subset(math.index(it,1)),math.subtract(alpp,aber.subset(math.index(it,3))))),math.dotPow(alrr,aber.subset(math.index(it,0))+1)), aber.subset(math.index(it,2))/(aber.subset(math.index(it,0))+1) ));
     }
-    out_ronch = math.subtract(out_ronch, math.min(out_ronch));
-    out_ronch = math.dotDivide(out_ronch,math.max(out_ronch)/255);
-    out_ronch = math.round(out_ronch);
+    let chi0 = math.dotMultiply(2*PI/lambda, chi);
+    //To place objective before sample:
+    //var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
+    let expchi0 = math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) );
+    out_ronch = math.add(out_ronch,  math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2));
+
+    out_ronch = math.round(normalizeScale(out_ronch,255));
     out_ronch = out_ronch.toArray();
-    var out_phase_map = chi0.map(function (value, index, matrix) {
+    let out_phase_map = chi0.map(function (value, index, matrix) {
         if(value < PI/4 && value > -PI/4)
         {
             return 1;            
@@ -303,66 +299,26 @@ function calculateJS(){
         }
     });
 
-    var rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
+    let rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
     rmax = math.min(rmax);
     rmax = -1/(rmax*mrad); //mrads
 
-    document.getElementById("alpha_max").value = math.round(rmax,2);
-
-    out_phase_map = math.abs(out_phase_map);
-    out_phase_map = math.subtract(out_phase_map, math.min(out_phase_map));
-    out_phase_map = math.dotDivide(out_phase_map,math.max(out_phase_map)/255);
-    out_phase_map = math.round(out_phase_map);
+    out_phase_map = math.round(normalizeScale(math.abs(out_phase_map),255));
     out_phase_map = out_phase_map.toArray();
-
-
-    var canvas = document.getElementById("canvas1");
-    var ctx = canvas.getContext("2d");
-    canvas.width = numPx;
-    canvas.height = numPx;
-    drawGrayscaleBitmap(ctx,out_ronch,numPx);
-    if(draw_overlay)
-    {
-        var scalar = 256;
-        ctx.font = numPx/scalar*14+"px Arial";
-        ctx.fillStyle = "white";
-        ctx.fillText(math.round(disp_size_mrad/.07*30)+" mrad",numPx-70/scalar*numPx,numPx-10/scalar*numPx);
-
-        ctx.beginPath()
-
-        ctx.moveTo(numPx-70/scalar*numPx,numPx-30/scalar*numPx);
-        ctx.lineTo(numPx-15/scalar*numPx,numPx-30/scalar*numPx);
-        ctx.strokeStyle = "white";
-        ctx.lineWidth = 5*numPx/scalar;
-        ctx.stroke();
-        ctx.beginPath()
-        ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
-        ctx.strokeStyle = "blue";
-        ctx.lineWidth = 1*numPx/scalar;
-        ctx.stroke();
+    
+    canvas1.width = numPx;
+    canvas1.height = numPx;
+    canvas2.width = numPx;
+    canvas2.height = numPx;
+    drawGrayscaleBitmap(ctx1,out_ronch,numPx);
+    drawGrayscaleBitmap(ctx2,out_phase_map,numPx);    
+    
+    if(draw_overlay) {
+        drawOverlays(ctx1, ctx2, numPx,al_max,disp_size_mrad, obj_ap_r, rmax)
     }
 
-    canvas = document.getElementById("canvas2");
-    ctx = canvas.getContext("2d");        
-    canvas.width = numPx;
-    canvas.height = numPx;
-    drawGrayscaleBitmap(ctx,out_phase_map,numPx);
-    if(draw_overlay)
-    {
-        ctx.beginPath();
-        ctx.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
-        ctx.strokeStyle = "blue";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*PI);
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    }
-
-
-    document.getElementById('loading').innerHTML = " "
+    document.getElementById('loading').innerHTML = " "  
+    document.getElementById("alpha_max").value = math.round(rmax,2);
 }
 
 function calculateWASM(Module){
@@ -390,10 +346,6 @@ function calculateWASM(Module){
         ab_angles.push(arg_val);
     }
 
-    canvas1.width = numPx;
-    canvas1.height = numPx;
-    canvas2.width = numPx;
-    canvas2.height = numPx;
     let arrayPointer
     let arrayData1 =[]
     let arrayData2 = []
@@ -432,42 +384,18 @@ function calculateWASM(Module){
         arrayData1 = []
         arrayData2 = []
     }
+    let rmax = Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ 2*(numPx*numPx)];
+  
+    
+    canvas1.width = numPx;
+    canvas1.height = numPx;
+    canvas2.width = numPx;
+    canvas2.height = numPx;
     drawGrayscaleBitmap(ctx1,imData1,numPx);
     drawGrayscaleBitmap(ctx2,imData2,numPx);
 
-    let rmax = Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ 2*(numPx*numPx)];
-    if(draw_overlay)
-    {
-        var scalar = 256;
-        ctx1.font = numPx/scalar*14+"px Arial";
-        ctx1.fillStyle = "white";
-        ctx1.fillText(math.round(disp_size_mrad/.07*30)+" mrad",numPx-70/scalar*numPx,numPx-10/scalar*numPx);
-
-        ctx1.beginPath()
-        ctx1.moveTo(numPx-70/scalar*numPx,numPx-30/scalar*numPx);
-        ctx1.lineTo(numPx-15/scalar*numPx,numPx-30/scalar*numPx);
-        ctx1.strokeStyle = "white";
-        ctx1.lineWidth = 5*numPx/scalar;
-        ctx1.stroke();
-        ctx1.beginPath()
-        ctx1.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
-        ctx1.strokeStyle = "blue";
-        ctx1.lineWidth = 1*numPx/scalar;
-        ctx1.stroke();
-    }
-
-    if(draw_overlay)
-    {
-        ctx2.beginPath();
-        ctx2.arc(numPx/2,numPx/2,rmax*numPx/(2*al_max)*mrad,0,2*PI);
-        ctx2.strokeStyle = "blue";
-        ctx2.lineWidth = 2;
-        ctx2.stroke();
-        ctx2.beginPath();
-        ctx2.arc(numPx/2,numPx/2,obj_ap_r*numPx/(2*al_max),0,2*PI);
-        ctx2.strokeStyle = "red";
-        ctx2.lineWidth = 2;
-        ctx2.stroke();
+    if(draw_overlay) {
+        drawOverlays(ctx1, ctx2, numPx,al_max,disp_size_mrad, obj_ap_r, rmax)
     }
 
     document.getElementById('loading').innerHTML = " "
