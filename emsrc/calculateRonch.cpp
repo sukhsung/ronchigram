@@ -264,8 +264,6 @@ extern "C" {
         return diffInt;
     }
     float getPi4Aperture(float * chi0, float* alrr, int numPx){
-
-
         float rmax = 1e5;
         for(int i = 0; i < numPx*numPx; i++)
         {

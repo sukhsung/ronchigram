@@ -91,22 +91,22 @@ function getAberrations(){
 }
 
 function drawGrayscaleBitmap(ctx,bitmap,numPx) {
-    for(var it = 0; it < numPx; it++)
+    for(let it = 0; it < numPx; it++)
     {
-        for(var jt = 0; jt < numPx; jt++)
+        for(let jt = 0; jt < numPx; jt++)
         {
-            var value = bitmap[it][jt];
+            let value = bitmap[it][jt];
             if (value < 0) {
                 value = 0;
             } else if (value >= 256) {
                 value = 255;
             }
-            var part = Number(parseInt( value , 10)).toString(16);
+            let part = Number(parseInt( value , 10)).toString(16);
             if(part.length <2 )
             {
                 part = "0"+part;
             }
-            var color = '#' + part+part+part;
+            let color = '#' + part+part+part;
             ctx.fillStyle=color;
             ctx.fillRect(it,jt,1,1);
         } 
@@ -221,7 +221,7 @@ function calcButton(){
     {
         document.getElementById('loading').innerHTML = "Calculating with WebAssembly..."
         console.log("wasm supported");
-        ronchModule().then(function(Module){ calculateWASM(Module) });
+        let curInstance = ronchModule().then(function(Module){ calculateWASM(Module); Module.delete });
     }
     else
     {
@@ -345,10 +345,6 @@ function calculateWASM(Module){
         ab_angles.push(arg_val);
     }
 
-    let arrayData1 =[]
-    let arrayData2 = []
-    let imData1 = []
-    let imData2 = []
     let params = [numPx,al_max,obj_ap_r];
     const arrayDataToPass = params.concat(ab_mags,ab_angles);
     let buffer
@@ -371,6 +367,10 @@ function calculateWASM(Module){
     }
     if (error) throw error
 
+    let arrayData1 =[]
+    let arrayData2 = []
+    let imData1 = []
+    let imData2 = []
     let im2Offset = numPx*numPx;
     for (let j=0; j<numPx;j++) {
         for (let i=0; i<numPx; i++) {
@@ -383,7 +383,6 @@ function calculateWASM(Module){
         arrayData2 = []
     }
     let rmax = Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ 2*(numPx*numPx)];
-  
     
     canvas1.width = numPx;
     canvas1.height = numPx;
@@ -398,7 +397,6 @@ function calculateWASM(Module){
 
     document.getElementById('loading').innerHTML = " "
     document.getElementById("alpha_max").value = math.round(rmax,2);
-    delete Module
 }
 
 function randomize(){
