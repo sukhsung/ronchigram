@@ -47,12 +47,12 @@ function energyCalc(){
     }
 
     var lambda = 12.3986/Math.sqrt((2*511+keV)*keV) *ang;
-    document.getElementById("wavlen").value = (lambda/pm);
+    document.getElementById("wavlen").value = math.round(lambda/pm,4);
 
     var alpha = Number(document.getElementById("aperture").value)* mrad;
     //resolution calculation:
     var d = .61*lambda/pm/alpha;
-    document.getElementById("diffres").value = d;
+    document.getElementById("diffres").value = math.round(d,4);
     return lambda;
 }
 
@@ -61,7 +61,7 @@ function calcButton(){
     //  setTimeout(function(){
     //     let curInstance = MyCode().then(function(Module){ calculate(Module)});
     // },0);
-    MyCode().then(function(Module){ calculate(Module)});
+    ronchModule().then(function(Module){ calculate(Module) });
 }
 
 function randButton(){
@@ -128,7 +128,6 @@ function getDispSizeMrad() {
 
 function calculate(Module){
     let t0 = performance.now();
-
     ////////
     //reading in constants from ui:
     ////////
@@ -198,9 +197,7 @@ function calculate(Module){
     drawGrayscaleBitmap(ctx1,imData1,numPx);
     drawGrayscaleBitmap(ctx2,imData2,numPx);
 
-    // rmax = Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ 2*(numPx*numPx)]
-    //temporaray holder for rmax
-    let rmax = Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ 2*(numPx*numPx)];//25;
+    let rmax = Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ 2*(numPx*numPx)];
     if(draw_overlay)
     {
         var scalar = 256;
@@ -236,7 +233,7 @@ function calculate(Module){
     }
 
     document.getElementById('loading').innerHTML = " "
-
+    document.getElementById("alpha_max").value = math.round(rmax,2);
     delete Module
     console.log("dT="+(performance.now()-t0)+" ms");
 }

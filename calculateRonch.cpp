@@ -5,185 +5,65 @@
 #include <stdlib.h>
 #include <complex>
 #include "kiss_fftnd.h"
-//#include "kiss_fft.h"
-
+#include <time.h>
 
 using namespace std;
-
 extern "C" {
-
-    float* deepCopyFloat(float* base, int dimX, int dimY)
-    {
-        int sz = dimX*dimY;
-        float* deepCopy = new float[sz];
-        for(size_t i = 0; i < sz; i++)
-            deepCopy[i] = base[i]; // copy the allocated memory 
-        return deepCopy;
-    }
-
-
     int sub2ind(int x, int y, int z, int dimX, int dimY, int dimZ) {
-
         return dimX*dimY*z+dimX*y+x;
     }
 
+    float* getMinMax(float* base, int dimX, int dimY) {
+        float minMax[2];
+        minMax[0] = base[0]; //min
+        minMax[1] = base[0]; //max
 
-    float getMin(float* base, int dimX, int dimY)
-    {
-        float minV = base[sub2ind(0,0,0,dimX,dimY,1)];
-        for(int j=0; j<dimY; j++)
-        {
-            for(int i = 0; i < dimX; i++)
-            {
-                float trial = base[sub2ind(i,j,0,dimX,dimY,1)];
-                if( trial < minV)
-                {
-                    minV = trial;
-                }
+        for (int i=0; i < dimX*dimY; i++) {
+            if ( base[i] < minMax[0] ) {
+                minMax[0] = base[i];
+            } else if ( base[i] > minMax[1]) {
+                minMax[1] = base[i];
             }
         }
-        return minV;
+        return minMax;
     }
 
-    float getMax(float* base, int dimX, int dimY)
-    {
-        float maxV = base[sub2ind(0,0,0,dimX,dimY,1)];
-        for(int j=0; j<dimY; j++)
-        {
-            for(int i = 0; i < dimX; i++)
-            {
-                float trial = base[sub2ind(i,j,0,dimX,dimY,1)];
-                if( trial > maxV)
-                {
-                    maxV = trial;
-                }
-            }
-        }
-        return maxV;
-    }
-
-    float* normalize(float* base, float scale, int dimX, int dimY)
-    {
-        float minV = getMin(base, dimX, dimY);
-        for(int j=0; j<dimY; j++)
-        {
-            for(int i = 0; i < dimX; i++)
-            {
-                int idx = sub2ind(i,j,0,dimX,dimY,1);
-                base[idx] = base[idx] - minV;
-            }
-        }
-        float maxV = getMax(base, dimX, dimY);
-        for(int j=0; j<dimY; j++)
-        {
-            for(int i = 0; i < dimX; i++)
-            {
-                int idx = sub2ind(i,j,0,dimX,dimY,1);
-                base[idx] = base[idx] / maxV * scale;
-            }
-        }
-    return base;
-
-    }
-
-    float* linspace (float start, float stop, int steps){
-        float* vals = new float[steps];
-        for(int i = 0; i < steps; i++)
-        {
-            vals[i] = start + (stop-start)/(steps-1)*i;
-        }
-
-        return vals;
-    }
-
-    float* meshgrid(float* x, float* y, int sizeX, int sizeY)
-    {
-        float* vals = new float[sizeX*sizeY*2];
-        for(int j=0; j<sizeX; j++)
-        {
-            for(int i=0; i<sizeY; i++)
-            {
-                vals[sub2ind(i,j,0,sizeX,sizeY,2)] = x[i];
-                vals[sub2ind(i,j,1,sizeX,sizeY,2)] = y[j];
-            }
-        }
-        return vals;
-    }
-
-    float* cValArray(float val, int dimX, int dimY) {
-        float* vals = new float[dimX*dimY];
-        for(int j=0; j<dimX; j++)
-        {
-            for(int i=0; i<dimY; i++)
-            {
-                vals[sub2ind(i,j,0,dimX,dimY,1)] = val;
-            }
-        }
-        return vals;
-    }
-
-    float* inPlaceAperture(float* base, float* alrr, float limit, int dimX, int dimY)
-    {
-        for(int j=0; j<dimY; j++)
-        {
-            for(int i = 0; i < dimX; i++)
-            {
-                //float x = mesh[sub2ind(i,j,0,dimX,dimY,2)];
-                //float y = mesh[sub2ind(i,j,1,dimX,dimY,2)];
-                if(alrr[sub2ind(i,j,0,dimX,dimY,1)]> limit)
-                {
-                    base[sub2ind(i,j,0,dimX,dimY,1)] = 0;
-                }
-            }
+    float* normalize(float* base, float scale, int dimX, int dimY) {
+        float* minMax = getMinMax(base, dimX, dimY);
+        for (int i=0; i<dimX*dimY; i++ ) {
+            base[i] = (base[i]-minMax[0])/ minMax[1]*scale;
         }
         return base;
     }
 
-    float* meshToRadii(float* cart_mesh, int dimX, int dimY)
-    {
-        float* vals = new float[dimX*dimY];
-        for(int j=0; j<dimX; j++)
-        {
-            for(int i=0; i<dimY; i++)
-            {
-                int idxX = sub2ind(i,j,0,dimX,dimY,2);
-                int idxY = sub2ind(i,j,1,dimX,dimY,2);
-                float vX = cart_mesh[idxX];
-                float vY = cart_mesh[idxY];
-                vals[sub2ind(i,j,0,dimX,dimY,1)] =sqrt( vX*vX+vY*vY);
+    int polarMeshnOapp (float* rr, float* pp, float* oapp, float r_max, float obj_ap_r, int numPx) {
+        float center = numPx/2;
+        int idx;
+        float xval;
+        float yval;
+        for(int j = 0; j <numPx; j++) {
+            for( int i=0; i<numPx; i++) {
+                idx = i + numPx*j;
+                xval = (i-center)/center*r_max;
+                yval = (j-center)/center*r_max;
+                rr[idx] = sqrt( pow(xval,2) + pow(yval,2));
+                pp[idx] = atan2(yval,xval);
+                if (rr[idx] > obj_ap_r) {
+                    oapp[idx] = 0;
+                } else {
+                    oapp[idx] = 1;
+                }
             }
         }
-        return vals;
-
+        return 0;
     }
-    float* meshToAngles(float* cart_mesh, int dimX, int dimY)
-    {
+    
+    float* noisyGrating(int dimX, int dimY){
+        srand(time(NULL));
         float* vals = new float[dimX*dimY];
-        for(int j=0; j<dimX; j++)
+        for(int i=0; i<dimX*dimY; i++)
         {
-            for(int i=0; i<dimY; i++)
-            {
-                int idxX = sub2ind(i,j,0,dimX,dimY,2);
-                int idxY = sub2ind(i,j,1,dimX,dimY,2);
-                float vX = cart_mesh[idxX];
-                float vY = cart_mesh[idxY];
-                vals[sub2ind(i,j,0,dimX,dimY,1)] =atan2(vY,vX);
-            }
-        }
-        return vals;    
-    }
-
-    float* noisyGrating(int dimX, int dimY)
-    {
-        float* vals = new float[dimX*dimY];
-        for(int j=0; j<dimX; j++)
-        {
-            for(int i=0; i<dimY; i++)
-            {
-                int idx = sub2ind(i,j,0,dimX,dimY,1);
-                vals[idx] = rand() / float(RAND_MAX);
-                //vals[idxX]
-            }
+            vals[i] = rand() / float(RAND_MAX);
         }
         return vals;
     }
@@ -205,18 +85,15 @@ extern "C" {
     complex<float>* generateTransmissionFn(float* sample, int dimX, int dimY, float interactionParam )
     {
         complex<float> * trans = new complex<float>[dimX*dimY];
-        for (int j=0; j<dimY; j++) {
-            for (int i=0; i<dimX; i++) {
-                int idx = sub2ind(i,j,0,dimX,dimY,1);
-                complex<float> imag(0.0,1.0);
-                complex<float> real_part(M_PI/4*sample[idx]*interactionParam,0.0);
-                trans[idx] = exp(-imag*real_part);
-            }
+        complex<float> imag(0.0,1.0);
+        for (int i=0; i< dimX*dimY; i++) {
+            complex<float> real_part(M_PI/4*sample[i]*interactionParam,0.0);
+            trans[i] = exp(-imag*real_part);
         }
         return trans;
     }
 
-    float * complexToReal(complex<float>* orig, int dimX, int dimY)
+    float* complexToReal(complex<float>* orig, int dimX, int dimY)
     {
         float * real = new float[dimX*dimY];
         for(int i =0; i < dimX*dimY; i++)
@@ -327,41 +204,6 @@ extern "C" {
         return maskedChi0;
     }
 
-    float* testFFT(float* realIm, int dimX, int dimY) {
-        int isInverseFFT = 0;
-        int ndims = 2;
-        int dims[2];
-        dims[0] = dimX;
-        dims[1] = dimY;
-        int nbytes = sizeof(kiss_fft_cpx);
-        kiss_fft_cpx* cxin;
-        kiss_fft_cpx* cxout;
-        complex<float>* fftResult;
-        float* fftMag;
-        
-
-        std::cout << "TESTING FFT" << std::endl;
-        
-        kiss_fftnd_cfg cfg = kiss_fftnd_alloc(dims,ndims,isInverseFFT,0,0);
-        complex<float>* comp = realToComplex(realIm, dimX, dimY);
-
-        std::cout << realIm[32950] << std::endl;
-        std::cout << comp[32950] << std::endl;
-
-        //cxin = (kiss_fft_cpx) comp;
-        
-        cxin = complexToKiss(comp,dimX,dimY);
-        cxout = complexToKiss(comp,dimX,dimY);
-        //cxin = comp;
-
-        kiss_fftnd(cfg,cxin, cxout);
-        fftResult = kissToComplex(cxout,dimX,dimY);
-        fftMag = complexToReal(fftResult,dimX,dimY);
-        //kiss_fft_cpx* = realToKissComplex(realIm, numPx, numPx);
-        //std::cout << cfg << std::endl;
-        return fftMag;
-    }
-
     float* fftShift(float* original, int numPx)
     {
         // only for square matrices...
@@ -388,18 +230,17 @@ extern "C" {
         int dims[2];
         dims[0] = dimX;
         dims[1] = dimY;
-        int nbytes = sizeof(kiss_fft_cpx);
+
         kiss_fft_cpx* cxin;
         kiss_fft_cpx* cxout;
-        complex<float>* fftResult;
-        float* fftMag;
+        
         kiss_fftnd_cfg cfg = kiss_fftnd_alloc(dims,ndims,isInverseFFT,0,0);
-        //complex<float>* comp = realToComplex(realIm, dimX, dimY);
-        cxin = complexToKiss(comp,dimX,dimY);
+        // preallocation
+        cxin  = complexToKiss(comp,dimX,dimY);
         cxout = complexToKiss(comp,dimX,dimY);
         kiss_fftnd(cfg,cxin, cxout);
-        fftResult = kissToComplex(cxout,dimX,dimY);
-        //fftMag = complexToReal(fftResult,dimX,dimY);
+        complex<float>* fftResult = kissToComplex(cxout,dimX,dimY);
+
         return fftResult;
     }
 
@@ -422,9 +263,7 @@ extern "C" {
         }
         return diffInt;
     }
-
-    float getPi4Aperture(float * chi0, float* alrr, int numPx)
-    {
+    float getPi4Aperture(float * chi0, float* alrr, int numPx){
 
 
         float rmax = 1e5;
@@ -440,22 +279,15 @@ extern "C" {
         return rmax*1000;
     }
 
-
-
-    //float* calcRonch(int numPx,float al_max, float objApR) {
     float* calcRonch(float *buffer, int bufSize) {
         int numPx = static_cast<int>(buffer[0]);
+        float al_max = buffer[1]; //mrad
         float obj_ap_r = buffer[2]; //mrad
-        float simdim = buffer[1]; //mrad
 
-        //numPx x numPx x 2 meshgrid, index into w/ sub2ind
-        float* cart_mesh = meshgrid(linspace(-simdim,simdim,numPx),linspace(-simdim,simdim,numPx),numPx,numPx);
-        float* oapp = cValArray(1,numPx,numPx);
-        float* alrr = meshToRadii(cart_mesh,numPx,numPx);
-        float* alpp = meshToAngles(cart_mesh,numPx,numPx);
-        float values[numPx][numPx];
-
-        oapp = inPlaceAperture(oapp,alrr,obj_ap_r,numPx,numPx);
+        float alrr[numPx*numPx];
+        float alpp[numPx*numPx];
+        float oapp[numPx*numPx];
+        polarMeshnOapp(alrr,alpp, oapp, al_max, obj_ap_r, numPx);
 
         float* sample = generateSample(numPx,numPx,8);
 
