@@ -14,7 +14,7 @@ extern "C" {
     }
 
     float* getMinMax(float* base, int dimX, int dimY) {
-        float minMax[2];
+        float * minMax = new float[2];
         minMax[0] = base[0]; //min
         minMax[1] = base[0]; //max
 
@@ -35,6 +35,12 @@ extern "C" {
         }
         return base;
     }
+    float calculateLambda(float keV)
+    {
+        float lambda = 12.3986/sqrt((2*511+keV)*keV)*1e-10;
+        return lambda;
+    }
+
 
     int polarMeshnOapp (float* rr, float* pp, float* oapp, float r_max, float obj_ap_r, int numPx) {
         float center = numPx/2;
@@ -151,12 +157,12 @@ extern "C" {
         return imageStack;
     }
 
-    float* calculateChi0(float* magptr, float* angleptr, float * alrr, float* alpp, int numPx, int numAbs)
+    float* calculateChi0(float* magptr, float* angleptr, float * alrr, float* alpp, int numPx, int numAbs, float keV)
     {
         float* chi0 = new float[numPx*numPx];
         int n[14] = {1,1,2,2,3,3,3,4,4,4,5,5,5,5};
         int m[14] = {0,2,1,3,0,2,4,1,3,5,0,2,4,6};
-        float lambda = 1.97e-12;
+        float lambda = calculateLambda(keV);
         for (int j=0; j<numPx; j++) {
             for (int i=0; i<numPx; i++) {
                 int idx = sub2ind(i,j,0,numPx,numPx,1);
@@ -277,21 +283,35 @@ extern "C" {
         return rmax*1000;
     }
 
+    float calculateInteractionParam(float keV)
+    {
+        float keV_300 = 300;
+        float c = 3e8;
+        float mass_e = 9.11e-31;
+        float charge_e = 1.602e-19;
+        float lambda = calculateLambda(keV);
+        float lambda_300 = calculateLambda(keV_300);
+        float param = 2*M_PI/(lambda*keV/charge_e*1000)*(mass_e*c*c+keV*1000)/(2*mass_e*c*c+keV*1000);
+        float param_300 = 2*M_PI/(lambda_300*keV_300/charge_e*1000)*(mass_e*c*c+keV_300*1000)/(2*mass_e*c*c+keV_300*1000);
+        return param/param_300;
+    }
+
     float* calcRonch(float *buffer, int bufSize) {
         int numPx = static_cast<int>(buffer[0]);
         float al_max = buffer[1]; //mrad
         float obj_ap_r = buffer[2]; //mrad
-
+        int scalefactor = buffer[3];
+        float keV = buffer[4];
         float alrr[numPx*numPx];
         float alpp[numPx*numPx];
         float oapp[numPx*numPx];
         polarMeshnOapp(alrr,alpp, oapp, al_max, obj_ap_r, numPx);
 
-        float* sample = generateSample(numPx,numPx,8);
+        float* sample = generateSample(numPx,numPx,scalefactor);
 
-        complex<float>* trans = generateTransmissionFn(sample,numPx,numPx,1);
+        complex<float>* trans = generateTransmissionFn(sample,numPx,numPx,calculateInteractionParam(keV));
 
-        float* chi0 = calculateChi0(&buffer[3], &buffer[17], alrr, alpp, numPx, 14);
+        float* chi0 = calculateChi0(&buffer[5], &buffer[19], alrr, alpp, numPx, 14, keV);
 
         complex<float> * chi = calculateChi(chi0, numPx);
         chi0 = maskChi0(chi0,numPx,M_PI/4);

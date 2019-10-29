@@ -113,7 +113,11 @@ function drawGrayscaleBitmap(ctx,bitmap,numPx) {
     }
 }
 
-function energyCalc(){
+function lambdaCalc(keV){
+    return 12.3986/Math.sqrt((2*511+keV)*keV) *ang;
+}
+
+function energyUI(){
     var keV = Number(document.getElementById("beamvolt").value);
 
     if(keV<0)
@@ -122,7 +126,7 @@ function energyCalc(){
         document.getElementById("beamvolt").value = 0;
     }
 
-    var lambda = 12.3986/Math.sqrt((2*511+keV)*keV) *ang;
+    var lambda = lambdaCalc(keV);
     document.getElementById("wavlen").value = math.round(lambda/pm,4);
 
     var alpha = Number(document.getElementById("aperture").value)* mrad;
@@ -154,9 +158,8 @@ function interactionParam(){
     var c = 3e8;
     var mass_e = 9.11e-31;
     var charge_e = 1.602e-19;
-    var lambda = energyCalc();
     var keV = Number(document.getElementById("beamvolt").value);
-
+    var lambda = lambdaCalc(keV);
     var param = 2*PI/(lambda*keV/charge_e*1000)*(mass_e*c*c+keV*1000)/(2*mass_e*c*c+keV*1000);
     var param_300 = 2*PI/(lambda*300/charge_e*1000)*(mass_e*c*c+300*1000)/(2*mass_e*c*c+300*1000);
     return param/param_300;
@@ -216,7 +219,7 @@ function hasWASM()
 
 function calcButton(){
     let t0 = performance.now();
-
+    energyUI();
     if(hasWASM())
     {
         document.getElementById('loading').innerHTML = "Calculating with WebAssembly..."
@@ -238,7 +241,8 @@ function calculateJS(){
     ////////
     //reading in constants from ui:
     ////////
-    let lambda = energyCalc()
+    let keV = Number(document.getElementById("beamvolt").value);    
+    let lambda = lambdaCalc(keV);
     let obj_ap_r = getObjAperture()
     let numPx = getDispSizePx()
     let disp_size_mrad = getDispSizeMrad()
@@ -324,7 +328,8 @@ function calculateWASM(Module){
     ////////
     //reading in constants from ui:
     ////////
-    let lambda = energyCalc()
+    let keV = Number(document.getElementById("beamvolt").value);    
+    let lambda = lambdaCalc(keV)
     let obj_ap_r = getObjAperture()
     let numPx = getDispSizePx()
     let disp_size_mrad = getDispSizeMrad()
@@ -344,8 +349,7 @@ function calculateWASM(Module){
         ab_mags.push(mag_val);
         ab_angles.push(arg_val);
     }
-
-    let params = [numPx,al_max,obj_ap_r];
+    let params = [numPx,al_max,obj_ap_r, scalefactor, keV];
     const arrayDataToPass = params.concat(ab_mags,ab_angles);
     let buffer
     let error
