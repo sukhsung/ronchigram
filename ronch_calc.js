@@ -143,7 +143,7 @@ function randButton(){
     },0);
 }
 
-function loadSample(scalefactor,numPx){
+function generateSample(scalefactor,numPx){
     var subsample = math.random([numPx/scalefactor,numPx/scalefactor]);
     var supersample = math.zeros(numPx,numPx);
     //quick nearest neightbours interpolation
@@ -197,6 +197,43 @@ function getDispSizeMrad() {
     return disp_size_mrad
 }
 
+function polarMeshOapp(r_max, obj_ap_r, numPx) {
+    const center = numPx/2;
+    let idx;
+    let xval;
+    let yval;
+    let rval;
+
+    let curRR = [];
+    let curPP = [];
+    let curOb = [];
+
+    let rr =[];
+    let pp =[];
+    let oapp=[];
+    let rrPPObj = [];
+    for (let j =0; j <numPx; j++) {
+        for (let i =0; i<numPx; i++) {
+            xval = (i-center)/center*r_max;
+            yval = (j-center)/center*r_max;
+            rval = math.sqrt(math.pow(xval,2)+math.pow(yval,2));
+            curRR.push(rval);
+            curPP.push(math.atan2(yval,xval));
+            curOb.push(rval>obj_ap_r ? 0 : 1);
+        }
+        rr.push(curRR);
+        pp.push(curPP);
+        oapp.push(curOb);
+        curRR =[];
+        curPP =[];
+        curOb =[];
+    }
+    rrPPObj.push(rr);
+    rrPPObj.push(pp);
+    rrPPObj.push(oapp);
+    return rrPPObj;
+}
+
 function hasWASM()
 {
     //per @JF-Bastien https://stackoverflow.com/questions/47879864/how-can-i-check-if-a-browser-supports-webassembly
@@ -236,6 +273,28 @@ function calcButton(){
 
 }
 
+function maskChi0(chi0, alrr, numPx) {
+    let rmax = 1e5;
+    let maskedChi0 = [];
+    let curMasked = [];
+    let cv;
+    for (let i = 0; i <numPx; i++) {
+        for (let j=0; j<numPx; j++) {
+            cv = (math.abs(chi0[i][j])>PI/4) ? 0 : 1;
+            curMasked.push(cv*255);
+            cv = (1-cv)*alrr[i][j];
+            if (cv > 0 && cv < rmax) {
+                rmax =cv;
+            }
+        }
+        maskedChi0.push(curMasked);
+        curMasked=[];
+    }
+    let returns = [];
+    returns.push(maskedChi0);
+    returns.push(rmax*1000);
+    return returns;
+}
 
 function calculateJS(){
     ////////
@@ -249,29 +308,14 @@ function calculateJS(){
     let scalefactor = Number(document.getElementById("sample_scale_factor").value);
     let draw_overlay = document.getElementById("draw_overlay").checked; //figure out how to read from checkbox
     let al_max = disp_size_mrad;
+    
+    let rrPPObj = polarMeshOapp(al_max,obj_ap_r, numPx);
+    let alrr = math.matrix(rrPPObj[0]);
+    let alpp = math.matrix(rrPPObj[1]);
+    let obj_ap = math.matrix(rrPPObj[2]);
 
-    let al_vec = math.matrix(math.range(-al_max,al_max,(2*al_max)/(numPx)));
-    al_vec.resize([numPx,1])
-
-    let alxx = math.multiply(math.ones(numPx,1),math.transpose(al_vec));
-    let alyy = math.transpose(alxx);
-
-    let alrr = math.sqrt(math.add(math.dotPow(alxx,2),math.dotPow(alyy,2)));
-    let alpp = math.atan2(alyy,alxx);
-
-    let obj_ap = alrr.map(function (value, index, matrix) {
-        if(value < obj_ap_r)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    });
-
-    let out_ronch = math.zeros(numPx,numPx);
-    let sample = loadSample(scalefactor,numPx);
+    let sample = generateSample(scalefactor,numPx);
+    
     let trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25,interactionParam(), sample)  );
     
     let aber = getAberrations();
@@ -287,27 +331,14 @@ function calculateJS(){
     //To place objective before sample:
     //var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
     let expchi0 = math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) );
-    out_ronch = math.add(out_ronch,  math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2));
 
+    let out_ronch = math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2);
     out_ronch = math.round(normalizeScale(out_ronch,255));
     out_ronch = out_ronch.toArray();
-    let out_phase_map = chi0.map(function (value, index, matrix) {
-        if(value < PI/4 && value > -PI/4)
-        {
-            return 1;            
-        }
-        else
-        {
-            return 0;
-        }
-    });
 
-    let rmax = math.dotDivide(1,math.dotMultiply(alrr,math.subtract(out_phase_map,1)));
-    rmax = math.min(rmax);
-    rmax = -1/(rmax*mrad); //mrads
-
-    out_phase_map = math.round(normalizeScale(math.abs(out_phase_map),255));
-    out_phase_map = out_phase_map.toArray();
+    let returnVal = maskChi0(chi0.toArray(), alrr.toArray(), numPx) ;
+    out_phase_map = (returnVal[0]);
+    rmax = returnVal[1];
     
     canvas1.width = numPx;
     canvas1.height = numPx;

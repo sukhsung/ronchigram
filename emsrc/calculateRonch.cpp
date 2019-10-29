@@ -193,21 +193,18 @@ extern "C" {
         return chi;
     }
 
-    float* maskChi0(float* chi0, int numPx, float threshold)
-    {
-        float* maskedChi0 = new float[numPx*numPx];
+    float maskChi0(float* chi0, float* alrr, int numPx, float threshold)
+    {   
+        float rmax = 1e5;
         for(int i = 0; i < numPx*numPx; i++)
         {
-            if(chi0[i]< threshold && chi0[i] > -threshold)
-            {
-                maskedChi0[i] = 1;
-            }
-            else
-            {
-                maskedChi0[i] = 0;
+            chi0[i] = 255*((abs(chi0[i])>threshold) ? 0 : 1);
+            float cv = (1-chi0[i])*alrr[i];
+            if (cv > 0 && cv < rmax) {
+                rmax =cv;
             }
         }
-        return maskedChi0;
+        return rmax*1000;
     }
 
     float* fftShift(float* original, int numPx)
@@ -269,19 +266,6 @@ extern "C" {
         }
         return diffInt;
     }
-    float getPi4Aperture(float * chi0, float* alrr, int numPx){
-        float rmax = 1e5;
-        for(int i = 0; i < numPx*numPx; i++)
-        {
-            //1 outside, 0 inside
-            float cv = (1-chi0[i])*alrr[i];
-            if(cv > 0 && cv < rmax)
-            {
-                rmax = cv;
-            }
-        }
-        return rmax*1000;
-    }
 
     float calculateInteractionParam(float keV)
     {
@@ -302,6 +286,7 @@ extern "C" {
         float obj_ap_r = buffer[2]; //mrad
         int scalefactor = buffer[3];
         float keV = buffer[4];
+        float* outputScalars = new float[1];
         float alrr[numPx*numPx];
         float alpp[numPx*numPx];
         float oapp[numPx*numPx];
@@ -314,12 +299,12 @@ extern "C" {
         float* chi0 = calculateChi0(&buffer[5], &buffer[19], alrr, alpp, numPx, 14, keV);
 
         complex<float> * chi = calculateChi(chi0, numPx);
-        chi0 = maskChi0(chi0,numPx,M_PI/4);
-        float* outputScalars = new float[1];
-        outputScalars[0] = getPi4Aperture(chi0, alrr, numPx);
-        chi0 = normalize(chi0, 255, numPx,numPx);
-        float* ronch = normalize(calcDiffract(chi,trans,oapp,numPx),255,numPx,numPx);
+        // Calculate r_max and return,  and turn chi0 into pi/4map Normalized
+        outputScalars[0] = maskChi0(chi0,alrr, numPx,M_PI/4);
 
+        // Normalize to 0-255 for output
+        float* ronch = normalize(calcDiffract(chi,trans,oapp,numPx),255,numPx,numPx);
+        // Package results and return
         auto arrayPtr = packageOutput(ronch, chi0, outputScalars, numPx, numPx,1);
         return arrayPtr;
     }
