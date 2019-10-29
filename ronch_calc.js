@@ -247,29 +247,20 @@ function hasWASM()
                     return new WebAssembly.Instance(module) instanceof WebAssembly.Instance;
             }
         } catch (e) {
+            console.log(e);
         }
         return false;
     })();
-
+    if (!supported) {
+        console.log('Wasm not supported');
+    }
     return supported;
 }
 
 function calcButton(){
     let t0 = performance.now();
-    energyUI();
-    if(hasWASM())
-    {
-        document.getElementById('loading').innerHTML = "Calculating with WebAssembly..."
-        console.log("wasm supported");
-        let curInstance = ronchModule().then(function(Module){ calculateWASM(Module); Module.delete });
-    }
-    else
-    {
-        document.getElementById('loading').innerHTML = "Calculating with Javascript..."
-        console.log("wasm not supported");
-        calculateJS();
-    }
-    console.log("dT="+(performance.now()-t0)+" ms");
+    calculate();
+    console.log("dT"+(performance.now()-t0)+" ms");
 
 }
 
@@ -434,8 +425,23 @@ function calculateWASM(Module){
     document.getElementById("alpha_max").value = math.round(rmax,2);
 }
 
-function randomize(){
+function calculate(){
+    energyUI();
+    if(hasWASM() && !forceJS.checked)
+    {
+        document.getElementById('loading').innerHTML = "Calculating with WebAssembly..."
+        console.log("Calculating with WebAssembly...");
+        let curInstance = ronchModule().then(function(Module){ calculateWASM(Module); Module.delete });
+    }
+    else
+    {
+        document.getElementById('loading').innerHTML = "Calculating with Javascript..."
+        console.log("Calculating with Javascript...");
+        calculateJS();
+    }
+}
 
+function randomize(){
     for(var it = 0; it < aberrations.length; it++)
     {
         var aberration = aberrations[it];
@@ -486,6 +492,8 @@ var canvas1 = document.getElementById("canvas1");
 var ctx1 = canvas1.getContext("2d");
 var canvas2 = document.getElementById("canvas2");
 var ctx2 = canvas2.getContext("2d");
+
+var forceJS = document.getElementById("forceJS"); //figure out how to read from checkbox
 
 var aberration_list = ["C10","C12","C21","C23","C30","C32","C34","C41","C43","C45","C50","C52","C54","C56"];
 var aberrations = [];
