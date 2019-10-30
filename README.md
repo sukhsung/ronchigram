@@ -1,1 +1,2 @@
-emcc calculateRonch.cpp -o index.js -s WASM=1 -std=c++11 -s "EXPORTED_FUNCTIONS=['_calcRonch']" -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall']"
+Simulate Ronchigram on the fly using WebAssembly (Fast) or Javascript (Slow). 
+WebAssembly mode uses KissFFT (https://github.com/mborgerding/kissfft) an JS mode use mrquincle's JS FFT (https://gist.github.com/mrquincle/b11fff96209c9d1396b0)
