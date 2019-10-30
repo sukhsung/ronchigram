@@ -75,18 +75,22 @@ function drawOverlays(ctx1, ctx2, numPx,al_max, disp_size_mrad, obj_ap_r, rmax) 
 }
 
 function getAberrations(){
-    var ab_list = [];
-
-    for(var it = 0; it < aberrations.length; it++)
+    let ab_mags = [];
+    let ab_angles = [];
+    let abers = [];
+    let numAbers = aberrations.length;
+    for(let it = 0; it < numAbers; it++)
     {
-        
-        var aberration = aberrations[it];
-        var mag_val = Number(aberration.mag_el.value)*aberration.mag_unit;
-        var arg_val = (aberration.arg_el ? Number(aberration.arg_el.value) : 0)*deg;
-        ab_list.push([aberration.m, aberration.n, mag_val, arg_val]);
+        let aberration = aberrations[it];
+        let mag_val = Number(aberration.mag_el.value)*aberration.mag_unit;
+        let arg_val = (aberration.arg_el ? Number(aberration.arg_el.value) : 0)*deg;
+        ab_mags.push(mag_val);
+        ab_angles.push(arg_val);
     }
-
-    return math.matrix(ab_list);
+    abers.push(ab_mags);
+    abers.push(ab_angles);
+    abers.push(numAbers);
+    return abers;
 
 }
 
@@ -258,10 +262,7 @@ function hasWASM()
 }
 
 function calcButton(){
-    let t0 = performance.now();
     calculate();
-    console.log("dT"+(performance.now()-t0)+" ms");
-
 }
 
 function maskChi0(chi0, alrr, numPx) {
@@ -287,90 +288,108 @@ function maskChi0(chi0, alrr, numPx) {
     return returns;
 }
 
-function calculateJS(){
-    ////////
-    //reading in constants from ui:
-    ////////
-    let keV = Number(document.getElementById("beamvolt").value);    
+function calculateChi0(mags, angles, alrr, alpp, numPx, numAbers, keV){
+    
+    let n = [1,1,2,2,3,3,3,4,4,4,5,5,5,5];
+    let m = [0,2,1,3,0,2,4,1,3,5,0,2,4,6];
     let lambda = lambdaCalc(keV);
-    let obj_ap_r = getObjAperture()
-    let numPx = getDispSizePx()
-    let disp_size_mrad = getDispSizeMrad()
-    let scalefactor = Number(document.getElementById("sample_scale_factor").value);
-    let draw_overlay = document.getElementById("draw_overlay").checked; //figure out how to read from checkbox
-    let al_max = disp_size_mrad;
-    
-    let rrPPObj = polarMeshOapp(al_max,obj_ap_r, numPx);
-    let alrr = math.matrix(rrPPObj[0]);
-    let alpp = math.matrix(rrPPObj[1]);
-    let obj_ap = math.matrix(rrPPObj[2]);
 
-    let sample = generateSample(scalefactor,numPx);
-    
-    let trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25,interactionParam(), sample)  );
-    
-    let aber = getAberrations();
-    let numAber = aber.size()[0];
+    let curRow = [];
+    let curVal;
+    let chi0 = [];
 
-    let chi = math.zeros(numPx,numPx);
-
-    for(let it = 0; it < numAber; it++)
-    {
-        chi = math.add(chi, math.dotMultiply(math.dotMultiply(math.cos(math.dotMultiply(aber.subset(math.index(it,1)),math.subtract(alpp,aber.subset(math.index(it,3))))),math.dotPow(alrr,aber.subset(math.index(it,0))+1)), aber.subset(math.index(it,2))/(aber.subset(math.index(it,0))+1) ));
+    for (let i=0; i< numPx; i++) {
+        for (let j=0; j<numPx; j++) {
+            curVal = 0;
+            for (let k=0; k<numAbers; k++) {
+                curVal = curVal+2*PI/lambda*mags[k]*math.pow(alrr[i][j],n[k]+1)*math.cos(m[k]*(alpp[i][j]-angles[k]))/(n[k]+1);
+            }
+            curRow.push(curVal);
+        }
+        chi0.push(curRow);
+        curRow = [];
     }
-    let chi0 = math.dotMultiply(2*PI/lambda, chi);
-    //To place objective before sample:
-    //var expchi0 = math.dotMultiply(math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) ), obj_ap);
-    let expchi0 = math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),chi0) );
+    return chi0;
 
-    let out_ronch = math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(expchi0.toArray()))).toArray())),obj_ap)),2);
-    out_ronch = math.round(normalizeScale(out_ronch,255));
-    out_ronch = out_ronch.toArray();
+}
 
-    let returnVal = maskChi0(chi0.toArray(), alrr.toArray(), numPx) ;
-    out_phase_map = (returnVal[0]);
-    rmax = returnVal[1];
-    
+function drawEverything(out_ronch, out_phase_map, numPx,al_max,disp_size_mrad, obj_ap_r, rmax) {
+    // drawing part
     canvas1.width = numPx;
     canvas1.height = numPx;
     canvas2.width = numPx;
     canvas2.height = numPx;
     drawGrayscaleBitmap(ctx1,out_ronch,numPx);
     drawGrayscaleBitmap(ctx2,out_phase_map,numPx);    
-    
     if(draw_overlay) {
         drawOverlays(ctx1, ctx2, numPx,al_max,disp_size_mrad, obj_ap_r, rmax)
     }
-
-    document.getElementById('loading').innerHTML = " "  
+    
     document.getElementById("alpha_max").value = math.round(rmax,2);
+
 }
+
+function calculateJS(){
+    ////////
+    //reading in constants from ui:
+    ////////
+    let numPx =getDispSizePx();
+    let disp_size_mrad = getDispSizeMrad()
+    let al_max = disp_size_mrad;
+    let obj_ap_r = getObjAperture()
+    let keV = Number(document.getElementById("beamvolt").value); 
+    let scalefactor = Number(document.getElementById("sample_scale_factor").value);
+    
+    let rrPPObj = polarMeshOapp(al_max,obj_ap_r, numPx);
+    let alrr = rrPPObj[0];
+    let alpp = rrPPObj[1];
+    let obj_ap = math.matrix(rrPPObj[2]);
+
+    let sample = generateSample(scalefactor,numPx);
+    
+    let trans = math.exp(  math.multiply(math.complex(0,-1),PI,.25,interactionParam(), sample)  );
+    
+    let abers = getAberrations();
+    let ab_mags = abers[0];
+    let ab_angles = abers[1];
+    let numAbers = abers[2];
+
+    let chi0 = calculateChi0(ab_mags, ab_angles, alrr, alpp, numPx, numAbers, keV)
+
+    let chi = math.dotPow(math.E, math.dotMultiply(math.complex(0,-1),math.matrix(chi0)));
+    // //To place objective before sample:
+    //var chi = math.dotMultiply(chi, obj_ap);
+
+    let out_ronch = math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans,math.matrix(fft2_wrap(chi.toArray()))).toArray())),obj_ap)),2);
+    
+    out_ronch = math.round(normalizeScale(out_ronch,255));
+    out_ronch = out_ronch.toArray();
+
+    let returnVals = maskChi0(chi0, alrr, numPx) ;
+    let out_phase_map = returnVals[0];
+    let rmax = returnVals[1];
+
+    drawEverything(out_ronch,out_phase_map, numPx,al_max,disp_size_mrad, obj_ap_r, rmax)
+}
+
 
 function calculateWASM(Module){
     ////////
     //reading in constants from ui:
     ////////
-    let keV = Number(document.getElementById("beamvolt").value);    
-    let lambda = lambdaCalc(keV)
-    let obj_ap_r = getObjAperture()
-    let numPx = getDispSizePx()
+    let numPx =getDispSizePx();
     let disp_size_mrad = getDispSizeMrad()
+    let al_max = disp_size_mrad;
+    let obj_ap_r = getObjAperture()
+    let keV = Number(document.getElementById("beamvolt").value);    
     let scalefactor = Number(document.getElementById("sample_scale_factor").value);
     let draw_overlay = document.getElementById("draw_overlay").checked; //figure out how to read from checkbox
-    let al_max = disp_size_mrad;
 
     // getting aberrations into tidy arrays of magnitude, angle. degree, order  are assumed based on order in C++ section, units are baked in!
-    let ab_mags = [];
-    let ab_angles = [];
-
-    for(let it = 0; it < aberrations.length; it++)
-    {
-        let aberration = aberrations[it];
-        let mag_val = Number(aberration.mag_el.value)*aberration.mag_unit;
-        let arg_val = (aberration.arg_el ? Number(aberration.arg_el.value) : 0)*deg;
-        ab_mags.push(mag_val);
-        ab_angles.push(arg_val);
-    }
+    let abers = getAberrations();
+    let ab_mags = abers[0];
+    let ab_angles = abers[1];
+    globalTest = 250;
     let params = [numPx,al_max,obj_ap_r, scalefactor, keV];
     const arrayDataToPass = params.concat(ab_mags,ab_angles);
     let buffer
@@ -395,43 +414,35 @@ function calculateWASM(Module){
 
     let arrayData1 =[]
     let arrayData2 = []
-    let imData1 = []
-    let imData2 = []
+    let out_ronch = []
+    let out_phase_map = []
     let im2Offset = numPx*numPx;
     for (let j=0; j<numPx;j++) {
         for (let i=0; i<numPx; i++) {
             arrayData1.push(Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ i+numPx*j])
             arrayData2.push(Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ i+numPx*j + im2Offset])
         }
-        imData1.push(arrayData1)
-        imData2.push(arrayData2)
+        out_ronch.push(arrayData1)
+        out_phase_map.push(arrayData2)
         arrayData1 = []
         arrayData2 = []
     }
     let rmax = Module.HEAPF32[result/Float32Array.BYTES_PER_ELEMENT+ 2*(numPx*numPx)];
     
-    canvas1.width = numPx;
-    canvas1.height = numPx;
-    canvas2.width = numPx;
-    canvas2.height = numPx;
-    drawGrayscaleBitmap(ctx1,imData1,numPx);
-    drawGrayscaleBitmap(ctx2,imData2,numPx);
-
-    if(draw_overlay) {
-        drawOverlays(ctx1, ctx2, numPx,al_max,disp_size_mrad, obj_ap_r, rmax)
-    }
-
-    document.getElementById('loading').innerHTML = " "
-    document.getElementById("alpha_max").value = math.round(rmax,2);
+    drawEverything(out_ronch,out_phase_map, numPx,al_max,disp_size_mrad, obj_ap_r, rmax)
 }
 
 function calculate(){
+    let t0 = performance.now();
     energyUI();
-    if(hasWASM() && !forceJS.checked)
+    if( hasWASM && !forceJS.checked)
     {
         document.getElementById('loading').innerHTML = "Calculating with WebAssembly..."
         console.log("Calculating with WebAssembly...");
-        let curInstance = ronchModule().then(function(Module){ calculateWASM(Module); Module.delete });
+        let curInstance = ronchModule().then(function(Module){ 
+            calculateWASM(Module); 
+            Module.delete; 
+        });
     }
     else
     {
@@ -439,8 +450,13 @@ function calculate(){
         console.log("Calculating with Javascript...");
         calculateJS();
     }
+    console.log("dT = "+(performance.now()-t0)+" ms");
 }
 
+function initialize() {
+    hasWASM = hasWASM();
+    calculate();
+}
 function randomize(){
     for(var it = 0; it < aberrations.length; it++)
     {
@@ -451,7 +467,7 @@ function randomize(){
             aberration.arg_el.value = Math.round(Math.random()*180);
         }
     }
-    calcButton();
+    calculate();
 }
 
 function allZero(){
@@ -498,6 +514,8 @@ var forceJS = document.getElementById("forceJS"); //figure out how to read from 
 var aberration_list = ["C10","C12","C21","C23","C30","C32","C34","C41","C43","C45","C50","C52","C54","C56"];
 var aberrations = [];
 
+var hasWASM;
+
 for(var it = 0; it < aberration_list.length; it++)
 {
     var ab_name = aberration_list[it];
@@ -529,4 +547,4 @@ for(var it = 0; it < aberration_list.length; it++)
     aberrations.push(ab_obj);
 }
 
-calcButton();
+initialize();

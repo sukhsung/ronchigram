@@ -163,16 +163,11 @@ extern "C" {
         int n[14] = {1,1,2,2,3,3,3,4,4,4,5,5,5,5};
         int m[14] = {0,2,1,3,0,2,4,1,3,5,0,2,4,6};
         float lambda = calculateLambda(keV);
-        for (int j=0; j<numPx; j++) {
-            for (int i=0; i<numPx; i++) {
-                int idx = sub2ind(i,j,0,numPx,numPx,1);
-                chi0[idx] = 0;
-            }
-        }
 
         for (int j=0; j<numPx; j++) {
             for (int i=0; i<numPx; i++) {
                 int idx = sub2ind(i,j,0,numPx,numPx,1);
+                chi0[idx] = 0;
                 for(int k = 0; k < numAbs; k++)
                 {
                     chi0[idx] = chi0[idx]+2*M_PI/lambda*magptr[k]*pow(alrr[idx],n[k]+1)*cos(m[k]*(alpp[idx]-angleptr[k]))/(n[k]+1);
