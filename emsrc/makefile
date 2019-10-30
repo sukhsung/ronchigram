@@ -5,6 +5,7 @@ all : calculateRonch.cpp kiss_fftnd.c kiss_fft.c
 		-s DEMANGLE_SUPPORT=1 \
 		-s MODULARIZE=1 \
 		-s EXPORT_NAME="ronchModule" \
+		-s ALLOW_MEMORY_GROWTH=1 \
 		-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall"]'
 
 test : calculateRonch.cpp kiss_fftnd.c kiss_fft.c
