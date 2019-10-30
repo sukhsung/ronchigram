@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<title>Ronchigram</title>
-	<meta charset="utf-8"> 
-	<link rel="stylesheet" type="text/css" href="index.css">
-	<link rel="icon" type="image/x-icon" href="favicon.ico">
-	<!-- Global site tag (gtag.js) - Google Analytics 
+    <title>Ronchigram</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- Global site tag (gtag.js) - Google Analytics 
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-122222775-1"></script>
 	<script>
 	  window.dataLayer = window.dataLayer || [];
@@ -17,319 +18,346 @@
 -->
 
 </head>
+
 <body>
-	<div id="title">
-		<h1>RONCHIGRAM</h1>
-	</div>
-	<div id="subtitle">
-				See also: <a id="paperlink" href="introduction_to_the_ronchigram_and_its_calculation_with_ronchigramcom.pdf">Schnitzer, N., Sung, S. H., & Hovden, R. (2019). Introduction to the Ronchigram and its Calculation with Ronchigram. com. Microscopy Today, 27(3), 12-15.</a>
-	</div>
-	<div id ="loading">
-		
-	</div>
-	<div class="im_rapper">
-		<div id ="can1div">
-			<h2>Ronchigram</h2>
-			<canvas id="canvas1" class ="im"> </canvas>
-		</div>
-		<div id ="can2div">
-			<h2>&pi;/4 Phase Limit</h2>
-			<canvas id="canvas2" class ="im"> </canvas>
-		</div>
-	</div>
+    <div id="title">
+        <h1>RONCHIGRAM</h1>
+    </div>
+    <div id="subtitle">
+        See also: <a id="paperlink" href="introduction_to_the_ronchigram_and_its_calculation_with_ronchigramcom.pdf">Schnitzer, N., Sung, S. H.,
+			& Hovden, R. (2019). Introduction to the Ronchigram and its Calculation with Ronchigram. com. Microscopy
+			Today, 27(3), 12-15.</a>
+    </div>
+    <div id="loading">
 
+    </div>
+    <div class="im_rapper">
+        <div id="can1div">
+            <h2>Ronchigram</h2>
+            <canvas id="canvas1" class="im"> </canvas>
+        </div>
+        <div id="can2div">
+            <h2>&pi;/4 Phase Limit</h2>
+            <canvas id="canvas2" class="im"> </canvas>
+        </div>
+    </div>
 
+    <div id="settings">
+        <h2>e<sup>-</sup> Beam Energy = <input onchange="energyUI()" type="text" id="beamvolt" size="3" value="300"> keV
+			&rArr; Wavelength = <input type="text" id="wavlen" size="6" disabled class="disable"> pm </h2>
+        <h2><span style="color: #FF0000;font-size: 1em;">&#9675;</span> Objective Aperture Semiangle = <input
+				type="text" id="aperture" onchange="energyUI()" size="3" value="95"> mrad</h2>
+        <h2>Diffraction Limited Resolution = <input type="text" id="diffres" size="6" disabled class="disable"> pm</h2>
 
-	<div id = "settings">
-		<h2>e<sup>-</sup> Beam Energy = <input onchange="energyUI()" type="text" id="beamvolt" size = "3" value = "300"> keV &rArr; Wavelength = <input type="text" id="wavlen" size = "6" disabled class="disable"> pm </h2>
-		<h2><span style="color: #FF0000;font-size: 1em;">&#9675;</span> Objective Aperture Semiangle = <input type="text" id="aperture" onchange="energyUI()" size = "3" value = "95"> mrad</h2>
-		<h2>Diffraction Limited Resolution = <input type="text" id="diffres" size ="6" disabled class="disable"> pm</h2>
+        <h2><span style="color: #0000FF;font-size: 1em">&#9675;</span> π/4 Aperture Semiangle = <input type="text"
+				id="alpha_max" size="4" disabled class="disable"> mrad</h2>
+        <input type="checkbox" id="draw_overlay" checked>Show image overlays</input>
+    </div>
 
-		<h2><span style="color: #0000FF;font-size: 1em">&#9675;</span> π/4 Aperture Semiangle = <input type="text" id="alpha_max" size = "4" disabled class="disable"> mrad</h2>
-		<input type="checkbox" id="draw_overlay" checked>Show image overlays</input>
-	</div>
+    <div id="eq">
+        &chi;(&alpha;,&Phi;) = &Sigma;<sub>n,m</sub>[ C<sub>n,m</sub> &alpha;
+        <sup>n+1</sup>cos(m(&Phi;-&Phi;<sub>n,m</sub>))/(n+1) ]
+    </div>
 
-	<div id="eq">
-		&chi;(&alpha;,&Phi;) = &Sigma;<sub>n,m</sub>[ C<sub>n,m</sub> &alpha;<sup>n+1</sup>cos(m(&Phi;-&Phi;<sub>n,m</sub>))/(n+1) ]
-	</div>
+    <div id="buttons">
+        <div>
+            <button onclick="randButton()" class="blue">RANDOMIZE</button>
+            <button onclick="calcButton()" class="red">CALCULATE</button>
+            <button onclick="allZero()" class="blue">ALL ZERO</button>
+        </div>
+    </div>
 
+    <div id="aberrations">
+        <div class="aber_wrapper_head">
+            <div class="aber_list">
+                Aberration
+            </div>
+            <div class="alt_list">
+                <p>Symbol</p>
+                <p>(Haider)</p>
+            </div>
+            <div class="aber">
+                <p>Symbol</p>
+                <p>(Krivanek)</p>
+            </div>
+        </div>
 
-	<div id="buttons">
-		<div>
-			<button onclick="randButton()" class ="blue">RANDOMIZE</button> 
-			<button onclick="calcButton()" class ="red">CALCULATE</button>
-			<button onclick="allZero()"   class ="blue">ALL ZERO</button> 
-		</div>
-	</div>
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                Defocus
+            </div>
+            <div class="alt_list">
+                C<sub>1</sub>
+            </div>
+            <div class="aber">
+                C<sub>10</sub>:
+                <input type="text" id="C10" value="0" size="4"> &#197;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(10)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-	<div id="aberrations">
-		<div class ="aber_wrapper_head">
-			<div class = "aber_list">
-				Aberration
-			</div>
-			<div class = "alt_list">
-				<p>Symbol</p>
-				<p>(Haider)</p>
-			</div>
-			<div class = "aber">
-				<p>Symbol</p>
-				<p>(Krivanek)</p>
-			</div>
-		</div>
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                2-Fold Astigmatism
+            </div>
+            <div class="alt_list">
+                A<sub>1</sub>
+            </div>
+            <div class="aber">
+                C<sub>12</sub>:
+                <input type="text" id="C12" value="-.849" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>12</sub>:
+                <input type="text" id="P12" value="0" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(12)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				Defocus
-			</div>
-			<div class = "alt_list">
-				C<sub>1</sub>
-			</div>
-			<div class = "aber">
-				C<sub>10</sub>: <input type="text" id="C10" value="0" size="4"> &#197;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(10)" class = "yellow"> ADD </button>
-			</div>
-		</div>
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                Axial Coma
+            </div>
+            <div class="alt_list">
+                B<sub>2</sub>
+            </div>
+            <div class="aber">
+                C<sub>21</sub>:
+                <input type="text" id="C21" value="1.38" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>21</sub>:
+                <input type="text" id="P21" value="0" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(21)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				2-Fold Astigmatism
-			</div>
-			<div class = "alt_list">
-				A<sub>1</sub>
-			</div>
-			<div class = "aber">
-				C<sub>12</sub>: <input type="text" id="C12" value="-.849" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>12</sub>: <input type="text" id="P12" value="0" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(12)" class = "yellow"> ADD </button>
-			</div>
-		</div>
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                3-Fold Astigmatism
+            </div>
+            <div class="alt_list">
+                A<sub>2</sub>
+            </div>
+            <div class="aber">
+                C<sub>23</sub>:
+                <input type="text" id="C23" value="1.59" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>23</sub>:
+                <input type="text" id="P23" value="35" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(23)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				Axial Coma
-			</div>
-			<div class = "alt_list">
-				B<sub>2</sub>
-			</div>
-			<div class = "aber">
-				C<sub>21</sub>: <input type="text" id="C21" value="1.38" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>21</sub>: <input type="text" id="P21" value="0" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(21)" class = "yellow"> ADD </button>
-			</div>
-		</div>
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                3rd Order Spherical
+            </div>
+            <div class="alt_list">
+                C<sub>3</sub>
+            </div>
+            <div class="aber">
+                C<sub>30</sub>:
+                <input type="text" id="C30" value="235" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(30)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				3-Fold Astigmatism
-			</div>
-			<div class = "alt_list">
-				A<sub>2</sub>
-			</div>
-			<div class = "aber">
-				C<sub>23</sub>: <input type="text" id="C23" value="1.59" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>23</sub>: <input type="text" id="P23" value="35" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(23)" class = "yellow"> ADD </button>
-			</div>
-		</div>
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                3rd Order Axial Star
+            </div>
+            <div class="alt_list">
+                S<sub>3</sub>
+            </div>
+            <div class="aber">
+                C<sub>32</sub>:
+                <input type="text" id="C32" value="-118" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>32</sub>:
+                <input type="text" id="P32" value="0" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(32)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				3rd Order Spherical
-			</div>
-			<div class = "alt_list">
-				C<sub>3</sub>
-			</div>
-			<div class = "aber">
-				C<sub>30</sub>: <input type="text" id="C30" value="235" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(30)" class = "yellow"> ADD </button>
-			</div>
-		</div>
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                4-Fold Astigmatism
+            </div>
+            <div class="alt_list">
+                A<sub>3</sub>
+            </div>
+            <div class="aber">
+                C<sub>34</sub>:
+                <input type="text" id="C34" value="65.1" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>34</sub>:
+                <input type="text" id="P34" value="0" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(34)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				3rd Order Axial Star
-			</div>
-			<div class = "alt_list">
-				S<sub>3</sub>
-			</div>
-			<div class = "aber">
-				C<sub>32</sub>: <input type="text" id="C32" value="-118" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>32</sub>: <input type="text" id="P32" value="0" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(32)" class = "yellow"> ADD </button>
-			</div>
-		</div>
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                4th Order Axial Coma
+            </div>
+            <div class="alt_list">
+                B<sub>4</sub>
+            </div>
+            <div class="aber">
+                C<sub>41</sub>:
+                <input type="text" id="C41" value="2.23" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>41</sub>:
+                <input type="text" id="P41" value="0" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(41)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				4-Fold Astigmatism
-			</div>
-			<div class = "alt_list">
-				A<sub>3</sub>
-			</div>
-			<div class = "aber">
-				C<sub>34</sub>: <input type="text" id="C34" value="65.1" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>34</sub>: <input type="text" id="P34" value="0" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(34)" class = "yellow"> ADD </button>
-			</div>
-		</div>
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                3-Lobe Aberration
+            </div>
+            <div class="alt_list">
+                D<sub>4</sub>
+            </div>
+            <div class="aber">
+                C<sub>43</sub>:
+                <input type="text" id="C43" value="-6.13" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>43</sub>:
+                <input type="text" id="P43" value="0" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(43)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				4th Order Axial Coma
-			</div>
-			<div class = "alt_list">
-				B<sub>4</sub>
-			</div>
-			<div class = "aber">
-				C<sub>41</sub>: <input type="text" id="C41" value="2.23" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>41</sub>: <input type="text" id="P41" value="0" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(41)" class = "yellow"> ADD </button>
-			</div>
-		</div>		
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                5-fold Astigmatism
+            </div>
+            <div class="alt_list">
+                A<sub>4</sub>
+            </div>
+            <div class="aber">
+                C<sub>45</sub>:
+                <input type="text" id="C45" value="-7.44" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>45</sub>:
+                <input type="text" id="P45" value="0" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(45)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				3-Lobe Aberration
-			</div>
-			<div class = "alt_list">
-				D<sub>4</sub>
-			</div>
-			<div class = "aber">
-				C<sub>43</sub>: <input type="text" id="C43" value="-6.13" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>43</sub>: <input type="text" id="P43" value="0" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(43)" class = "yellow"> ADD </button>
-			</div>
-		</div>	
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                5th Order Spherical
+            </div>
+            <div class="alt_list">
+                C<sub>5</sub>
+            </div>
+            <div class="aber">
+                C<sub>50</sub>:
+                <input type="text" id="C50" value="-0.201" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(50)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				5-fold Astigmatism
-			</div>
-			<div class = "alt_list">
-				A<sub>4</sub>
-			</div>
-			<div class = "aber">
-				C<sub>45</sub>: <input type="text" id="C45" value="-7.44" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>45</sub>: <input type="text" id="P45" value="0" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(45)" class = "yellow"> ADD </button>
-			</div>
-		</div>	
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                5th Order Axial Star
+            </div>
+            <div class="alt_list">
+                S<sub>5</sub>
+            </div>
+            <div class="aber">
+                C<sub>52</sub>:
+                <input type="text" id="C52" value="0.131" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>52</sub>:
+                <input type="text" id="P52" value="0" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(52)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				5th Order Spherical
-			</div>
-			<div class = "alt_list">
-				C<sub>5</sub>
-			</div>
-			<div class = "aber">
-				C<sub>50</sub>: <input type="text" id="C50" value="-0.201" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(50)" class = "yellow"> ADD </button>
-			</div>
-		</div>	
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                5th Order Rosette
+            </div>
+            <div class="alt_list">
+                R<sub>5</sub>
+            </div>
+            <div class="aber">
+                C<sub>54</sub>:
+                <input type="text" id="C54" value="-0.001" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>54</sub>:
+                <input type="text" id="P54" value="0" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(54)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				5th Order Axial Star
-			</div>
-			<div class = "alt_list">
-				S<sub>5</sub>
-			</div>
-			<div class = "aber">
-				C<sub>52</sub>: <input type="text" id="C52" value="0.131" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>52</sub>: <input type="text" id="P52" value="0" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(52)" class = "yellow"> ADD </button>
-			</div>
-		</div>	
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                6-fold Astigmatism
+            </div>
+            <div class="alt_list">
+                A<sub>5</sub>
+            </div>
+            <div class="aber">
+                C<sub>56</sub>:
+                <input type="text" id="C56" value="-.223" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <sub>56</sub>:
+                <input type="text" id="P56" value="0" size="4"> &deg;
+            </div>
+            <div class="aber_button">
+                <button onclick="setC(56)" class="yellow"> ADD </button>
+            </div>
+        </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				5th Order Rosette
-			</div>
-			<div class = "alt_list">
-				R<sub>5</sub>
-			</div>
-			<div class = "aber">
-				C<sub>54</sub>: <input type="text" id="C54" value="-0.001" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>54</sub>: <input type="text" id="P54" value="0" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(54)" class = "yellow"> ADD </button>
-			</div>
-		</div>	
+        <div class="aber_wrapper">
+            <div class="aber_list">
+                Chromatic Aberration
+            </div>
+            <div class="alt_list">
+                C<sub>c</sub>
+            </div>
+            <div class="aber">
+                C<sub>c</sub>: 0 m
+            </div>
+        </div>
+    </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				6-fold Astigmatism
-			</div>
-			<div class = "alt_list">
-				A<sub>5</sub>
-			</div>
-			<div class = "aber">
-				C<sub>56</sub>: <input type="text" id="C56" value="-.223" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
-				&Phi;<sub>56</sub>: <input type="text" id="P56" value="0" size="4"> &deg;
-			</div>
-			<div class = "aber_button">
-				<button onclick="setC(56)" class = "yellow"> ADD </button>
-			</div>
-		</div>	
+    <div id="settings">
+        <h4> Display Size (pixels)= <input type="text" id="disp_size_px" size="3" value="256"> Display Size (mrad) =
+			<input type="text" id="disp_size_mrad" size="3" value="200"> </h4>
+        <h4> Sample Scale (Factor of Display Size (px))=<input type="text" id="sample_scale_factor" size="3" value="8">
+		</h4>
+        <input type="checkbox" id="forceJS">Force Javascript instead of WebAssembly (Slow)</input>
+    </div>
 
-		<div class ="aber_wrapper">
-			<div class = "aber_list">
-				Chromatic Aberration
-			</div>
-			<div class = "alt_list">
-				C<sub>c</sub>
-			</div>
-			<div class = "aber">
-				C<sub>c</sub>: 0 m
-			</div>
-		</div>		
-	</div>
+    <div class="footer">
+        <p>By Suk Hyun Sung & Noah Schnitzer</p>
+        <p>@ <a href="http://hovdenlab.com">Hovden lab</a></p>
+    </div>
 
-	<div id = "settings">
-		<h4> Display Size (pixels)= <input type="text" id="disp_size_px" size = "3" value = "256"> 	Display Size (mrad) = <input type="text" id="disp_size_mrad" size = "3" value = "200">  </h4>
-		<h4> Sample Scale (Factor of Display Size (px))=<input type="text" id="sample_scale_factor" size="3" value = "8"> </h4>
-		<input type="checkbox" id="forceJS">Force Javascript instead of WebAssembly (Slow)</input>
-	</div>
-
-
-	<div class="footer">
-	  <p>By Suk Hyun Sung & Noah Schnitzer</p>
-	  <p>@ <a href="http://hovdenlab.com">Hovden lab</a></p>
-	</div>
-
-	
-	<script type="text/javascript" src="./math.min.js"></script>
-	<script type="text/javascript" src="./index.js"></script>
-	<script type="text/javascript" src="./ronch_calc.js"></script>
+    <script type="text/javascript" src="./math.min.js"></script>
+    <script type="text/javascript" src="./index.js"></script>
+    <script type="text/javascript" src="./ronch_calc.js"></script>
 
 </body>
 
 </html>
-
-
