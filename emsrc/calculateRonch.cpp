@@ -151,7 +151,6 @@ float* calculateChi0(float* magptr, float* angleptr, float* alrr, float* alpp, i
     float lambda = calculateLambda(keV);
 
     for (int i = 0; i < numPx*numPx; i++) {
-        int idx = sub2ind(i, j, 0, numPx, numPx, 1);
         chi0[i] = 0;
         for (int k = 0; k < numAbs; k++) {
             chi0[i] = chi0[i] + 2 * M_PI / lambda * magptr[k] * pow(alrr[i], n[k] + 1) * cos(m[k] * (alpp[i] - angleptr[k])) / (n[k] + 1);
