@@ -1,9 +1,9 @@
 * {
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  color: #FFFFFF;
+  color: #ffffff;
   background-color: #222222;
   text-align: center;
-  font-size: large
+  font-size: large;
 }
 
 h1 {
@@ -65,7 +65,6 @@ body {
   width: 95vw;
 }
 
-
 #buttons {
   padding-top: 20px;
   padding-bottom: 0;
@@ -92,34 +91,32 @@ button:active {
 }
 
 .blue {
-  background-color: #009FCC;
+  background-color: #009fcc;
   border: none;
 }
 
 .blue:hover {
-  background-color: #00637F;
+  background-color: #00637f;
 }
 
-
 .red {
-  background-color: #FF0058;
+  background-color: #ff0058;
   border: none;
 }
 
 .red:hover {
-  background-color: #BA0040;
+  background-color: #ba0040;
 }
 
-
 .yellow {
-  background-color: #FFC431;
+  background-color: #ffc431;
   border: none;
   box-shadow: 0 3px #444444;
   color: #222222;
 }
 
 .yellow:hover {
-  background-color: #B2871A;
+  background-color: #b2871a;
 }
 
 #aberrations {
@@ -196,7 +193,6 @@ input {
   padding: 0;
   background: #111111;
 }
-
 
 @media only screen and (max-device-width: 512px) and (orientation: portrait) {
   .im {

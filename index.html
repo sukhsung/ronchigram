@@ -7,14 +7,14 @@
     <link rel="stylesheet" type="text/css" href="index.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-122222775-1"></script>
-	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-122222775-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-	  gtag('config', 'UA-122222775-1');
-	</script>
+        gtag('config', 'UA-122222775-1');
+    </script>
 
 </head>
 
@@ -23,9 +23,10 @@
         <h1>RONCHIGRAM</h1>
     </div>
     <div id="subtitle">
-        See also: <a id="paperlink" href="introduction_to_the_ronchigram_and_its_calculation_with_ronchigramcom.pdf">Schnitzer, N., Sung, S. H.,
-			& Hovden, R. (2019). Introduction to the Ronchigram and its Calculation with Ronchigram.com. Microscopy
-			Today, 27(3), 12-15.</a>
+        See also: <a id="paperlink"
+            href="introduction_to_the_ronchigram_and_its_calculation_with_ronchigramcom.pdf">Schnitzer, N., Sung, S. H.,
+            & Hovden, R. (2019). Introduction to the Ronchigram and its Calculation with Ronchigram.com. Microscopy
+            Today, 27(3), 12-15.</a>
     </div>
     <div id="loading">
 
@@ -43,13 +44,13 @@
 
     <div id="settings">
         <h2>e<sup>-</sup> Beam Energy = <input onchange="energyUI()" type="text" id="beamvolt" size="3" value="300"> keV
-			&rArr; Wavelength = <input type="text" id="wavlen" size="6" disabled class="disable"> pm </h2>
+            &rArr; Wavelength = <input type="text" id="wavlen" size="6" disabled class="disable"> pm </h2>
         <h2><span style="color: #FF0000;font-size: 1em;">&#9675;</span> Objective Aperture Semiangle = <input
-				type="text" id="aperture" onchange="energyUI()" size="3" value="95"> mrad</h2>
+                type="text" id="aperture" onchange="energyUI()" size="3" value="95"> mrad</h2>
         <h2>Diffraction Limited Resolution = <input type="text" id="diffres" size="6" disabled class="disable"> pm</h2>
 
         <h2><span style="color: #0000FF;font-size: 1em">&#9675;</span> π/4 Aperture Semiangle = <input type="text"
-				id="alpha_max" size="4" disabled class="disable"> mrad</h2>
+                id="alpha_max" size="4" disabled class="disable"> mrad</h2>
         <input type="checkbox" id="draw_overlay" checked>Show image overlays</input>
     </div>
 
@@ -342,9 +343,9 @@
 
     <div id="settings">
         <h4> Display Size (pixels)= <input type="text" id="disp_size_px" size="3" value="256"> Display Size (mrad) =
-			<input type="text" id="disp_size_mrad" size="3" value="200"> </h4>
+            <input type="text" id="disp_size_mrad" size="3" value="200"> </h4>
         <h4> Sample Scale (Factor of Display Size (px))=<input type="text" id="sample_scale_factor" size="3" value="8">
-		</h4>
+        </h4>
         <input type="checkbox" id="forceJS">Force Javascript instead of WebAssembly (Slow)</input>
     </div>
 
