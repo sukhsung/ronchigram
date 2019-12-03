@@ -612,7 +612,7 @@ var canvas2 = document.getElementById("canvas2");
 var ctx2 = canvas2.getContext("2d");
 
 var forceJS = document.getElementById("forceJS"); //figure out how to read from checkbox
-
+var interactiveMode = document.getElementById("interactiveMode");
 var aberration_list = [
   "C10",
   "C12",
@@ -654,5 +654,45 @@ for (var it = 0; it < aberration_list.length; it++) {
   ab_obj.mag_unit = ab_obj.mag_unit * correction_factor;
   aberrations.push(ab_obj);
 }
+
+
+
+  window.addEventListener("keydown", function (event) {
+    if (event.defaultPrevented) {
+      return; // Do nothing if the event was already processed
+    }
+
+    switch (event.key) {
+      case "ArrowDown":
+        if (interactiveMode.checked) {
+          aberrations[0].mag_el.value = Number(aberrations[0].mag_el.value) - 10;
+          calculate();
+          break;
+        }
+      case "ArrowUp":
+        if (interactiveMode.checked) {
+          aberrations[0].mag_el.value = Number(aberrations[0].mag_el.value) + 10;
+          calculate();
+          break;
+        }
+      case "ArrowLeft":
+        if (interactiveMode.checked) {
+          aberrations[1].mag_el.value = Number(aberrations[1].mag_el.value) - 1;
+          calculate();
+          break;
+        }
+      case "ArrowRight":
+        if (interactiveMode.checked) {
+          aberrations[1].mag_el.value = Number(aberrations[1].mag_el.value) + 1;
+          calculate();
+          break;
+        }
+      default:
+        return; // Quit when this doesn't handle the key event.
+    }
+
+    // Cancel the default action to avoid it being handled twice
+    event.preventDefault();
+  }, true);
 
 initialize();
