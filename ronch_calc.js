@@ -764,7 +764,7 @@ window.addEventListener(
                         Number(aberrations[2].mag_el.value) *
                         math.sin(Number(aberrations[2].arg_el.value) * deg);
 
-                    cy += 1;
+                    cy += 100;
                     aberrations[2].mag_el.value = math.sqrt(cx * cx + cy * cy);
                     aberrations[2].arg_el.value = math.atan2(cy, cx) / deg;
                     calculate();
@@ -779,7 +779,7 @@ window.addEventListener(
                         Number(aberrations[2].mag_el.value) *
                         math.sin(Number(aberrations[2].arg_el.value) * deg);
 
-                    cy -= 1;
+                    cy -= 100;
                     aberrations[2].mag_el.value = math.sqrt(cx * cx + cy * cy);
                     aberrations[2].arg_el.value = math.atan2(cy, cx) / deg;
                     calculate();
@@ -794,7 +794,7 @@ window.addEventListener(
                         Number(aberrations[2].mag_el.value) *
                         math.sin(Number(aberrations[2].arg_el.value) * deg);
 
-                    cx += 1;
+                    cx += 100;
                     aberrations[2].mag_el.value = math.sqrt(cx * cx + cy * cy);
                     aberrations[2].arg_el.value = math.atan2(cy, cx) / deg;
                     calculate();
@@ -809,7 +809,7 @@ window.addEventListener(
                         Number(aberrations[2].mag_el.value) *
                         math.sin(Number(aberrations[2].arg_el.value) * deg);
 
-                    cx += 1;
+                    cx += 100;
                     aberrations[2].mag_el.value = math.sqrt(cx * cx + cy * cy);
                     aberrations[2].arg_el.value = math.atan2(cy, cx) / deg;
                     calculate();
