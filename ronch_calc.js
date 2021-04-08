@@ -563,8 +563,8 @@ function calculate() {
     //let t0 = performance.now();
     energyUI();
     if (hasWASM && !forceJS.checked) {
-        document.getElementById("loading").innerHTML =
-            "Calculating with WebAssembly...";
+        //document.getElementById("loading").innerHTML =
+        //    "Calculating with WebAssembly...";
         //console.log("Calculating with WebAssembly...");
         let curInstance = ronchModule().then(function (Module) {
             calculateWASM(Module);
@@ -577,7 +577,7 @@ function calculate() {
         calculateJS();
     }
     //console.log("T = " + (performance.now() - t0) + " ms");
-    document.getElementById("loading").innerHTML = " ";
+    //document.getElementById("loading").innerHTML = " ";
 }
 
 function initialize() {
