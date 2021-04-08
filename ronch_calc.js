@@ -103,24 +103,25 @@ function drawOverlays(
     ctx2.stroke();
 }
 
-function drawGrayscaleBitmap(ctx, bitmap, numPx) {
-    for (let it = 0; it < numPx; it++) {
-        for (let jt = 0; jt < numPx; jt++) {
-            let value = bitmap[it][jt];
-            if (value < 0) {
-                value = 0;
-            } else if (value >= 256) {
-                value = 255;
-            }
-            let part = Number(parseInt(value, 10)).toString(16);
-            if (part.length < 2) {
-                part = "0" + part;
-            }
-            let color = "#" + part + part + part;
-            ctx.fillStyle = color;
-            ctx.fillRect(it, jt, 1, 1);
+function drawGrayscaleBitmap2( ctx, input, numPx ) {
+    var imData = ctx.getImageData(0,0,numPx,numPx)
+    var data = imData.data;
+
+    let red
+    for (let i = 0; i < numPx; i++ ){
+        for (let j = 0; j <numPx; j++ ){
+            red = i * (numPx * 4) + j * 4
+
+            data[red] = input[i][j]
+            data[red+1] = input[i][j]
+            data[red+2] = input[i][j]
+            data[red+3] = 255
         }
+
     }
+
+    ctx.putImageData(imData,0,0)
+
 }
 
 function getAberrations() {
@@ -370,8 +371,8 @@ function drawEverything(
     canvas1.height = numPx;
     canvas2.width = numPx;
     canvas2.height = numPx;
-    drawGrayscaleBitmap(ctx1, out_ronch, numPx);
-    drawGrayscaleBitmap(ctx2, out_phase_map, numPx);
+    drawGrayscaleBitmap2(ctx1, out_ronch, numPx);
+    drawGrayscaleBitmap2(ctx2, out_phase_map, numPx);
     if (draw_overlay) {
         drawOverlays(ctx1, ctx2, numPx, al_max, disp_size_mrad, obj_ap_r, rmax);
     }
