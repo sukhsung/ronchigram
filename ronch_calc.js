@@ -560,12 +560,12 @@ function calculateWASM(Module) {
 }
 
 function calculate() {
-    let t0 = performance.now();
+    //let t0 = performance.now();
     energyUI();
     if (hasWASM && !forceJS.checked) {
         document.getElementById("loading").innerHTML =
             "Calculating with WebAssembly...";
-        console.log("Calculating with WebAssembly...");
+        //console.log("Calculating with WebAssembly...");
         let curInstance = ronchModule().then(function (Module) {
             calculateWASM(Module);
             Module.delete;
@@ -576,7 +576,7 @@ function calculate() {
         console.log("Calculating with Javascript...");
         calculateJS();
     }
-    console.log("T = " + (performance.now() - t0) + " ms");
+    //console.log("T = " + (performance.now() - t0) + " ms");
     document.getElementById("loading").innerHTML = " ";
 }
 
@@ -810,7 +810,7 @@ window.addEventListener(
                         Number(aberrations[2].mag_el.value) *
                         math.sin(Number(aberrations[2].arg_el.value) * deg);
 
-                    cx += 100;
+                    cx -= 100;
                     aberrations[2].mag_el.value = math.sqrt(cx * cx + cy * cy);
                     aberrations[2].arg_el.value = math.atan2(cy, cx) / deg;
                     calculate();
