@@ -575,9 +575,9 @@ function calculate() {
             "Calculating with Javascript...";
         console.log("Calculating with Javascript...");
         calculateJS();
+        document.getElementById("loading").innerHTML = " ";
     }
     //console.log("T = " + (performance.now() - t0) + " ms");
-    //document.getElementById("loading").innerHTML = " ";
 }
 
 function initialize() {
