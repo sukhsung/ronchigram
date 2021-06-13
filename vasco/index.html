@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Vasco</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval';" />
+    <link rel="stylesheet" type="text/css" href="./index.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="main-child main-leftPanel">
+            <h1 style="margin-bottom: 0">Aberrations</h1>
+            <div id="aberrations">
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>10</sub>:</span>
+                        <span class="haid_not nodisp">C<sub>1</sub>:</span>
+                        <input type="text" id="C10" value="0" size="4" onchange="calculate()"> nm
+                    </div>
+                    <span class="tooltiptext">Defocus, C1</span>
+                </div>
+        
+                <div class="aber_wrapper ">
+                    <div class="aber aber_sel">
+                        <span class="kriv_not yesdisp">C<sub>12</sub>:</span>
+                        <span class="haid_not nodisp">A<sub>1</sub>:</span>
+                        <input type="text" id="C12" value="-.849" size="4" onchange="calculate()"> nm &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>12</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>A1</sub>:</span>
+                        <input type="text" id="P12" value="0" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">2-fold Astigmatism, A1</span>
+                </div>
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>21</sub>:</span>
+                        <span class="haid_not nodisp">B<sub>2</sub>:</span>
+                        <input type="text" id="C21" value="1.38" size="4" onchange="calculate()"> nm &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>21</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>B2</sub>:</span>
+                        <input type="text" id="P21" value="0" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">Axial Coma, B2</span>
+                </div>
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>23</sub>:</span>
+                        <span class="haid_not nodisp">A<sub>2</sub>:</span>
+                        <input type="text" id="C23" value="1.59" size="4" onchange="calculate()"> nm &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>23</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>A2</sub>:</span>
+                        <input type="text" id="P23" value="35" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">3-fold Astigmatism, A2</span>
+                </div>
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>30</sub>:</span>
+                        <span class="haid_not nodisp">C<sub>3</sub>:</span>
+                        <input type="text" id="C30" value="235" size="4" onchange="calculate()"> nm
+                    </div>
+                    <span class="tooltiptext">3rd Order Spherical, C3</span>
+                </div>
+
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>32</sub>:</span>
+                        <span class="haid_not nodisp">S<sub>3</sub>:</span>
+                        <input type="text" id="C32" value="-118" size="4" onchange="calculate()"> nm &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>32</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>S3</sub>:</span>
+                        <input type="text" id="P32" value="0" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">3rd Order Axial Star, S3</span>
+                </div>
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>34</sub>:</span>
+                        <span class="haid_not nodisp">A<sub>3</sub>:</span>
+                        <input type="text" id="C34" value="65.1" size="4" onchange="calculate()"> nm &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>34</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>A3</sub>:</span>
+                        <input type="text" id="P34" value="0" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">4-fold Astigmatism, A3</span>
+                </div>
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>41</sub>:</span>
+                        <span class="haid_not nodisp">B<sub>4</sub>:</span>
+                        <input type="text" id="C41" value="2.23" size="4" onchange="calculate()"> &mu;m &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>41</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>B4</sub>:</span>
+                        <input type="text" id="P41" value="0" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">4th Order Axial Coma, B4</span>
+                </div>
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>43</sub>:</span>
+                        <span class="haid_not nodisp">D<sub>4</sub>:</span>
+                        <input type="text" id="C43" value="-6.13" size="4" onchange="calculate()"> &mu;m &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>43</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>D4</sub>:</span>
+                        <input type="text" id="P43" value="0" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">3-Lobe Aberration, D4</span>
+                </div>
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>45</sub>:</span>
+                        <span class="haid_not nodisp">A<sub>4</sub>:</span>
+                        <input type="text" id="C45" value="-7.44" size="4" onchange="calculate()"> &mu;m &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>45</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>A4</sub>:</span>
+                        <input type="text" id="P45" value="0" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">5-fold Astigmatism, A4</span>
+                </div>
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>50</sub>:</span>
+                        <span class="haid_not nodisp">C<sub>5</sub>:</span>
+                        <input type="text" id="C50" value="-0.201" size="4" onchange="calculate()"> mm &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <span class="tooltiptext">5th Order Spherical, C5</span>
+                </div>
+
+
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>52</sub>:</span>
+                        <span class="haid_not nodisp">S<sub>5</sub>:</span>
+                        <input type="text" id="C52" value="0.131" size="4" onchange="calculate()"> mm &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>52</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>S5</sub>:</span>
+                        <input type="text" id="P52" value="0" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">5th Order Axial Star, S5</span>
+                </div>
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>54</sub>:</span>
+                        <span class="haid_not nodisp">R<sub>5</sub>:</span>
+                        <input type="text" id="C54" value="-0.001" size="4" onchange="calculate()"> mm &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>54</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>R5</sub>:</span>
+                        <input type="text" id="P54" value="0" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">5th Order Rossette, R5</span>
+                </div>
+        
+                <div class="aber_wrapper">
+                    <div class="aber">
+                        <span class="kriv_not yesdisp">C<sub>56</sub>:</span>
+                        <span class="haid_not nodisp">A<sub>5</sub>:</span>
+                        <input type="text" id="C56" value="-.223" size="4" onchange="calculate()"> mm &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="kriv_not yesdisp">&Phi;<sub>56</sub>:</span>
+                        <span class="haid_not nodisp">&Phi;<sub>A5</sub>:</span>
+                        <input type="text" id="P56" value="0" size="4" onchange="calculate()"> &deg;
+                    </div>
+                    <span class="tooltiptext">6-fold Astigmatism, A5</span>
+                </div>
+                <div class="aber_wrapper">
+                    <div class="aber" id="stepsize">
+                        Step Size: 1
+                    </div>
+                    <span class="tooltiptext">5th Order Spherical, C5</span>
+                </div>
+
+
+                <br>
+                <div>
+                    <button class="red" onclick="randomize()">Randomize!</button>
+                    <button class="red" onclick="zeroBtn()">Zero all</button>
+                </div>
+                <div style="padding-top: 10px">
+                    <button class="blue" onclick="start_ab_training('easy')">Correction training (Easy)</button><p></p>
+                    <button class="red" onclick="start_ab_training('hard')">Correction training (Hard)</button>
+                </div>
+        
+            </div>
+        </div>
+        <div class="main-child main-rightPanel">
+            <div class="im-container">
+                <div id="can1div">
+                    <h1>Ronchigram</h1>
+                    <canvas id="canvas1" class="im"> </canvas>
+                </div>
+                <div id="can2div">
+                    <h1>&pi;/4 Phase Limit</h1>
+                    <canvas id="canvas2" class="im"> </canvas>
+                </div>
+
+            </div>
+
+            <div id="eq">
+                &chi;(&alpha;,&Phi;) = &Sigma;<sub>n,m</sub>[ C<sub>n,m</sub> &alpha;
+                <sup>n+1</sup>cos(m(&Phi;-&Phi;<sub>n,m</sub>))/(n+1) ]
+            </div>
+            <div id="settings">
+                <div>
+                    <p><span style="color: #FF0000;font-size: 1em;">&#9675;</span> Objective Aperture Semiangle = <input
+                            type="text" id="aperture" onchange="energyUI()" size="3" value="95"> mrad &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="color: #0000FF;font-size: 1em">&#9675;</span> π/4 Aperture Semiangle = <input type="text"
+                            id="alpha_max" size="4" disabled class="disable"> mrad</p>
+                </div>
+                <div>
+                    <h3> Controls </h3>
+                    Arrow keys: &#8593; &#8595; Defocus , &#8592; &#8594; Step size
+                    <br>
+                    WASD: Selected aberration (horizontal and vertical components)
+                    <br>
+                    Q,E: Select next/previous aberration
+                    
+                </div>
+                <div>
+                    <h3 > Settings </h3>
+                    <p><input type="checkbox" id="draw_overlay" checked>Show image overlays</input> | Correction training terms: <input type="text" id="correct_terms" size=3 value="3"> | Aberration Notation: <select onchange="notationChange(this)"><option value="k">Krivanek</option><option value="h">Haider</option></select></p>
+                </div>
+                <!--- <div>
+                    Step-sizes: 
+                    Defocus: <button onclick="changeStepSize('c10',true)" class="blue">&#9650;</button> <button onclick="changeStepSize('c10',false)" class="blue">&#9660;</button> &nbsp;&nbsp;&nbsp;&nbsp;
+                    2-fold: <button onclick="changeStepSize('c12',true)" class="blue">&#9650;</button> <button onclick="changeStepSize('c12',false)" class="blue">&#9660;</button> &nbsp;&nbsp;&nbsp;&nbsp;
+                    Coma: <button onclick="changeStepSize('c21',true)" class="blue">&#9650;</button> <button onclick="changeStepSize('c21',false)" class="blue">&#9660;</button> &nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+                --->
+            </div>
+
+
+        
+
+        </div>
+    </div>
+
+ 
+    <div class="footer">
+        <p>By Suk Hyun Sung & Noah Schnitzer @ <a href="http://hovdenlab.com">Hovden lab</a></p>
+        <p>Check out the source on <a href="https://github.com/sukhsung/vasco-app/">GitHub</a>, DOI: <a href=https://doi.org/10.1017/S1551929519000427>10.1017/S1551929519000427</a> </p>
+    </div>
+
+    <!-- <script type="text/javascript" src="./math.min.js"></script> -->
+    <script type="text/javascript" src="./index.js"></script>
+    <script type="text/javascript" src="./math.min.js"></script>
+    <script type="text/javascript" src="./ronch_calc.js"></script>
+
+
+</body>
+</html>

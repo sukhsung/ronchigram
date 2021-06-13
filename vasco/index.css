@@ -1,0 +1,210 @@
+* {
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    color: #ffffff;
+    text-align: center;
+    font-size: large;
+}
+
+select {
+    color:#000000;
+}
+
+body {
+    margin:0;
+}
+
+h1 {
+    font-size: 1.7em;
+}
+
+h2 {
+    font-size: 1.7em;
+}
+
+.setting h2 {
+    font-size: 1em;
+}
+
+h2 input {
+    font-size: 1em;
+}
+
+
+.main-container {
+    display:flex;
+}
+
+.main-child {
+    height: 95vh; 
+}
+
+.main-leftPanel{
+    background-color: #444444;
+    order: 0;
+    flex-grow: 1;
+}
+
+.main-rightPanel{
+    background-color: #222222;
+    order: 1;
+    flex-grow: 3;
+}
+
+.im-container {
+    display:flex;
+}
+.im {
+    width: 33vw;
+    height: 33vw;
+}
+
+#can1div {
+    order: 0;
+    flex-grow: 1;
+}
+#can2div {
+    order: 1;
+    flex-grow: 1;
+}
+
+
+#settings {
+    padding-top: 0px;
+}
+
+#eq {
+    padding-top: 20px;
+    padding-bottom: 0px;
+}
+
+#buttons {
+    padding-top: 20px;
+    padding-bottom: 0;
+    color: black;
+}
+
+#buttons button {
+    width: 160px;
+    height: 40px;
+    margin-left: 5vw;
+    margin-right: 5vw;
+}
+
+button {
+    border-radius: 4px;
+    font-style: italic;
+    font-weight: bold;
+    border: none;
+}
+
+button:active {
+    box-shadow: 0 2px #222222;
+    transform: translateY(4px);
+}
+
+.blue {
+    background-color: #009fcc;
+    border: none;
+}
+
+.blue:hover {
+    background-color: #00637f;
+}
+
+.red {
+    background-color: #ff0058;
+    border: none;
+}
+
+.red:hover {
+    background-color: #ba0040;
+}
+
+.yellow {
+    background-color: #ffc431;
+    border: none;
+    box-shadow: 0 3px #444444;
+    color: #222222;
+}
+
+.yellow:hover {
+    background-color: #b2871a;
+}
+
+.aber_wrapper {
+    padding-top: 20px;
+    width: 100%;
+    height: 1em;
+}
+
+.aber_sel {
+    background-color: #222222;
+}
+
+.aber {
+    width: 65%;
+    float: center;
+    display: inline;
+    font-size: 1em;
+    padding: 10px;
+
+}
+.aber sub {
+    font-size: 0.8em;
+}
+.aber input {
+    font-size: 1em;
+}
+.aber_wrapper:hover .tooltiptext {
+    visibility: visible;
+}
+.aber_wrapper .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+input {
+    border: none;
+    background-color: #555555;
+    border-radius: 4px;
+}
+
+.disable {
+    background-color: #222222;
+}
+
+.footer {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: #111111;
+    margin-top: 0px;
+}
+
+.footer p {
+    margin: 0;
+    background: #111111;
+}
+
+.kriv_not {
+}
+
+.haid_not {
+}
+
+.nodisp{
+    display: none;
+}
+.yesdisp{
+    display: inline;
+}
+
