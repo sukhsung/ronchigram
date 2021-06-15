@@ -183,15 +183,20 @@ function calculateWASM(Module) {
         let hidden_angles = hidden_abers[1];
         for(let it = 0; it < abers[2]; it++)
         {
+            if (it == 0) {
+                ab_mags[it] = hidden_mags[it]+ab_mags[it];
+            }
+            else {
 
-            let hx = hidden_mags[it]*Math.cos(hidden_angles[it]);
-            let hy = hidden_mags[it]*Math.sin(hidden_angles[it]);
+                let hx = hidden_mags[it]*Math.cos(hidden_angles[it]);
+                let hy = hidden_mags[it]*Math.sin(hidden_angles[it]);
 
-            let ax = ab_mags[it]*Math.cos(ab_angles[it]) - hx;
-            let ay = ab_mags[it]*Math.sin(ab_angles[it]) - hy;
+                let ax = ab_mags[it]*Math.cos(ab_angles[it]) - hx;
+                let ay = ab_mags[it]*Math.sin(ab_angles[it]) - hy;
 
-            ab_mags[it] = Math.sqrt(ax*ax+ay*ay);
-            ab_angles[it] = Math.atan2(ay,ax);
+                ab_mags[it] = Math.sqrt(ax*ax+ay*ay);
+                ab_angles[it] = Math.atan2(ay,ax);
+            }
         }
     }
     
