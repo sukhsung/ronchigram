@@ -181,9 +181,9 @@ function calculateWASM(Module) {
     {
         let hidden_mags = hidden_abers[0];
         let hidden_angles = hidden_abers[1];
-        for(let it = 0; it < abers[2]; it++)
+        for(let it = 0; it <number_aberration_terms; it++)
         {
-            if (it == 0) {
+            if (aberrations[it].n==0) {
                 ab_mags[it] = hidden_mags[it]+ab_mags[it];
             }
             else {
@@ -562,7 +562,7 @@ window.addEventListener(
             case "s":
                 if(aberrations[current_selected_ab].n==0)
                 {
-                    aberrations[current_selected_ab].mag_el.value = math.round(Number(aberrations[current_selected_ab].mag_el.value) + current_step_size,rval);
+                    aberrations[current_selected_ab].mag_el.value = math.round(Number(aberrations[current_selected_ab].mag_el.value) - current_step_size,rval);
                 }
                 else{
                     sx =
@@ -581,7 +581,7 @@ window.addEventListener(
             case "a":
                 if(aberrations[current_selected_ab].n==0)
                 {
-                    aberrations[current_selected_ab].mag_el.value = math.round(Number(aberrations[current_selected_ab].mag_el.value) + current_step_size,rval);
+                //    aberrations[current_selected_ab].mag_el.value = math.round(Number(aberrations[current_selected_ab].mag_el.value) + current_step_size,rval);
                 }
                 else{
                     sx =
@@ -600,7 +600,7 @@ window.addEventListener(
             case "d":
                 if(aberrations[current_selected_ab].n==0)
                 {
-                    aberrations[current_selected_ab].mag_el.value = math.round(Number(aberrations[current_selected_ab].mag_el.value) + current_step_size,rval);
+                //    aberrations[current_selected_ab].mag_el.value = math.round(Number(aberrations[current_selected_ab].mag_el.value) + current_step_size,rval);
                 }
                 else{
                     sx =
