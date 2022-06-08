@@ -263,6 +263,25 @@ button:active {
   display: inline;
 }
 
+.aber_list_head {
+  width: 35%;
+  float: left;
+  text-align: right;
+}
+
+.alt_list_head {
+  width: 15%;
+  float: left;
+  text-align: center;
+  padding-left: 5%;
+}
+
+.aber_head {
+  width: 35%;
+  float: left;
+  display: inline;
+}
+
 input {
   border: none;
   background-color: #124559;
@@ -523,7 +542,24 @@ h6 {
     display: inline;
   }
 
-
+  .aber_list_head {
+    width: 30%;
+    float: left;
+    text-align: right;
+  }
+  
+  .alt_list_head {
+    width: 15%;
+    float: left;
+    text-align: center;
+    padding-left: 5%;
+  }
+  
+  .aber_head {
+    width: 50%;
+    float: left;
+    display: inline;
+  }
 
   .body2 {
     margin: 0;
