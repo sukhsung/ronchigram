@@ -271,7 +271,8 @@ input {
 
 .disable {
   background-color: #01161E;
-  font-size: 1.1em;
+  font-size: large;
+  color: #AEC3B0;
 }
 
 .u_input {
@@ -394,7 +395,7 @@ h6 {
   background-color:#92a694;
 }
 
-@media only screen and (max-device-width: 512px) and (orientation: portrait){
+@media only screen and (max-device-width: 2048px) {/*and (orientation: portrait){*/
 
   .im {
     width: 80vw;
@@ -434,7 +435,7 @@ h6 {
     background-position:center;
     width: 80vw;
     height: 80vw;
-    border: 5px solid #1a7a4c;
+    border: 5px solid #AEC3B0;
   }
   
   .rounded2 {
@@ -442,7 +443,7 @@ h6 {
     background-position:center;
     width: 37vw;
     height: 37vw;
-    border: 5px solid #1a7a4c;
+    border: 5px solid #AEC3B0;
   }
   
   .rounded3 {
@@ -480,7 +481,54 @@ h6 {
     clip-path: polygon(0 0, 100% 0, 100% 100%);
   }
 
+  h6 {
+    font-family:"input-mono";
+    font-style:bold ;font-weight:700;font-stretch:normal;
+    background-color: transparent;
+    color:#01161E;
+    font-size: 1.2em;
+    margin: 0px;
+    padding-top: 0px;
+    padding-left: 0px;
+    position:absolute;
+    top: 3vw;
+    left: 4vw;
   
+    /* Border is the new background */
+    background: none;
+  
+    /* Rotate from top left corner (not default) */
+    
+    transform: rotate(45deg);
+  }
+  
+
+  .aber_list {
+    width: 20%;
+    float: left;
+    text-align: right;
+  }
+  
+  .alt_list {
+    width: 10%;
+    float: left;
+    text-align: center;
+    padding-left: 5%;
+  }
+  
+  .aber {
+    width: 50%;
+    float: left;
+    display: inline;
+  }
+
+
+
+  .body2 {
+    margin: 0;
+    padding-top: 10px;
+    font-size: 0.65em;
+  }
 
 }
 
