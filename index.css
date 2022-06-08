@@ -1,7 +1,8 @@
 * {
-  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  color: #ffffff;
-  background-color: #222222;
+  font-family:"input-mono-narrow";
+  font-style:normal;font-weight:400;font-stretch:normal;
+  color: #AEC3B0;
+  background-color: #01161E;
   text-align: center;
   font-size: large;
 }
@@ -12,11 +13,13 @@ h1 {
   text-align: center;
   vertical-align: middle;
   margin: 0;
-  padding: 20px;
+  padding: 5px;
   font-size: 2.5em;
 }
 
 h2 {
+  font-family:"input-mono";
+  font-style:normal;font-weight:400;font-stretch:normal;
   font-size: 1.7em;
 }
 
@@ -24,8 +27,41 @@ h2 input {
   font-size: 1em;
 }
 
+h3{
+  font-family:"input-mono";
+  font-style:normal;font-weight:400;font-stretch:normal;
+  text-align: center;
+  vertical-align: middle;
+  margin: 10px;
+  padding-top: 20px;
+  font-size: 3em;
+  padding-bottom: 13px;
+
+}
+
+h4 {
+  font-family:"input-mono";
+  font-style:normal;font-weight:400;font-stretch:normal;
+  font-size: 1.2em;
+  margin: 20px;
+}
+
+h5 {
+  font-family:"input-mono";
+  font-style:normal;font-weight:400;font-stretch:normal;
+  font-size: 1.2em;
+  margin: 0px;
+  padding-top: 10px;
+}
+
 body {
   margin: 0;
+}
+
+.body2 {
+  margin: 0;
+  padding-top: 10px;
+  font-size: 0.78em;
 }
 
 #title {
@@ -35,6 +71,8 @@ body {
 
 #subtitle {
   font-size: 0.9em;
+  padding-top: 0px;
+  float: center;
 }
 
 #paperlink {
@@ -42,27 +80,52 @@ body {
 }
 
 .im {
-  width: 45vw;
-  height: 45vw;
+  width: 46vw;
+  height: 46vw;
+}
+
+.im2 {
+  width: 20.35vw;
+  height: 20.35vw;
 }
 
 .im_rapper {
   padding-top: 1px;
 }
 
+.image_wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  align-content: space-around;
+  row-gap: 10px;
+  column-gap: 20px;
+}
+
 #can1div {
   float: left;
-  padding-left: 2.5vw;
-  padding-right: 2.5vw;
+  padding-left: 0vw;
+  padding-right: 0vw;
 }
+
+#can2div {
+  padding: 0vw;
+}
+
+#can3div {
+  padding: 0vw;
+}
+
 
 #settings {
   padding-top: 20px;
 }
 
 #eq {
-  padding-top: 20px;
-  width: 95vw;
+  padding-top: 10px;
+  
 }
 
 #buttons {
@@ -91,32 +154,58 @@ button:active {
 }
 
 .blue {
-  background-color: #009fcc;
+  background-color: #84C0DB;
   border: none;
+  box-shadow: 0 3px #124559;
+  color: #01161E;
 }
 
 .blue:hover {
-  background-color: #00637f;
+  background-color: #6492a3;
 }
 
 .red {
-  background-color: #ff0058;
+  background-color: #DB84C0;
   border: none;
+  box-shadow: 0 3px #124559;
+  color: #01161E;
 }
 
 .red:hover {
-  background-color: #ba0040;
+  background-color: #994361;
+}
+
+.cream {
+  background-color: #EFF6E0;
+  border: none;
+  box-shadow: 0 3px #124559;
+  color: #01161E;
+}
+
+.cream:hover {
+  background-color: #afb5a1;
+}
+
+.green {
+  background-color: #C0DB84;
+  border: none;
+  box-shadow: 0 3px #124559;
+  color: #01161E;
+}
+
+.green:hover {
+  background-color: #8a9e5f;
 }
 
 .yellow {
-  background-color: #ffc431;
+  background-color: #F2AA4C;
   border: none;
-  box-shadow: 0 3px #444444;
-  color: #222222;
+  box-shadow: 0 3px #124559;
+  color: #01161E;
 }
 
 .yellow:hover {
-  background-color: #b2871a;
+  background-color: #c2883c;
 }
 
 #aberrations {
@@ -135,19 +224,24 @@ button:active {
   padding-top: 5px;
   padding-bottom: 5px;
   width: 100%;
-  background-color: #444444;
+  background-color: #124559;
   vertical-align: middle;
   overflow: auto;
+  border-radius: 5px;
 }
 
 .aber_wrapper_head p {
+  font-family:"input-mono";
+  font-style:normal;font-weight:400;font-stretch:normal;
   margin: 0;
   padding: 0;
-  background-color: #444444;
+  background-color: #124559;
 }
 
 .aber_wrapper_head div {
-  background-color: #444444;
+  font-family:"input-mono";
+  font-style:normal;font-weight:400;font-stretch:normal;
+  background-color: #124559;
 }
 
 .aber_list {
@@ -171,30 +265,137 @@ button:active {
 
 input {
   border: none;
-  background-color: #555555;
+  background-color: #124559;
   border-radius: 4px;
 }
 
 .disable {
-  background-color: #222222;
+  background-color: #01161E;
+  font-size: 1.1em;
+}
+
+.u_input {
+  font-size: 1.1em;
 }
 
 .footer {
   left: 0;
   bottom: 0;
-  width: 100%;
   padding: 10px;
-  background: #111111;
+  background: #598392;
   margin-top: 10px;
 }
 
 .footer p {
+  font-family:"input-mono";
+  font-style:normal;font-weight:400;font-stretch:normal;
   margin: 0;
   padding: 0;
-  background: #111111;
+  background: #124559;
 }
 
-@media only screen and (max-device-width: 512px) and (orientation: portrait) {
+.footer a {
+  background-color: #124559; 
+}
+
+.rounded {
+  border-radius: 3%;
+  background-position:center;
+  width: 46vw;
+  height: 46vw;
+  border: 5px solid #AEC3B0;
+}
+
+.rounded2 {
+  border-radius: 4%;
+  background-position:center;
+  width: 19.70vw;
+  height: 19.70vw;
+  border: 5px solid #AEC3B0;
+}
+
+.rounded3 {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  row-gap: 0px;
+  border-radius: 25px;
+  padding: 20px;
+  width: 65.5vw;
+  border: 3px solid #124559;
+  padding-top: 0px;
+  padding-bottom: 10px;
+}
+
+.holder {
+  display: flex;
+  justify-content: center;
+
+}
+
+.left_column {
+  float: left;
+}
+
+.right_column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  align-content: space-around;
+  row-gap: 10px;
+  column-gap: 20px;
+}
+
+#triangle {
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 175px;
+  height: 175px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+h6 {
+  font-family:"input-mono";
+  font-style:bold ;font-weight:700;font-stretch:normal;
+  background-color: transparent;
+  color:#01161E;
+  font-size: 1.2em;
+  margin: 0px;
+  padding-top: 0px;
+  padding-left: 0px;
+  position:absolute;
+  top: 40px;
+  left: 40px;
+
+  /* Border is the new background */
+  background: none;
+
+  /* Rotate from top left corner (not default) */
+  
+  transform: rotate(45deg);
+}
+
+.flagCorner {
+  background-color: #AEC3B0;
+  border: none;
+
+  color: #01161E;
+}
+
+
+.flagCorner:hover {
+  background-color:#92a694;
+}
+
+@media only screen and (max-device-width: 512px) and (orientation: portrait){
+
   .im {
     width: 80vw;
     height: 80vw;
@@ -211,4 +412,103 @@ input {
     padding-top: 10px;
     padding-right: 0;
   }
+
+  #can3div {
+    padding-top: 10px;
+    padding-right: 0;
+  }
+
+  .image_wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: space-around;
+    row-gap: 10px;
+    column-gap: 20px;
+  }
+
+  .rounded {
+    border-radius: 3%;
+    background-position:center;
+    width: 80vw;
+    height: 80vw;
+    border: 5px solid #1a7a4c;
+  }
+  
+  .rounded2 {
+    border-radius: 4%;
+    background-position:center;
+    width: 37vw;
+    height: 37vw;
+    border: 5px solid #1a7a4c;
+  }
+  
+  .rounded3 {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    row-gap: 10px;
+    border-radius: 25px;
+    padding: 20px;
+    width: 73vw;
+    border: 3px solid #124559;
+  }
+
+  .right_column {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: space-around;
+    row-gap: 10px;
+    column-gap: 4vw;
+  }
+
+  #triangle {
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 15vw;
+    height: 15vw;
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+  }
+
+  
+
 }
+
+@import url("https://p.typekit.net/p.css?s=1&k=mtg1mgq&ht=tk&f=30497.30501.30538.30539&a=109963572&app=typekit&e=css");
+
+@font-face {
+font-family:"input-mono";
+src:url("https://use.typekit.net/af/f1b774/00000000000000007735b11b/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff2"),url("https://use.typekit.net/af/f1b774/00000000000000007735b11b/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff"),url("https://use.typekit.net/af/f1b774/00000000000000007735b11b/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("opentype");
+font-display:auto;font-style:normal;font-weight:400;font-stretch:normal;
+}
+
+@font-face {
+font-family:"input-mono";
+src:url("https://use.typekit.net/af/62782e/00000000000000007735b12a/30/l?subset_id=2&fvd=n7&v=3") format("woff2"),url("https://use.typekit.net/af/62782e/00000000000000007735b12a/30/d?subset_id=2&fvd=n7&v=3") format("woff"),url("https://use.typekit.net/af/62782e/00000000000000007735b12a/30/a?subset_id=2&fvd=n7&v=3") format("opentype");
+font-display:auto;font-style:normal;font-weight:700;font-stretch:normal;
+}
+
+@font-face {
+font-family:"input-mono-narrow";
+src:url("https://use.typekit.net/af/2b5bd5/00000000000000007735b119/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff2"),url("https://use.typekit.net/af/2b5bd5/00000000000000007735b119/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff"),url("https://use.typekit.net/af/2b5bd5/00000000000000007735b119/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("opentype");
+font-display:auto;font-style:normal;font-weight:400;font-stretch:normal;
+}
+
+@font-face {
+font-family:"input-mono-narrow";
+src:url("https://use.typekit.net/af/41f034/00000000000000007735b11d/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i4&v=3") format("woff2"),url("https://use.typekit.net/af/41f034/00000000000000007735b11d/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i4&v=3") format("woff"),url("https://use.typekit.net/af/41f034/00000000000000007735b11d/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i4&v=3") format("opentype");
+font-display:auto;font-style:italic;font-weight:400;font-stretch:normal;
+}
+
+.tk-input-mono { font-family: "input-mono",monospace; }
+.tk-input-mono-narrow { font-family: "input-mono-narrow",monospace; }

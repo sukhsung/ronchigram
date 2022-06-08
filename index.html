@@ -15,42 +15,82 @@
 
         gtag('config', 'UA-122222775-1');
     </script>
-
+    <link rel="stylesheet" href="https://use.typekit.net/mtg1mgq.css">
+    
 </head>
 
 <body>
     <div id="title">
-        <h1>RONCHIGRAM TEST</h1>
+        <h3>RONCHIGRAM.COM</h3>
+        <a href="vasco" class="flagCorner" id="triangle">
+            <h6>
+                Training Mode
+            </h6>
+        </a>
+        
     </div>
-    <div id="subtitle">
-        See also: <a id="paperlink"
-            href="introduction_to_the_ronchigram_and_its_calculation_with_ronchigramcom.pdf">Schnitzer, N., Sung, S. H.,
-            & Hovden, R. (2019). Introduction to the Ronchigram and its Calculation with Ronchigram.com. Microscopy
-            Today, 27(3), 12-15.</a>
+    <div id="subtitle_holder" class="holder">
+    <div id="subtitle" class="rounded3">
+        <div class="body2">
+            Schnitzer, N., Sung, S. H.,
+            & Hovden, R. (2019). <a id="paperlink"
+                href="introduction_to_the_ronchigram_and_its_calculation_with_ronchigramcom.pdf">Introduction to the Ronchigram and its Calculation with Ronchigram.com.</a>  Microscopy
+                Today, 27(3), 12-15.
+        </div>
+        <div class="body2">
+            Schnitzer, N., Sung, S. H.,
+            & Hovden, R. (2019). <a id="paperlink"
+                href="introduction_to_the_ronchigram_and_its_calculation_with_ronchigramcom.pdf">Introduction to the Ronchigram and its Calculation with Ronchigram.com.</a>  Microscopy
+                Today, 27(3), 12-15.
+        </div>
+        <div class="body2">      
+            Schnitzer, N., Sung, S. H.,
+            & Hovden, R. (2019). <a id="paperlink"
+                href="introduction_to_the_ronchigram_and_its_calculation_with_ronchigramcom.pdf">Introduction to the Ronchigram and its Calculation with Ronchigram.com.</a>  Microscopy
+                Today, 27(3), 12-15.
+        </div>
+    </div>
     </div>
     <div id="loading">
 
     </div>
-    <div class="im_rapper">
-        <div id="can1div">
+
+    <div class="image_wrapper">
+        <div id="can1div" class="left_column">
             <h2>Ronchigram</h2>
-            <canvas id="canvas1" class="im"> </canvas>
+            <canvas id="canvas1" class="rounded"></canvas>
         </div>
-        <div id="can2div">
-            <h2>&pi;/4 Phase Limit</h2>
-            <canvas id="canvas2" class="im"> </canvas>
+        <div class="right_column">
+            <div id="can2div" class="top_row">
+                <h2>&pi;/4 Phase Limit</h2>
+                <canvas id="canvas2" class="rounded2"></canvas>
+            </div>
+            <div id="can3div" class="bottom_row">
+                <h2>Probe Function</h2>
+                <canvas id="canvas3" class="rounded2"></canvas>
+            </div>
         </div>
     </div>
 
     <div id="settings">
-        <h2>e<sup>-</sup> Beam Energy = <input onchange="energyUI()" type="text" id="beamvolt" size="3" value="300"> keV
-            &rArr; Wavelength = <input type="text" id="wavlen" size="6" disabled class="disable"> pm </h2>
-        <h2><span style="color: #FF0000;font-size: 1em;">&#9675;</span> Objective Aperture Semiangle = <input
-                type="text" id="aperture" onchange="energyUI()" size="3" value="95"> mrad</h2>
-        <h2>Diffraction Limited Resolution = <input type="text" id="diffres" size="6" disabled class="disable"> pm</h2>
+        <h4>e<sup>-</sup> Beam Energy = <input onchange="energyUI()" type="text" id="beamvolt" size="4" value="300" class="u_input"> keV
+            &rArr; Wavelength = <input type="text" id="wavlen" size="6" disabled class="disable"> pm </h4>
+        <h4><span style="color: #D671B6;font-size: 1em;">&#9675;</span> Objective Aperture Semiangle = <input
+                type="text" id="aperture" onchange="energyUI()" size="5" value="95" class="u_input"> mrad</h4>
+        <h4>Diffraction Limited Resolution = <input type="text" id="diffres" size="7" disabled class="disable"> pm</h4>
 
-        <h2><span style="color: #0000FF;font-size: 1em">&#9675;</span> π/4 Aperture Semiangle = <input type="text"
-                id="alpha_max" size="4" disabled class="disable"> mrad</h2>
+        <h4><span style="color: #71B6D6;font-size: 1em">&#9675;</span> π/4 Aperture Semiangle = <input type="text"
+                id="alpha_max" size="6" disabled class="disable"> mrad</h4>
+        <h4>Strehl Ratio for π/4 Semiangle = <input type="text"
+                id="current_strehl" size="6" disabled class="disable"> </h4>
+        <h4><span style="color: #B6D671;font-size: 1em">&#9675;</span> Aperture Semiangle for Strehl Ratio of 0.8 (optimal) = <input type="text"
+                id="best_r" size="6" disabled class="disable"> mrad</h4>
+        <!--<h4>Best Strehl Ratio Approximated = <input type="text"
+                id="best_strehl" size="6" disabled class="disable"> </h4>
+        <h4>Strehl Radius / π/4 Radius = <input type="text"
+            id="ratio" size="6" disabled class="disable"> </h4>
+        <h4>Number iterations taken to find strehl = <input type="text"
+            id="count" size="6" disabled class="disable"> </h4> -->
         <input type="checkbox" id="draw_overlay" checked>Show image overlays</input>
     </div>
 
@@ -62,7 +102,7 @@
     <div id="buttons">
         <div>
             <button onclick="randButton()" class="blue">RANDOMIZE</button>
-            <button onclick="calcButton()" class="red">CALCULATE</button>
+            <button onclick="calcButton()" class="cream">CALCULATE</button>
             <button onclick="allZero()" class="blue">ALL ZERO</button>
         </div>
     </div>
@@ -91,10 +131,10 @@
             </div>
             <div class="aber">
                 C<sub>10</sub>:
-                <input type="text" id="C10" value="0" size="4"> &#197;
+                <input type="text" id="C10" value="0" size="7"> &#197;
             </div>
             <div class="aber_button">
-                <button onclick="setC(10)" class="yellow"> ADD </button>
+                <button onclick="setC(10)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -107,12 +147,12 @@
             </div>
             <div class="aber">
                 C<sub>12</sub>:
-                <input type="text" id="C12" value="-.849" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C12" value="-.849" size="7"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>12</sub>:
-                <input type="text" id="P12" value="0" size="4"> &deg;
+                <input type="text" id="P12" value="0" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(12)" class="yellow"> ADD </button>
+                <button onclick="setC(12)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -125,12 +165,12 @@
             </div>
             <div class="aber">
                 C<sub>21</sub>:
-                <input type="text" id="C21" value="1.38" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C21" value="1.38" size="7"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>21</sub>:
-                <input type="text" id="P21" value="0" size="4"> &deg;
+                <input type="text" id="P21" value="0" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(21)" class="yellow"> ADD </button>
+                <button onclick="setC(21)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -143,12 +183,12 @@
             </div>
             <div class="aber">
                 C<sub>23</sub>:
-                <input type="text" id="C23" value="1.59" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C23" value="1.59" size="7"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>23</sub>:
-                <input type="text" id="P23" value="35" size="4"> &deg;
+                <input type="text" id="P23" value="35" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(23)" class="yellow"> ADD </button>
+                <button onclick="setC(23)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -161,10 +201,10 @@
             </div>
             <div class="aber">
                 C<sub>30</sub>:
-                <input type="text" id="C30" value="235" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="text" id="C30" value="235" size="7"> nm&nbsp;&nbsp;&nbsp;&nbsp;
             </div>
             <div class="aber_button">
-                <button onclick="setC(30)" class="yellow"> ADD </button>
+                <button onclick="setC(30)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -177,12 +217,12 @@
             </div>
             <div class="aber">
                 C<sub>32</sub>:
-                <input type="text" id="C32" value="-118" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C32" value="-118" size="7"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>32</sub>:
-                <input type="text" id="P32" value="0" size="4"> &deg;
+                <input type="text" id="P32" value="0" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(32)" class="yellow"> ADD </button>
+                <button onclick="setC(32)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -195,12 +235,12 @@
             </div>
             <div class="aber">
                 C<sub>34</sub>:
-                <input type="text" id="C34" value="65.1" size="4"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C34" value="65.1" size="7"> nm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>34</sub>:
-                <input type="text" id="P34" value="0" size="4"> &deg;
+                <input type="text" id="P34" value="0" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(34)" class="yellow"> ADD </button>
+                <button onclick="setC(34)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -213,12 +253,12 @@
             </div>
             <div class="aber">
                 C<sub>41</sub>:
-                <input type="text" id="C41" value="2.23" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C41" value="2.23" size="7"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>41</sub>:
-                <input type="text" id="P41" value="0" size="4"> &deg;
+                <input type="text" id="P41" value="0" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(41)" class="yellow"> ADD </button>
+                <button onclick="setC(41)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -231,12 +271,12 @@
             </div>
             <div class="aber">
                 C<sub>43</sub>:
-                <input type="text" id="C43" value="-6.13" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C43" value="-6.13" size="7"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>43</sub>:
-                <input type="text" id="P43" value="0" size="4"> &deg;
+                <input type="text" id="P43" value="0" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(43)" class="yellow"> ADD </button>
+                <button onclick="setC(43)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -249,12 +289,12 @@
             </div>
             <div class="aber">
                 C<sub>45</sub>:
-                <input type="text" id="C45" value="-7.44" size="4"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C45" value="-7.44" size="7"> &mu;m&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>45</sub>:
-                <input type="text" id="P45" value="0" size="4"> &deg;
+                <input type="text" id="P45" value="0" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(45)" class="yellow"> ADD </button>
+                <button onclick="setC(45)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -267,10 +307,10 @@
             </div>
             <div class="aber">
                 C<sub>50</sub>:
-                <input type="text" id="C50" value="-0.201" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="text" id="C50" value="-0.201" size="7"> mm&nbsp;&nbsp;&nbsp;&nbsp;
             </div>
             <div class="aber_button">
-                <button onclick="setC(50)" class="yellow"> ADD </button>
+                <button onclick="setC(50)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -283,12 +323,12 @@
             </div>
             <div class="aber">
                 C<sub>52</sub>:
-                <input type="text" id="C52" value="0.131" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C52" value="0.131" size="7"> mm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>52</sub>:
-                <input type="text" id="P52" value="0" size="4"> &deg;
+                <input type="text" id="P52" value="0" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(52)" class="yellow"> ADD </button>
+                <button onclick="setC(52)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -301,12 +341,12 @@
             </div>
             <div class="aber">
                 C<sub>54</sub>:
-                <input type="text" id="C54" value="-0.001" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C54" value="-0.001" size="7"> mm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>54</sub>:
-                <input type="text" id="P54" value="0" size="4"> &deg;
+                <input type="text" id="P54" value="0" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(54)" class="yellow"> ADD </button>
+                <button onclick="setC(54)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -319,12 +359,12 @@
             </div>
             <div class="aber">
                 C<sub>56</sub>:
-                <input type="text" id="C56" value="-.223" size="4"> mm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
+                <input type="text" id="C56" value="-.223" size="7"> mm&nbsp;&nbsp;&nbsp;&nbsp; &Phi;
                 <sub>56</sub>:
-                <input type="text" id="P56" value="0" size="4"> &deg;
+                <input type="text" id="P56" value="0" size="7"> &deg;
             </div>
             <div class="aber_button">
-                <button onclick="setC(56)" class="yellow"> ADD </button>
+                <button onclick="setC(56)" class="cream"> ADD </button>
             </div>
         </div>
 
@@ -342,12 +382,13 @@
     </div>
 
     <div id="settings">
-        <h4> Display Size (pixels)= <input type="text" id="disp_size_px" size="3" value="256"> Display Size (mrad) =
-            <input type="text" id="disp_size_mrad" size="3" value="200"> </h4>
-        <h4> Sample Scale (Factor of Display Size (px))=<input type="text" id="sample_scale_factor" size="3" value="8">
+        <h4> Display Size (pixels)= <input type="text" id="disp_size_px" size="5" value="512" class="u_input"> Display Size (mrad) =
+            <input type="text" id="disp_size_mrad" size="5" value="200" class="u_input"> </h4>
+        <h4> Sample Scale (Factor of Display Size (px)) = <input type="text" id="sample_scale_factor" size="5" value="8" class="u_input">
         </h4>
-        <p><input type="checkbox" id="forceJS">Force Javascript instead of WebAssembly (Slow)</input></p>
+        <p><input type="checkbox" id="forceJS">Force Javascript instead of WebAssembly (Slow, run at 256 px, ~10s)</input></p>
         <p><input type="checkbox" id="interactiveMode">Map Keys to Defocus (Up, Down), 2-fold (wasd), Coma (ijkl) (Dev)</input></p>
+        <p><input type="checkbox" checked id="realMode">Use Coefficients from a Real Microscope (instead of randomly generated sets)</input></p>
     </div>
 
     <div class="footer">

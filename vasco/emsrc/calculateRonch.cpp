@@ -135,15 +135,16 @@ complex<float>* kissToComplex(kiss_fft_cpx* orig, int dimX, int dimY) {
     return comp;
 }
 
-float* packageOutput(float* base1, float* base2, float* scalars, int dimX, int dimY, int nScal) {
+float* packageOutput(float* base1, float* base2, float* base3, float* scalars, int dimX, int dimY, int nScal) {
     int sz = dimX * dimY;
     float* imageStack = new float[sz * 2 + nScal];
     for (size_t i = 0; i < sz; i++) {
         imageStack[i] = base1[i]; // copy the allocated memory
         imageStack[sz + i] = base2[i];
+        imageStack[2 * sz + i] = base3[i];
     }
     for (size_t i = 0; i < nScal; i++) {
-        imageStack[2 * sz + i] = scalars[i];
+        imageStack[3 * sz + i] = scalars[i];
     }
     return imageStack;
 }
@@ -252,13 +253,49 @@ float calculateInteractionParam(float keV) {
     return param / param_300;
 }
 
+float singleStrehl(float rmax, complex<float>* chi, float al_max, int numPx){
+    float strr[numPx * numPx];
+    float stpp[numPx * numPx];
+    float sapp[numPx * numPx];
+    float  strehl_radius = rmax/1000;
+    polarMeshnOapp(strr, stpp, sapp, al_max, strehl_radius, numPx);
+    float* strehl_aperture_real = sapp;
+    complex<float>* strehl_aperture = realToComplex(strehl_aperture_real, numPx, numPx);
+    complex<float>* strehl_inner = new complex<float> [numPx * numPx];
+     for(int i = 0; i < numPx * numPx; i++){
+         strehl_inner[i] = chi[i] * strehl_aperture[i];
+     };
+    complex<float>* strehl_inner_fft = cmplxFFT(strehl_inner, numPx, numPx);
+    float* strehl_inner_fft_real = complexToReal(strehl_inner_fft, numPx, numPx);
+    float strehl_inner_max = getMinMax(strehl_inner_fft_real, numPx, numPx)[1];
+    complex<float>*strehl_bottom = cmplxFFT(strehl_aperture, numPx, numPx);
+    float* strehl_bottom_real = complexToReal(strehl_bottom, numPx, numPx);
+    float strehl_bottom_max = getMinMax(strehl_bottom_real, numPx, numPx)[1];
+    float strehl = strehl_inner_max/strehl_bottom_max;
+    strehl = pow(strehl,2);
+    return strehl;
+}
+
+float* probeGeneration(complex<float>* chi, int numPx, float* oapp){
+    complex<float>* obj_aperture = realToComplex(oapp, numPx, numPx);
+    complex<float>* probe = new complex<float> [numPx * numPx];
+     for(int i = 0; i < numPx * numPx; i++){
+         probe[i] = chi[i] * obj_aperture[i];
+     };
+    complex<float>* probe_fft = cmplxFFT(probe, numPx, numPx);
+    float* probe_abs = complexToReal(probe_fft, numPx, numPx);
+    float* probe_shift = fftShift(probe_abs, numPx);
+    float* probe_out = normalize(probe_shift, 255, numPx, numPx);
+    return probe_out;
+}
+
 float* calcRonch(float* buffer, int bufSize) {
     int numPx = static_cast < int > (buffer[0]);
     float al_max = buffer[1]; //mrad
     float obj_ap_r = buffer[2]; //mrad
     int scalefactor = buffer[3];
     float keV = buffer[4];
-    float* outputScalars = new float[1];
+    float* outputScalars = new float[5];
     float alrr[numPx * numPx];
     float alpp[numPx * numPx];
     float oapp[numPx * numPx];
@@ -273,11 +310,108 @@ float* calcRonch(float* buffer, int bufSize) {
     complex<float>* chi = calculateChi(chi0, numPx);
     // Calculate r_max and return,  and turn chi0 into pi/4map Normalized
     outputScalars[0] = maskChi0(chi0, alrr, numPx, M_PI / 4);
+    
+    float strehl = singleStrehl(outputScalars[0], chi, al_max, numPx);
+    outputScalars[1] = strehl;
+
+    // // Many strehl
+    // float temp_strehl;
+    // float best_diff = 2;
+    // float best_strehl = -1;
+    // float best_r = -1;
+    // int num_steps = 21;                                                         //// This can be tuned as a tradeoff between speed and strehl display in vasco
+    // float upper_bound = 1.5 * outputScalars[0]/1000;
+    // float lower_bound = 0.95 * outputScalars[0]/1000;
+    // float range;
+    // float step = (upper_bound - lower_bound) / (num_steps - 1);
+    // for(int i = 0; i < num_steps; i++) {
+    //     range = 1000*(lower_bound + (step * i));
+    //     temp_strehl = singleStrehl(range, chi, al_max, numPx);
+    //     if(abs(temp_strehl-0.8)<best_diff){
+    //         best_diff = abs(temp_strehl-0.8);
+    //         best_strehl = temp_strehl;
+    //         best_r = range;
+ 
+     // // Many strehl
+    // float temp_strehl;
+    // float best_diff = 2;
+    // float best_strehl = -1;
+    // float best_r = -1;
+    // int num_steps = 51;
+    // float upper_bound = 1.5 * outputScalars[0]/1000;
+    // float lower_bound = 0.95 * outputScalars[0]/1000;
+    // float range;
+    // float step = (upper_bound - lower_bound) / (num_steps - 1);
+    // for(int i = 0; i < num_steps; i++) {
+    //     range = 1000*(lower_bound + (step * i));
+    //     temp_strehl = singleStrehl(range, chi, al_max, numPx);
+    //     if(abs(temp_strehl-0.8)<best_diff){
+    //         best_diff = abs(temp_strehl-0.8);
+    //         best_strehl = temp_strehl;
+    //         best_r = range;
+    //     }
+    // }
+
+    //Optimization
+    //Minimize "strehl - 0.8"
+
+    //float* strehl_op = strehlSearch(outputScalars[0], chi, al_max, numPx);
+
+
+    float upper_bound = 1.8 * outputScalars[0]/1000;
+    float lower_bound = 1 * outputScalars[0]/1000;
+    float upper_strehl = 1;
+    float lower_strehl = 0.5;
+    float tolerance = 0.01;
+    float middle;
+    float ans;
+    float count = 0;
+    while((upper_strehl-lower_strehl)>=tolerance){
+    
+
+        //The "middle" variable is set to the average of the bounds with each iteration
+        middle = (upper_bound+lower_bound)/2;
+
+        //Find the strehl ratio for the given radius
+        ans = singleStrehl(1000*middle, chi, al_max, numPx);
+    
+        if(ans > 0.8){
+            lower_bound = middle;
+            upper_strehl = ans;
+        }
+
+        if(ans < 0.8){
+            upper_bound = middle;
+            lower_strehl = ans;
+        }
+
+        // if(ans == 0.8){
+        //     break;
+        // }
+        count = count + 1;
+        if(count == 10){
+            break;
+        }
+    }
+
+    middle = (upper_bound+lower_bound)/2;
+    float r_strehl = singleStrehl(1000*middle, chi, al_max, numPx);
+
+    outputScalars[2] = r_strehl; //strehl ratio achieved
+    outputScalars[3] = middle*1000; //strehl radius
+    outputScalars[4] = count;
+
+    float strr[numPx * numPx];
+    float stpp[numPx * numPx];
+    float sapp[numPx * numPx];
+    float  strehl_radius = middle;
+    polarMeshnOapp(strr, stpp, sapp, al_max, strehl_radius, numPx);
+    float* probe = probeGeneration(chi, numPx, sapp);
 
     // Normalize to 0-255 for output
     float* ronch = normalize(calcDiffract(chi, trans, oapp, numPx), 255, numPx, numPx);
     // Package results and return
-    auto arrayPtr = packageOutput(ronch, chi0, outputScalars, numPx, numPx, 1);
+    auto arrayPtr = packageOutput(ronch, chi0, probe, outputScalars, numPx, numPx, 5);
     return arrayPtr;
 }
 
