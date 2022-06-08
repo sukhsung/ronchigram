@@ -530,6 +530,12 @@ h6 {
     font-size: 0.65em;
   }
 
+  input {
+    border: none;
+    background-color: #124559;
+    border-radius: 4px;
+  }
+  
   .disable {
     background-color: #01161E;
     font-size: 1em;
