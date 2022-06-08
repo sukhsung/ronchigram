@@ -291,6 +291,7 @@ input {
 .disable {
   background-color: #01161E;
   color: #AEC3B0;
+  font-size: large;
   -webkit-text-fill-color: #AEC3B0;
   opacity: 1;
 }
