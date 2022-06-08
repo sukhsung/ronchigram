@@ -271,7 +271,7 @@ input {
 
 .disable {
   background-color: #01161E;
-  font-size: large;
+  font-size: 1em;
   color: #AEC3B0;
 }
 
@@ -504,20 +504,20 @@ h6 {
   
 
   .aber_list {
-    width: 20%;
+    width: 30%;
     float: left;
     text-align: right;
   }
   
   .alt_list {
-    width: 10%;
+    width: 5%;
     float: left;
     text-align: center;
-    padding-left: 5%;
+    padding-left: 3%;
   }
   
   .aber {
-    width: 50%;
+    width: 53%;
     float: left;
     display: inline;
   }
@@ -528,6 +528,12 @@ h6 {
     margin: 0;
     padding-top: 10px;
     font-size: 0.65em;
+  }
+
+  .disable {
+    background-color: #01161E;
+    font-size: 1em;
+    color: #AEC3B0;
   }
 
 }
