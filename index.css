@@ -395,7 +395,7 @@ h6 {
   background-color:#92a694;
 }
 
-@media only screen and (max-device-width: 2048px) {/*and (orientation: portrait){*/
+@media only screen and (max-device-width: 512px) and (orientation: portrait){
 
   .im {
     width: 80vw;
