@@ -274,6 +274,7 @@ input {
   font-size: 1em;
   color: #AEC3B0;
   -webkit-text-fill-color: #AEC3B0;
+  opacity: 1;
 }
 
 .u_input {
