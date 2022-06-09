@@ -20,7 +20,8 @@ h1 {
 
 h2 {
     font-size: 1.7em;
-    margin: 10px;
+    margin: 0px;
+    padding-bottom: 5px;
 }
 
 .setting h2 {
@@ -59,6 +60,10 @@ h6 {
     border: none;
 }
 
+h7 {
+    font-size: 2em;
+}
+
 .main-container {
     display:flex;
 }
@@ -78,6 +83,7 @@ h6 {
     background-color: #01161E;
     order: 1;
     flex-grow: 3;
+    padding-top: 5px;
 }
 
 .im-container {
@@ -102,7 +108,7 @@ h6 {
     align-content: space-around;
     row-gap: 10px;
     column-gap: 20px;
-    padding-top: 15px;
+    padding-top: 0px;
   }
 
 #can1div {
@@ -270,13 +276,16 @@ input {
 
 .disable {
     background-color: #01161E;
+    font-size: 1.1em;
     color: #AEC3B0;
+    -webkit-text-fill-color: #AEC3B0;
+    opacity: 1;
 }
 
 .footer {
     left: 0;
     bottom: 0;
-    padding: 10px;
+    padding: 5px;
     background: #3e7487;
 
 }
@@ -304,8 +313,8 @@ input {
 .rounded {
     border-radius: 3%;
     background-position:center;
-    width: 35vw;
-    height: 35vw;
+    width: 35.25vw;
+    height: 35.25vw;
     border: 5px solid #AEC3B0;
 }
   
@@ -366,6 +375,7 @@ input {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 5px;
 
 }
   
@@ -377,7 +387,7 @@ input {
     align-items: center;
     align-content: center;
     column-gap: 20px;
-    padding-top: 11px;
+    padding-top: 0px;
 
   }
 
