@@ -544,20 +544,20 @@ h6 {
   }
 
   .aber_list_head {
-    width: 5%;
+    width: 23%;
     float: left;
     text-align: right;
   }
   
   .alt_list_head {
-    width: 5%;
+    width: 12%;
     float: left;
     text-align: center;
     padding-left: 5%;
   }
   
   .aber_head {
-    width: 5%;
+    width: 53%;
     float: left;
     display: inline;
   }
