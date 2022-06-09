@@ -277,6 +277,7 @@ input {
 .disable {
     background-color: #01161E;
     color: #AEC3B0;
+    -webkit-text-fill-color: #AEC3B0;
 }
 
 .footer {

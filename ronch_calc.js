@@ -134,7 +134,7 @@ function drawOverlays(
     ctx3.fillStyle = "#e6eaeb";
     ctx3.fillText(
          math.round((numPx*lambda)/(2*obj_ap_r/1000)*(39/(2*numPx))*10000000,1) + " Å",
-         numPx/4 - (100 / scalar) * numPx/4,
+         numPx/4 - (55 / scalar) * numPx/4,
          numPx/4 - (10 / scalar) * numPx/4
     );
     ctx3.beginPath();
