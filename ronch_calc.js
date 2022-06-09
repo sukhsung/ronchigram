@@ -213,8 +213,7 @@ function randButton() {
         setTimeout(function () {
             randomize_real();
         }, 0);
-    }
-    else{
+    } else {
         setTimeout(function () {
             randomize_realistic(); //randomize_realistic
         }, 0);
@@ -846,7 +845,19 @@ function calculate() {
 
 function initialize() {
     hasWASM = hasWASM();
-    calculate();
+    let url = window.location.href
+    let urlparts = url.split('?')
+    if (urlparts.length == 1) {
+        calculate();
+    } 
+    else if (urlparts.length == 2) {
+        let ronchID = parseInt(urlparts[1])
+        if (~isNaN(ronchID)) {
+            console.log(ronchID)
+            randomize_realistic(terms=-1, aberration_set_index=ronchID)
+        }
+        calculate()
+    }
 }
 
 function randomize() {
@@ -860,14 +871,16 @@ function randomize() {
     calculate();
 }
 
-function randomize_realistic(terms = -1) {
+function randomize_realistic(terms = -1, aberration_set_index=-1) {
     
     if(terms==-1)
     {
         terms = number_aberration_terms;
     }
     let randVal = 99; //or however large the data set is minus one
-    aberration_set_index = Math.round(Math.random() * randVal);
+    if (aberration_set_index=-1) {
+        aberration_set_index = Math.round(Math.random() * randVal);
+    }
     let aberration_coefs = random_reasonable_aberration_coefs[aberration_set_index];
     for (let it =0; it < terms; it++) {
         let aberration = aberrations[it];
