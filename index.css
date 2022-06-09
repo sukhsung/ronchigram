@@ -554,13 +554,14 @@ h6 {
     width: 12%;
     float: left;
     text-align: center;
-    padding-left: 1%;
+    padding-left: 3%;
   }
   
   .aber_head {
-    width: 40%;
+    width: 35%;
     float: left;
     display: inline;
+    padding-left: 7%
   }
 
   .body2 {
