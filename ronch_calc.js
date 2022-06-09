@@ -853,7 +853,6 @@ function initialize() {
     else if (urlparts.length == 2) {
         let ronchID = parseInt(urlparts[1])
         if (~isNaN(ronchID)) {
-            console.log(ronchID)
             randomize_realistic(terms=-1, aberration_set_index=ronchID)
         }
     }
@@ -877,9 +876,11 @@ function randomize_realistic(terms = -1, aberration_set_index=-1) {
         terms = number_aberration_terms;
     }
     let randVal = 99; //or however large the data set is minus one
-    if (aberration_set_index=-1) {
+
+    if (aberration_set_index==-1) {
         aberration_set_index = Math.round(Math.random() * randVal);
     }
+    console.log(aberration_set_index)
     let aberration_coefs = random_reasonable_aberration_coefs[aberration_set_index];
     for (let it =0; it < terms; it++) {
         let aberration = aberrations[it];
