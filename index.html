@@ -74,23 +74,23 @@
 
     <div id="settings">
         <h4>e<sup>-</sup> Beam Energy = <input onchange="energyUI()" type="text" id="beamvolt" size="4" value="300" class="u_input"> keV
-            &rArr; Wavelength = <input type="text" id="wavlen" size="6" disabled class="disable"> pm </h4>
+            &rArr; Wavelength = <input type="text" id="wavlen" size="6" disable class="disable"> pm </h4>
         <h4><span style="color: #D671B6;font-size: 1em;">&#9675;</span> Objective Aperture Semiangle = <input
                 type="text" id="aperture" onchange="energyUI()" size="5" value="95" class="u_input"> mrad</h4>
-        <h4>Diffraction Limited Resolution = <input type="text" id="diffres" size="7" disabled class="disable"> pm</h4>
+        <h4>Diffraction Limited Resolution = <input type="text" id="diffres" size="7" disable class="disable"> pm</h4>
 
         <h4><span style="color: #71B6D6;font-size: 1em">&#9675;</span> π/4 Aperture Semiangle = <input type="text"
-                id="alpha_max" size="6" disabled class="disable"> mrad</h4>
+                id="alpha_max" size="6" disable class="disable"> mrad</h4>
         <h4>Strehl Ratio for π/4 Semiangle = <input type="text"
-                id="current_strehl" size="6" disabled class="disable"> </h4>
+                id="current_strehl" size="6" disable class="disable"> </h4>
         <h4><span style="color: #B6D671;font-size: 1em">&#9675;</span> Aperture Semiangle for Strehl Ratio of 0.8 (optimal) = <input type="text"
-                id="best_r" size="6" disabled class="disable"> mrad</h4>
+                id="best_r" size="6" disable class="disable"> mrad</h4>
         <!--<h4>Best Strehl Ratio Approximated = <input type="text"
-                id="best_strehl" size="6" disabled class="disable"> </h4>
+                id="best_strehl" size="6" disable class="disable"> </h4>
         <h4>Strehl Radius / π/4 Radius = <input type="text"
-            id="ratio" size="6" disabled class="disable"> </h4>
+            id="ratio" size="6" disable class="disable"> </h4>
         <h4>Number iterations taken to find strehl = <input type="text"
-            id="count" size="6" disabled class="disable"> </h4> -->
+            id="count" size="6" disable class="disable"> </h4> -->
         <input type="checkbox" id="draw_overlay" checked>Show image overlays</input>
     </div>
 
@@ -109,14 +109,14 @@
 
     <div id="aberrations">
         <div class="aber_wrapper_head">
-            <div class="aber_list">
+            <div class="aber_list_head">
                 Aberration
             </div>
-            <div class="alt_list">
+            <div class="alt_list_head">
                 <p>Symbol</p>
                 <p>(Haider)</p>
             </div>
-            <div class="aber">
+            <div class="aber_head">
                 <p>Symbol</p>
                 <p>(Krivanek)</p>
             </div>
@@ -382,8 +382,8 @@
     </div>
 
     <div id="settings">
-        <h4> Display Size (pixels)= <input type="text" id="disp_size_px" size="5" value="512" class="u_input"> </h4>
-        <h4> Display Size (mrad) = <input type="text" id="disp_size_mrad" size="5" value="200" class="u_input"> </h4>
+        <h4> Display Size (pixels)= <input type="text" id="disp_size_px" size="5" value="512" class="u_input"> Display Size (mrad) =
+            <input type="text" id="disp_size_mrad" size="5" value="200" class="u_input"> </h4>
         <h4> Sample Scale (Factor of Display Size (px)) = <input type="text" id="sample_scale_factor" size="5" value="8" class="u_input">
         </h4>
         <p><input type="checkbox" id="forceJS">Force Javascript instead of WebAssembly (Slow, run at 256 px, ~10s)</input></p>
