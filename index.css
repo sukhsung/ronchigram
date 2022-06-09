@@ -416,7 +416,7 @@ h6 {
   background-color:#92a694;
 }
 
-@media only screen and (max-device-width: 512px) and (orientation: portrait){
+@media only screen and (max-device-width: 2048px) {/*and (orientation: portrait){*/
 
   .im {
     width: 80vw;
@@ -544,20 +544,20 @@ h6 {
   }
 
   .aber_list_head {
-    width: 23%;
+    width: 5%;
     float: left;
     text-align: right;
   }
   
   .alt_list_head {
-    width: 15%;
+    width: 5%;
     float: left;
     text-align: center;
     padding-left: 5%;
   }
   
   .aber_head {
-    width: 45%;
+    width: 5%;
     float: left;
     display: inline;
   }
