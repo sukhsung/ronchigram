@@ -276,8 +276,10 @@ input {
 
 .disable {
     background-color: #01161E;
+    font-size: 1.1em;
     color: #AEC3B0;
     -webkit-text-fill-color: #AEC3B0;
+    opacity: 1;
 }
 
 .footer {
