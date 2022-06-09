@@ -547,13 +547,14 @@ h6 {
     width: 23%;
     float: left;
     text-align: right;
+    padding-left: 3%
   }
   
   .alt_list_head {
     width: 12%;
     float: left;
     text-align: center;
-    padding-left: 3%;
+    padding-left: 1%;
   }
   
   .aber_head {
