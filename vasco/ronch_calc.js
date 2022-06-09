@@ -551,7 +551,7 @@ function randomize_real(terms = -1) {
 
 function TrainingModeEasy(){
 
-    if(toggle_easy.checked){
+    if(switch_easy.checked){
         ab_cor_mode = true;
         ab_cor_hard = 'easy';
         start_ab_training(ab_cor_hard);
@@ -606,7 +606,7 @@ function TrainingModeEasy(){
 function TrainingModeHard(){
     
 
-    if(toggle_hard.checked){
+    if(switch_hard.checked){
         
         ab_cor_hard = 'hard';
         ab_cor_mode = true;
@@ -762,6 +762,19 @@ function notationChange(selectObject){
     }
 }
 
+function toggleEasy() {
+    if (switch_hard.checked) {
+        switch_hard.checked = false
+    }
+    TrainingModeEasy()
+}
+
+function toggleHard() {
+    if (switch_easy.checked) {
+        switch_easy.checked = false
+    }
+    TrainingModeHard()
+}
 
 
 var pm = math.pow(10, -12);
@@ -793,8 +806,8 @@ steps.C21 = 100
 
 var forceJS = document.getElementById("forceJS"); //figure out how to read from checkbox
 var real = document.getElementById("realMode");
-var toggle_easy = document.getElementById("checkEasy");
-var toggle_hard = document.getElementById("checkHard");
+var switch_easy = document.getElementById("checkEasy");
+var switch_hard = document.getElementById("checkHard");
 
 var aberration_list = [
     "C10",
