@@ -344,10 +344,10 @@ function calculateWASM(Module) {
             }
         }
     }
-    
+    let calcStrehl = document.getElementById("calcStrehl").checked;
 
     globalTest = 250;
-    let params = [numPx, al_max, obj_ap_r, scalefactor, keV];
+    let params = [numPx, al_max, obj_ap_r, scalefactor, keV, calcStrehl];
     const arrayDataToPass = params.concat(ab_mags, ab_angles);
     let buffer;
     let error;
@@ -793,8 +793,9 @@ steps.C21 = 100
 
 var forceJS = document.getElementById("forceJS"); //figure out how to read from checkbox
 var real = document.getElementById("realMode");
-var toggle_easy = document.getElementById("checkEasy")
-var toggle_hard = document.getElementById("checkHard")
+var toggle_easy = document.getElementById("checkEasy");
+var toggle_hard = document.getElementById("checkHard");
+
 var aberration_list = [
     "C10",
     "C12",

@@ -295,6 +295,7 @@ float* calcRonch(float* buffer, int bufSize) {
     float obj_ap_r = buffer[2]; //mrad
     int scalefactor = buffer[3];
     float keV = buffer[4];
+    bool calcStrehl = buffer[5];
     float* outputScalars = new float[5];
     float alrr[numPx * numPx];
     float alpp[numPx * numPx];
@@ -305,7 +306,7 @@ float* calcRonch(float* buffer, int bufSize) {
 
     complex<float>* trans = generateTransmissionFn(sample, numPx, numPx, calculateInteractionParam(keV));
 
-    float* chi0 = calculateChi0( & buffer[5], & buffer[19], alrr, alpp, numPx, 14, keV);
+    float* chi0 = calculateChi0( & buffer[6], & buffer[20], alrr, alpp, numPx, 14, keV);
 
     complex<float>* chi = calculateChi(chi0, numPx);
     // Calculate r_max and return,  and turn chi0 into pi/4map Normalized
@@ -314,58 +315,17 @@ float* calcRonch(float* buffer, int bufSize) {
     float strehl = singleStrehl(outputScalars[0], chi, al_max, numPx);
     outputScalars[1] = strehl;
 
-    // // Many strehl
-    // float temp_strehl;
-    // float best_diff = 2;
-    // float best_strehl = -1;
-    // float best_r = -1;
-    // int num_steps = 21;                                                         //// This can be tuned as a tradeoff between speed and strehl display in vasco
-    // float upper_bound = 1.5 * outputScalars[0]/1000;
-    // float lower_bound = 0.95 * outputScalars[0]/1000;
-    // float range;
-    // float step = (upper_bound - lower_bound) / (num_steps - 1);
-    // for(int i = 0; i < num_steps; i++) {
-    //     range = 1000*(lower_bound + (step * i));
-    //     temp_strehl = singleStrehl(range, chi, al_max, numPx);
-    //     if(abs(temp_strehl-0.8)<best_diff){
-    //         best_diff = abs(temp_strehl-0.8);
-    //         best_strehl = temp_strehl;
-    //         best_r = range;
- 
-     // // Many strehl
-    // float temp_strehl;
-    // float best_diff = 2;
-    // float best_strehl = -1;
-    // float best_r = -1;
-    // int num_steps = 51;
-    // float upper_bound = 1.5 * outputScalars[0]/1000;
-    // float lower_bound = 0.95 * outputScalars[0]/1000;
-    // float range;
-    // float step = (upper_bound - lower_bound) / (num_steps - 1);
-    // for(int i = 0; i < num_steps; i++) {
-    //     range = 1000*(lower_bound + (step * i));
-    //     temp_strehl = singleStrehl(range, chi, al_max, numPx);
-    //     if(abs(temp_strehl-0.8)<best_diff){
-    //         best_diff = abs(temp_strehl-0.8);
-    //         best_strehl = temp_strehl;
-    //         best_r = range;
-    //     }
-    // }
 
-    //Optimization
-    //Minimize "strehl - 0.8"
-
-    //float* strehl_op = strehlSearch(outputScalars[0], chi, al_max, numPx);
-
-
+    float r_strehl;
+    float middle;
+    float count = 0;
+    if(calcStrehl == true){
     float upper_bound = 1.8 * outputScalars[0]/1000;
     float lower_bound = 1 * outputScalars[0]/1000;
     float upper_strehl = 1;
     float lower_strehl = 0.5;
     float tolerance = 0.01;
-    float middle;
     float ans;
-    float count = 0;
     while((upper_strehl-lower_strehl)>=tolerance){
     
 
@@ -395,8 +355,13 @@ float* calcRonch(float* buffer, int bufSize) {
     }
 
     middle = (upper_bound+lower_bound)/2;
-    float r_strehl = singleStrehl(1000*middle, chi, al_max, numPx);
-
+    r_strehl = singleStrehl(1000*middle, chi, al_max, numPx);
+    }
+    else{
+        r_strehl = -1;
+        middle = 0;
+        count = 0;
+    }
     outputScalars[2] = r_strehl; //strehl ratio achieved
     outputScalars[3] = middle*1000; //strehl radius
     outputScalars[4] = count;
