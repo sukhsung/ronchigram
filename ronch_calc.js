@@ -856,7 +856,6 @@ function initialize() {
             console.log(ronchID)
             randomize_realistic(terms=-1, aberration_set_index=ronchID)
         }
-        calculate()
     }
 }
 
