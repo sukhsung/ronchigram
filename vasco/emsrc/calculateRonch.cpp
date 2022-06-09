@@ -370,7 +370,14 @@ float* calcRonch(float* buffer, int bufSize) {
     float stpp[numPx * numPx];
     float sapp[numPx * numPx];
     float  strehl_radius = middle;
+    
+    if(calcStrehl == true){
     polarMeshnOapp(strr, stpp, sapp, al_max, strehl_radius, numPx);
+    }
+    else{
+    polarMeshnOapp(strr, stpp, sapp, al_max, outputScalars[0]/1000, numPx);
+    
+    }
     float* probe = probeGeneration(chi, numPx, sapp);
 
     // Normalize to 0-255 for output
