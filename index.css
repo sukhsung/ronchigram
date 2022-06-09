@@ -416,7 +416,7 @@ h6 {
   background-color:#92a694;
 }
 
-@media only screen and (max-device-width: 512px) and (orientation: portrait){
+@media only screen and (max-device-width: 2048px) { /*and (orientation: portrait){*/
 
   .im {
     width: 80vw;
@@ -553,11 +553,11 @@ h6 {
     width: 12%;
     float: left;
     text-align: center;
-    padding-left: 5%;
+    padding-left: 3%;
   }
   
   .aber_head {
-    width: 53%;
+    width: 40%;
     float: left;
     display: inline;
   }
