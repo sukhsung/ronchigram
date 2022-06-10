@@ -856,6 +856,9 @@ function initialize() {
             randomize_realistic(terms=-1, aberration_set_index=ronchID)
         }
     }
+    else {
+        calculate();
+    }
 }
 
 function randomize() {

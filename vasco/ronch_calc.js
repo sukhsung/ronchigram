@@ -482,7 +482,20 @@ function calculate() {
 }
 
 function initialize() {
-    calculate();
+    let url = window.location.href
+    let urlparts = url.split('?')
+    if (urlparts.length == 1) {
+        calculate();
+    } 
+    else if (urlparts.length == 2) {
+        let ronchID = parseInt(urlparts[1])
+        if (~isNaN(ronchID)) {
+            randomize_realistic(terms=-1, aberration_set_index=ronchID)
+        }
+    }
+    else {
+        calculate();
+    }
 }
 
 function randomize(terms = -1) {
