@@ -13,7 +13,7 @@
 <body>
     <div class="main-container">
         <div class="main-child main-leftPanel" width="1000">
-            <h5 style="margin-bottom: 0">Aberrations</h5>
+            <h4 style="margin-bottom: 0">Aberrations</h4>
             <div id="aberrations" class="big_aber_wrapper">
         
                 <div class="aber_wrapper">
@@ -188,10 +188,9 @@
                     <button class="cream" onclick="zeroBtn()">Zero all</button>
                 </div>
                 <div style="padding-top: 10px">
-                    <!--<button class="cream" onclick="start_ab_training('easy')">Correction training (Easy)</button><p></p>-->
                 <div class ="button_holder_holder">
                     <div class="button_holder">
-                    <h6>Easy training&nbsp;</h6>
+                    <h5>Easy training&nbsp;</h5>
                     
                     
                     <label class="switch">
@@ -202,7 +201,7 @@
                 </div>
                 <div class="button_holder_holder">
                     <div class="button_holder">
-                    <h6>Hard training&nbsp;</h6>    
+                    <h5>Hard training&nbsp;</h5>    
                     
                     <label class="switch">
                         <input type="checkbox" id="checkHard" class="unCheckEasy" onchange="toggleHard()">
@@ -217,7 +216,7 @@
         </div>
 
         <div class="main-child main-rightPanel">
-            <h7>VASCO</h7>
+            <h6>VASCO</h6>
             <div class="image_wrapper">
                 <div class="left_column">
                     <h2>Ronchigram</h2>
@@ -225,11 +224,11 @@
                 </div>
                 <div class="right_column">
                     <div class="top_row">
-                        <h4>&pi;/4 Phase Limit</h4>
+                        <h1>&pi;/4 Phase Limit</h1>
                         <canvas id="canvas2" class="rounded2"></canvas>
                     </div>
                     <div class="bottom_row">
-                        <h4>Probe Function</h4>
+                        <h1>Probe Function</h1>
                         <canvas id="canvas3" class="rounded2"></canvas>
                     </div>
                 </div>
@@ -251,27 +250,8 @@
                             id="current_strehl" size="6" disabled class="disable"> </p>
                     <p><span style="color: #B6D671;font-size: 1em">&#9675;</span> Aperture Semiangle For Strehl Ratio = <input type="text"
                             id="best_r" size="6" disabled class="disable"> mrad </p>
-                    <p>Best Strehl Ratio Approximated = <input type="text"
-                            id="best_strehl" size="6" disabled class="disable"></p>
-                    <p></p>Strehl Radius / π/4 Radius = <input type="text"
-                            id="ratio" size="6" disabled class="disable"> </p> 
-                    <p>Number iterations taken to find strehl = <input type="text"
-                            id="count" size="3" disabled class="disable"> (maximum of 10)</p>
 
-                    <!--<p><span style="color: #FF0000;font-size: 1em;">&#9675;</span> Objective Aperture Semiangle = <input
-                            type="text" id="aperture" onchange="energyUI()" size="3" value="95"> mrad &nbsp;&nbsp;&nbsp;&nbsp;
-                        <span style="color: #0000FF;font-size: 1em">&#9675;</span> π/4 Aperture Semiangle = <input type="text"
-                            id="alpha_max" size="4" disabled class="disable"> mrad &nbsp;&nbsp;&nbsp;&nbsp;
-                        Strehl Ratio for π/4 Semiangle = <input type="text"
-                            id="current_strehl" size="4" disabled class="disable"> </p>
-                    <p><span style="color: #9df57f;font-size: 1em">&#9675;</span> Aperture Semiangle For Strehl Ratio = <input type="text"
-                            id="best_r" size="4" disabled class="disable"> mrad &nbsp;&nbsp;&nbsp;&nbsp;
-                        Best Strehl Ratio Approximated = <input type="text"
-                            id="best_strehl" size="4" disabled class="disable">
-                        Strehl Radius / π/4 Radius = <input type="text"
-                            id="ratio" size="4" disabled class="disable"> </p> 
-                    <p><input type="checkbox" id="draw_overlay" checked>Show image overlays</input>
-                        </p>-->
+
                 </div>
                 <div>
                     <h3> Controls </h3>
@@ -287,13 +267,6 @@
                     <p><input type="checkbox" id="draw_overlay" checked>Show image overlays</input> | <input type="checkbox" id="realMode" checked> Random Uses Real-Life Values</input> | Correction training terms: <input type="text" id="correct_terms" size=4 value="3" class="input_right"> </p>
                     <p>Notation: <select onchange="notationChange(this)"><option value="k">Krivanek</option><option value="h">Haider</option></select> | Calculate Strehl Aperture Semi-Angle (slow) <input type="checkbox" id="calcStrehl" checked> </p>
                 </div>
-                <!--- <div>
-                    Step-sizes: 
-                    Defocus: <button onclick="changeStepSize('c10',true)" class="blue">&#9650;</button> <button onclick="changeStepSize('c10',false)" class="blue">&#9660;</button> &nbsp;&nbsp;&nbsp;&nbsp;
-                    2-fold: <button onclick="changeStepSize('c12',true)" class="blue">&#9650;</button> <button onclick="changeStepSize('c12',false)" class="blue">&#9660;</button> &nbsp;&nbsp;&nbsp;&nbsp;
-                    Coma: <button onclick="changeStepSize('c21',true)" class="blue">&#9650;</button> <button onclick="changeStepSize('c21',false)" class="blue">&#9660;</button> &nbsp;&nbsp;&nbsp;&nbsp;
-                </div>
-                --->
             </div>
 
 
@@ -308,7 +281,6 @@
         <p>Check out the source on <a href="https://github.com/sukhsung/vasco-app/">GitHub</a>, DOI: <a href=https://doi.org/10.1017/S1551929519000427>10.1017/S1551929519000427</a> </p>
     </div>
 
-    <!-- <script type="text/javascript" src="./math.min.js"></script> -->
     <script type="text/javascript" src="./index.js"></script>
     <script type="text/javascript" src="./math.min.js"></script>
     <script type="text/javascript" src="./ronch_calc.js"></script>

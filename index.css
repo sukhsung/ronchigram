@@ -8,26 +8,16 @@
 }
 
 h1 {
-  font-weight: bold;
-  font-style: italic;
-  text-align: center;
-  vertical-align: middle;
-  margin: 0;
-  padding: 5px;
-  font-size: 2.5em;
-}
-
-h2 {
   font-family:"input-mono";
   font-style:normal;font-weight:400;font-stretch:normal;
   font-size: 1.7em;
 }
 
-h2 input {
+h1 input {
   font-size: 1em;
 }
 
-h3{
+h2{
   font-family:"input-mono";
   font-style:normal;font-weight:400;font-stretch:normal;
   text-align: center;
@@ -39,26 +29,30 @@ h3{
 
 }
 
-h4 {
+h3 {
   font-family:"input-mono";
   font-style:normal;font-weight:400;font-stretch:normal;
   font-size: 1.2em;
   margin: 20px;
 }
 
-h5 {
+h4 {
   font-family:"input-mono";
-  font-style:normal;font-weight:400;font-stretch:normal;
+  font-style:bold ;font-weight:700;font-stretch:normal;
+  background-color: transparent;
+  color:#01161E;
   font-size: 1.2em;
   margin: 0px;
-  padding-top: 10px;
+  padding-top: 0px;
+  padding-left: 0px;
+  position:absolute;
+  top: 40px;
+  left: 40px;
+  background: none;
+  transform: rotate(45deg);
 }
 
-body {
-  margin: 0;
-}
-
-.body2 {
+.body {
   margin: 0;
   padding-top: 10px;
   font-size: 0.78em;
@@ -77,16 +71,6 @@ body {
 
 #paperlink {
   font-size: 0.9em;
-}
-
-.im {
-  width: 46vw;
-  height: 46vw;
-}
-
-.im2 {
-  width: 20.35vw;
-  height: 20.35vw;
 }
 
 .im_rapper {
@@ -164,17 +148,6 @@ button:active {
   background-color: #6492a3;
 }
 
-.red {
-  background-color: #DB84C0;
-  border: none;
-  box-shadow: 0 3px #124559;
-  color: #01161E;
-}
-
-.red:hover {
-  background-color: #994361;
-}
-
 .cream {
   background-color: #EFF6E0;
   border: none;
@@ -184,28 +157,6 @@ button:active {
 
 .cream:hover {
   background-color: #afb5a1;
-}
-
-.green {
-  background-color: #C0DB84;
-  border: none;
-  box-shadow: 0 3px #124559;
-  color: #01161E;
-}
-
-.green:hover {
-  background-color: #8a9e5f;
-}
-
-.yellow {
-  background-color: #F2AA4C;
-  border: none;
-  box-shadow: 0 3px #124559;
-  color: #01161E;
-}
-
-.yellow:hover {
-  background-color: #c2883c;
 }
 
 #aberrations {
@@ -383,27 +334,6 @@ input {
   clip-path: polygon(0 0, 100% 0, 100% 100%);
 }
 
-h6 {
-  font-family:"input-mono";
-  font-style:bold ;font-weight:700;font-stretch:normal;
-  background-color: transparent;
-  color:#01161E;
-  font-size: 1.2em;
-  margin: 0px;
-  padding-top: 0px;
-  padding-left: 0px;
-  position:absolute;
-  top: 40px;
-  left: 40px;
-
-  /* Border is the new background */
-  background: none;
-
-  /* Rotate from top left corner (not default) */
-  
-  transform: rotate(45deg);
-}
-
 .flagCorner {
   background-color: #AEC3B0;
   border: none;
@@ -417,11 +347,6 @@ h6 {
 }
 
 @media only screen and (max-device-width: 512px) and (orientation: portrait){
-
-  .im {
-    width: 80vw;
-    height: 80vw;
-  }
 
   #can1div {
     float: none;
@@ -502,7 +427,7 @@ h6 {
     clip-path: polygon(0 0, 100% 0, 100% 100%);
   }
 
-  h6 {
+  h4 {
     font-family:"input-mono";
     font-style:bold ;font-weight:700;font-stretch:normal;
     background-color: transparent;
@@ -514,16 +439,10 @@ h6 {
     position:absolute;
     top: 3vw;
     left: 4vw;
-  
-    /* Border is the new background */
     background: none;
-  
-    /* Rotate from top left corner (not default) */
-    
     transform: rotate(45deg);
   }
   
-
   .aber_list {
     width: 30%;
     float: left;
@@ -564,7 +483,7 @@ h6 {
     padding-left: 7%
   }
 
-  .body2 {
+  .body {
     margin: 0;
     padding-top: 10px;
     font-size: 0.65em;

@@ -80,7 +80,7 @@ function drawOverlays(
         0,
         2 * PI
     );
-    ctx1.strokeStyle = "#71B6D6"; //from "blue"
+    ctx1.strokeStyle = "#71B6D6";
     ctx1.lineWidth = (1 * numPx) / scalar;
     ctx1.stroke();
 
@@ -92,7 +92,7 @@ function drawOverlays(
         0,
         2 * PI
     );
-    ctx1.strokeStyle = "#B6D671"; //for the strehl radius
+    ctx1.strokeStyle = "#B6D671";
     ctx1.stroke();
 
     /// right panel
@@ -104,7 +104,7 @@ function drawOverlays(
         0,
         2 * PI
     );
-    ctx2.strokeStyle = "#71B6D6"; //from "blue"
+    ctx2.strokeStyle = "#71B6D6";
     ctx2.lineWidth = 2;
     ctx2.stroke();
     ctx2.beginPath();
@@ -115,7 +115,7 @@ function drawOverlays(
         0,
         2 * PI
     );
-    ctx2.strokeStyle = "#D671B6"; //from "red"
+    ctx2.strokeStyle = "#D671B6";
     ctx2.lineWidth = 2;
     ctx2.stroke();
 
@@ -127,10 +127,10 @@ function drawOverlays(
         0,
         2 * PI
     );
-    ctx2.strokeStyle ="#B6D671"; //for the strehl radius
+    ctx2.strokeStyle ="#B6D671";
     ctx2.stroke();
 
-    ctx3.font = (numPx / scalar) * 5 + "px Arial"; // this is where to put in the correct length scale
+    ctx3.font = (numPx / scalar) * 5 + "px Arial"; 
     ctx3.fillStyle = "#e6eaeb";
     ctx3.fillText(
          math.round((numPx*lambda)/(2*obj_ap_r/1000)*(39/(2*numPx))*10000000,1) + " Å",
@@ -215,7 +215,7 @@ function randButton() {
         }, 0);
     } else {
         setTimeout(function () {
-            randomize_realistic(); //randomize_realistic
+            randomize_realistic();
         }, 0);
     }
 }
@@ -438,14 +438,11 @@ function drawEverything(
     canvas1.height = numPx;
     canvas2.width = numPx;
     canvas2.height = numPx;
-    canvas3.width = numPx/4; //if changing probe zoom, need to change this as well
+    canvas3.width = numPx/4;
     canvas3.height = numPx/4;
 
     drawGrayscaleBitmap2(ctx1, out_ronch, numPx);
     drawGrayscaleBitmap2(ctx2, out_phase_map, numPx);
-    // if (draw_overlay) {
-    //     drawOverlays(ctx1, ctx2, numPx, al_max, disp_size_mrad, obj_ap_r, rmax, best_r);
-    // }
     let probe = probeZoom(out_probe, numPx);
 
     drawGrayscaleBitmap2(ctx3, probe, probe.length);
@@ -454,11 +451,8 @@ function drawEverything(
         drawOverlays(ctx1, ctx2, numPx, al_max, disp_size_mrad, obj_ap_r, rmax, best_r, ctx3, obj_ap_r);
     }
     document.getElementById("alpha_max").value = math.round(rmax, 2);
-    //document.getElementById("best_strehl").value = math.round(best_strehl, 3);
     document.getElementById("current_strehl").value = math.round(current_strehl, 3);
     document.getElementById("best_r").value = math.round(best_r, 2);
-    //document.getElementById("ratio").value = math.round(best_r/rmax, 4);
-    //document.getElementById("count").value = count;
 }
 
 function rotate(src, n) {
@@ -657,7 +651,7 @@ function calculateWASM(Module) {
     let scalefactor = Number(
         document.getElementById("sample_scale_factor").value
     );
-    let draw_overlay = document.getElementById("draw_overlay").checked; //figure out how to read from checkbox
+    let draw_overlay = document.getElementById("draw_overlay").checked;
 
     // getting aberrations into tidy arrays of magnitude, angle. degree, order  are assumed based on order in C++ section, units are baked in!
     let abers = getAberrations();
@@ -898,7 +892,7 @@ var ctx2 = canvas2.getContext("2d");
 var canvas3 = document.getElementById("canvas3");
 var ctx3 = canvas3.getContext("2d");
 
-var forceJS = document.getElementById("forceJS"); //figure out how to read from checkbox
+var forceJS = document.getElementById("forceJS");
 var interactiveMode = document.getElementById("interactiveMode");
 var real = document.getElementById("realMode");
 var aberration_list = [
@@ -920,17 +914,6 @@ var aberration_list = [
 
 var number_aberration_terms = aberration_list.length;
 var aberrations = [];
-
-// var random_dummy_aberration_coefs = [ [1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000] , 
-// [0.000000, 0.000000, 2.000000, 150.000000, 0.500000, 10.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000] , 
-// [2.000000, 0.000000, 1.500000, 120.000000, 0.000000, 0.000000, 0.300000, 35.000000, 1.100000, 0.000000, 0.500000, 20.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000] , 
-// [5.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 3.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000] , 
-// [0.000000, 0.000000, 0.200000, 10.000000, 0.100000, 60.000000, 0.300000, 10.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000] , 
-// [1.000000, 0.000000, 0.500000, 0.000000, 0.250000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000] , 
-// [1.000000, 0.000000, 1.000000, 0.000000, 1.000000, 0.000000, 1.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000] , 
-// [8.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000] , 
-// [0.000000, 0.000000, 1.000000, 0.000000, 2.000000, -70.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000] , 
-// [0.500000, 0.000000, 0.250000, -25.000000, 0.600000, 25.000000, 0.220000, -15.000000, 0.100000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.100000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000] ];
 
 var real_aberration_coefs = [ [-2.200000, 0.000000, 1.013000, -73.060000, 19.124000, -174.090000, 19.124000, -44.330000, 0.199000, 0.000000, 0.188000, 4.040000, 0.055000, -28.080000, 1.526000, -7.290000, 1.408000, 12.360000, 0.165000, -25.200000, 0.005000, 0.000000, 0.018000, -7.510000, 0.000000, 0.000000, 0.000000, 0.000000] ,
 [2.648000, 0.000000, 0.739000, -15.990000, 38.458000, 50.850000, 76.944000, 39.820000, 7.920000, 0.000000, 5.151000, 1.330000, 0.428000, -7.870000, 60.289000, -117.570000, 77.468000, -6.700000, 26.582000, 29.660000, -3.324000, 0.000000, 4.739000, -24.460000, 0.000000, 0.000000, 0.000000, 0.000000] ,

@@ -15,7 +15,8 @@ body {
 }
 
 h1 {
-    font-size: 1.7em;
+    font-size: 1.5em;
+    margin: 7px;
 }
 
 h2 {
@@ -37,19 +38,15 @@ h3{
     margin: 10px;
 }
 
-h4{
-    font-size: 1.5em;
-    margin: 7px;
-}
 
-h5 {
+h4 {
     font-size: 1.7em;
     padding-top: 15px;
     margin: 10px;
     color: #01161E;
 }
 
-h6 {
+h5 {
     font-size: 1.05em;
     padding: 0px;
     margin: 0px;
@@ -60,8 +57,10 @@ h6 {
     border: none;
 }
 
-h7 {
+h6 {
     font-size: 2em;
+    padding: 0;
+    margin: 0;
 }
 
 .main-container {
@@ -88,15 +87,6 @@ h7 {
 
 .im-container {
     display:flex;
-}
-.im {
-    width: 33vw;
-    height: 33vw;
-}
-
-.im2 {
-    width: 15vw;
-    height: 15vw;
 }
 
 .image_wrapper {
@@ -156,17 +146,6 @@ button:active {
     transform: translateY(4px);
 }
 
-button.button-categories {
-    border:none;
-    background-color: #EFF6E0;
-    box-shadow: 0 3px #01161E;
-    color: #01161E;
-}
-  
-button.button-categories.active { 
-  background-color:#84c3db;
-}
-
 .blue {
     background-color: #84c3db;
     border: none;
@@ -176,28 +155,6 @@ button.button-categories.active {
   
 .blue:hover {
   background-color: #6492a3;
-}
-
-.red {
-    background-color: #ff0058;
-    border: none;
-    box-shadow: 0 3px #101820;
-    color: #01161E;
-}
-
-.red:hover {
-    background-color: #ba0040;
-}
-
-.yellow {
-    background-color: #F2AA4C;
-    border: none;
-    box-shadow: 0 3px #101820;
-    color: #01161E;
-}
-
-.yellow:hover {
-    background-color: #c2883c;
 }
 
 .cream {
@@ -295,12 +252,6 @@ input {
     background: #124559; 
 }
 
-.kriv_not {
-}
-
-.haid_not {
-}
-
 .nodisp{
     display: none;
     color: #01161E;
@@ -379,91 +330,76 @@ input {
 
 }
   
-  .right_column {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    align-content: center;
-    column-gap: 20px;
-    padding-top: 0px;
+.right_column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: center;
+  column-gap: 20px;
+  padding-top: 0px;
+}
 
-  }
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
 
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
 
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #567f8f;
+  -webkit-transition: .4s;
+  transition: .4s;
+  box-shadow: 0 0 3px #01161E;
+}
 
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-  }
-  
-  /* Hide default HTML checkbox */
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  /* The slider */
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #567f8f;
-    -webkit-transition: .4s;
-    transition: .4s;
-    box-shadow: 0 0 3px #01161E;
-  }
-  
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: #01161E;
-    -webkit-transition: .4s;
-    transition: .4s;
-  }
-  
-  input:checked + .slider {
-    background-color: #84c3db;
-  }
-  
-  input:focus + .slider {
-    box-shadow: 0 0 6px #01161E;
-  }
-  
-  input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-  }
-  
-  /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
-  }
-  
-  .slider.round:before {
-    border-radius: 50%;
-  }
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #01161E;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
 
+input:checked + .slider {
+  background-color: #84c3db;
+}
 
+input:focus + .slider {
+  box-shadow: 0 0 6px #01161E;
+}
 
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
 
+.slider.round {
+  border-radius: 34px;
+}
 
-
-
-
-
+.slider.round:before {
+  border-radius: 50%;
+}
 
 @import url("https://p.typekit.net/p.css?s=1&k=mtg1mgq&ht=tk&f=30497.30538.30539&a=109963572&app=typekit&e=css");
 
