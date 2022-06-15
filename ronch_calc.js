@@ -406,15 +406,6 @@ function calculateChi0(mags, angles, alrr, alpp, numPx, numAbers, keV) {
 }
 
 function probeZoom(probe, numPx ){
-    // let len = numPx/2;
-    // let probe_new = Array(len).fill().map(() => Array(len).fill(0));
-    // for(let i = 0; i<numPx; i++){
-    //     for(let j = 0; j<numPx; j++){
-    //         if(i>=(numPx/4) && i<(3*numPx/4) && j>=(numPx/4) && j<(3*numPx/4)){
-    //             probe_new[i-numPx/4][j-numPx/4] = probe[i][j];
-    //         };
-    //     };
-    // };
     let len = numPx/4;
     let probe_new = Array(len).fill().map(() => Array(len).fill(0));
     for(let i = 0; i<numPx; i++){
@@ -527,6 +518,50 @@ function singleStrehl(rmax, chi, al_max, numPx){
     return strehl;
 }
 
+function pointEightStrehl(rmax, chi, al_max, numPx){
+    let best_strehl = -1;
+    let best_r = -1;
+    let upper_bound = 1.8 * rmax/1000;
+    let lower_bound = 1 * rmax/1000;
+    let upper_strehl = 1;
+    let lower_strehl = 0.5;
+    let tolerance = 0.01;
+    let middle;
+    let ans;
+    let count = 0;
+    while((upper_strehl-lower_strehl)>=tolerance){
+        middle = (upper_bound+lower_bound)/2;
+        ans = singleStrehl(1000*middle, chi, al_max, numPx);
+        if(ans > 0.8){
+            lower_bound = middle;
+            upper_strehl = ans;
+        }
+        if(ans < 0.8){
+            upper_bound = middle;
+            lower_strehl = ans;
+        }
+        count = count + 1;
+        if(count == 20){
+            break;
+        }
+    }
+    middle = (upper_bound+lower_bound)/2;
+    best_r = middle*1000;
+    best_strehl = singleStrehl(best_r, chi, al_max, numPx);
+    let return_array = [best_strehl, best_r, count];
+    return return_array;
+}
+
+function generateProbe(al_max, best_r, numPx, chi) {
+    let probe_ap = polarMeshOapp(al_max, best_r/1000, numPx);
+    out_probe = fft2_wrap((math.dotMultiply(chi.toArray(),probe_ap[2])));
+    out_probe = math.abs(fftshift(out_probe));
+    out_probe = math.matrix(out_probe);
+    out_probe = math.round(normalizeScale(out_probe, 255));
+    out_probe = out_probe.toArray()
+    return out_probe
+}
+
 function calculateJS() {
     ////////
     //reading in constants from ui:
@@ -581,10 +616,7 @@ function calculateJS() {
     //var chi = math.dotMultiply(chi, obj_ap);
 
     let out_probe = math.matrix(fft2_wrap(chi.toArray()));
-
     let out_ronch = math.dotPow(math.abs(math.dotMultiply(math.matrix(fft2_wrap(math.dotMultiply(trans, out_probe).toArray())),obj_ap)),2);
-
-
 
     out_ronch = math.round(normalizeScale(out_ronch, 255));
     out_ronch = out_ronch.toArray();
@@ -592,94 +624,9 @@ function calculateJS() {
     let returnVals = maskChi0(chi0, alrr, numPx);
     let out_phase_map = returnVals[0];
     let rmax = returnVals[1];
-
-
-
-    //Strehl ratio for given aperture
-    let current_strehl = singleStrehl(rmax, chi, al_max, numPx);
-
-    // //Calculate best radius and strehl ratio
-    // let range = [];
-    // let up_step = 1.5 *rmax/1000;
-    // let down_step = 1.15*rmax/1000;
-    // let step_count = 11;
-    // let step = (up_step - down_step) / (step_count - 1);
-    // for (var i = 0; i < step_count; i++) {
-    //     range.push(down_step + (step * i));
-    // }
-    
-    let best_strehl = -1;
-    let best_r = -1;
-    let best_diff = 2;
-    let strehl_radius_range;
-    let strehl_inner_range;
-    let rrStrehl_range;
-    let strehl_range;
-
-
-    // for(let i = 0; i<range.length; i++){
-    //     strehl_radius_range = range[i];
-    //     rrStrehl_range = polarMeshOapp(al_max, strehl_radius_range, numPx);
-    //     strehl_aperture = rrStrehl_range[2];
-    //     strehl_inner_range = fft2_wrap((math.dotMultiply(chi.toArray(),strehl_aperture)));
-    //     strehl_inner_range = math.max(math.abs(strehl_inner_range));
-    //     strehl_bottom = fft2_wrap(strehl_aperture);
-    //     strehl_bottom = math.max(math.abs(strehl_bottom));
-    //     strehl_range = strehl_inner_range/strehl_bottom;
-    //     strehl_range = math.pow(strehl_range,2);
-    //     if(math.abs(strehl_range-0.8)<best_diff){
-    //         best_strehl = strehl_range;
-    //         best_r = 1000*range[i];
-    //         best_diff = math.abs(strehl_range-0.8);
-    //     }
-    // }
-
-    let upper_bound = 1.8 * rmax/1000;
-    let lower_bound = 1 * rmax/1000;
-    let upper_strehl = 1;
-    let lower_strehl = 0.5;
-    let tolerance = 0.01;
-    let middle;
-    let ans;
-    let count = 0;
-    while((upper_strehl-lower_strehl)>=tolerance){
-    
-
-        //The "middle" variable is set to the average of the bounds with each iteration
-        middle = (upper_bound+lower_bound)/2;
-
-        //Find the strehl ratio for the given radius
-        ans = singleStrehl(1000*middle, chi, al_max, numPx);
-    
-        if(ans > 0.8){
-            lower_bound = middle;
-            upper_strehl = ans;
-        }
-
-        if(ans < 0.8){
-            upper_bound = middle;
-            lower_strehl = ans;
-        }
-
-        // if(ans == 0.8){
-        //     break;
-        // }
-        count = count + 1;
-        if(count == 20){
-            break;
-        }
-    }
-
-    middle = (upper_bound+lower_bound)/2;
-    best_r = middle*1000;
-    best_strehl = singleStrehl(best_r, chi, al_max, numPx);
-
-    let probe_ap = polarMeshOapp(al_max, best_r, numPx);        //if not using the best strehl finder, replace best_r with rmax
-    out_probe = fft2_wrap((math.dotMultiply(chi.toArray(),probe_ap[2])));
-    out_probe = math.abs(fftshift(out_probe));
-    out_probe = math.matrix(out_probe);
-    out_probe = math.round(normalizeScale(out_probe, 255));
-    out_probe = out_probe.toArray()
+    let current_strehl = singleStrehl(rmax, chi, al_max, numPx);    
+    let point_eight_strehl = pointEightStrehl(rmax, chi, al_max, numPx);
+    out_probe = generateProbe(al_max, point_eight_strehl[1], numPx, chi);
 
     drawEverything(
         out_ronch,
@@ -690,10 +637,10 @@ function calculateJS() {
         obj_ap_r,
         rmax,
         out_probe,
-        best_strehl,
-        best_r,
+        point_eight_strehl[0],
+        point_eight_strehl[1],
         current_strehl,
-        count,
+        point_eight_strehl[2],
         draw_overlay
     );
 }

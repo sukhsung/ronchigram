@@ -286,42 +286,40 @@ float* probeGeneration(complex<float>* chi, int numPx, float* oapp){
     return probe_out;
 }
 
-// float* strehlSearch(float pi_radius, complex<float>* chi, float al_max, int numPx){
+float* pointEightStrehlSearch(float pi_radius, complex<float>* chi, float al_max, int numPx){
 
-//     float upper_bound = 2 * pi_radius/1000;
-//     float lower_bound = 0.95 * pi_radius/1000;
-//     float tolerance = 0.001;
-//     float middle;
-//     float ans;
-//     float count = 0;
-//     while((upper_bound-lower_bound)>=tolerance){
-    
-
-//         //The "middle" variable is set to the average of the bounds with each iteration
-//         middle = (upper_bound+lower_bound)/2;
-
-//         //Find the strehl ratio for the given radius
-//         ans = singleStrehl(1000*middle, chi, al_max, numPx);
-    
-//         if(ans > 0.8){
-//             lower_bound = middle;
-//         }
-
-//         if(ans < 0.8){
-//             upper_bound = middle;
-//         }
-
-//         // if(ans == 0.8){
-//         //     break;
-//         // }
-//         count = count + 1;
-//     }
-
-//     middle = (upper_bound+lower_bound)/2;
-//     float r_strehl = singleStrehl(middle, chi, al_max, numPx);
-//     float returns[3] = {middle, r_strehl, count};
-//     return returns;
-// }
+    float upper_bound = 1.8 * pi_radius/1000;
+    float lower_bound = pi_radius/1000;
+    float upper_strehl = 1;
+    float lower_strehl = 0.5;
+    float tolerance = 0.01;
+    float middle;
+    float ans;
+    float count = 0;
+    while((upper_strehl-lower_strehl)>=tolerance){
+        middle = (upper_bound+lower_bound)/2;
+        ans = singleStrehl(1000*middle, chi, al_max, numPx);
+        if(ans > 0.8){
+            lower_bound = middle;
+            upper_strehl = ans;
+        }
+        if(ans < 0.8){
+            upper_bound = middle;
+            lower_strehl = ans;
+        }
+        count = count + 1;
+        if(count == 10){
+            break;
+        }
+    }
+    middle = (upper_bound+lower_bound)/2;
+    float r_strehl = singleStrehl(1000*middle, chi, al_max, numPx);
+    float* returns = new float[3];
+    returns[0] = middle;
+    returns[1] = r_strehl;
+    returns[2] = count;
+    return returns;
+}
 
 
 float* calcRonch(float* buffer, int bufSize) {
@@ -349,79 +347,16 @@ float* calcRonch(float* buffer, int bufSize) {
     float strehl = singleStrehl(outputScalars[0], chi, al_max, numPx);
     outputScalars[1] = strehl;
 
-    // // Many strehl
-    // float temp_strehl;
-    // float best_diff = 2;
-    // float best_strehl = -1;
-    // float best_r = -1;
-    // int num_steps = 51;
-    // float upper_bound = 1.5 * outputScalars[0]/1000;
-    // float lower_bound = 0.95 * outputScalars[0]/1000;
-    // float range;
-    // float step = (upper_bound - lower_bound) / (num_steps - 1);
-    // for(int i = 0; i < num_steps; i++) {
-    //     range = 1000*(lower_bound + (step * i));
-    //     temp_strehl = singleStrehl(range, chi, al_max, numPx);
-    //     if(abs(temp_strehl-0.8)<best_diff){
-    //         best_diff = abs(temp_strehl-0.8);
-    //         best_strehl = temp_strehl;
-    //         best_r = range;
-    //     }
-    // }
+    float* strehl_search_results = pointEightStrehlSearch(outputScalars[0], chi, al_max, numPx);
 
-    //Optimization
-    //Minimize "strehl - 0.8"
-
-    //float* strehl_op = strehlSearch(outputScalars[0], chi, al_max, numPx);
-
-
-    float upper_bound = 1.8 * outputScalars[0]/1000;
-    float lower_bound = 1 * outputScalars[0]/1000;
-    float upper_strehl = 1;
-    float lower_strehl = 0.5;
-    float tolerance = 0.01;
-    float middle;
-    float ans;
-    float count = 0;
-    while((upper_strehl-lower_strehl)>=tolerance){
-    
-
-        //The "middle" variable is set to the average of the bounds with each iteration
-        middle = (upper_bound+lower_bound)/2;
-
-        //Find the strehl ratio for the given radius
-        ans = singleStrehl(1000*middle, chi, al_max, numPx);
-    
-        if(ans > 0.8){
-            lower_bound = middle;
-            upper_strehl = ans;
-        }
-
-        if(ans < 0.8){
-            upper_bound = middle;
-            lower_strehl = ans;
-        }
-
-        // if(ans == 0.8){
-        //     break;
-        // }
-        count = count + 1;
-        if(count == 10){
-            break;
-        }
-    }
-
-    middle = (upper_bound+lower_bound)/2;
-    float r_strehl = singleStrehl(1000*middle, chi, al_max, numPx);
-
-    outputScalars[2] = r_strehl; //strehl ratio achieved
-    outputScalars[3] = middle*1000; //strehl radius
-    outputScalars[4] = count;
+    outputScalars[2] = strehl_search_results[1]; //strehl ratio achieved
+    outputScalars[3] = strehl_search_results[0]*1000; //strehl radius
+    outputScalars[4] = strehl_search_results[2]; //number of iterations needed to find strehl
 
     float strr[numPx * numPx];
     float stpp[numPx * numPx];
     float sapp[numPx * numPx];
-    float  strehl_radius = middle;
+    float  strehl_radius = strehl_search_results[0];
     polarMeshnOapp(strr, stpp, sapp, al_max, strehl_radius, numPx);
     float* probe = probeGeneration(chi, numPx, sapp);
 
