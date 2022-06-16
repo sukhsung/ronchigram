@@ -13,10 +13,10 @@
 <body>
     <div class="main-container">
         <div class="main-child main-leftPanel" width="1000">
-            <h4 style="margin-bottom: 0">Aberrations</h4>
+            <h4 style="padding-bottom: 5px">Aberrations</h4>
             <div id="aberrations" class="big_aber_wrapper">
         
-                <div class="aber_wrapper">
+                <div style="padding-top: 0px" class="aber_wrapper">
                     <div class="aber">
                         <span class="kriv_not yesdisp">C<sub>10</sub>:</span>
                         <span class="haid_not nodisp">C<sub>1</sub>:</span>
@@ -180,14 +180,13 @@
                         Step Size: 1
                     </div>
                 </div>
+                <div style="padding-top: 10px"></div>
 
-
-                <br>
                 <div>
                     <button class="cream" onclick="randButton()">Randomize!</button>
                     <button class="cream" onclick="zeroBtn()">Zero all</button>
                 </div>
-                <div style="padding-top: 10px">
+                <div style="padding-top: 0px">
                 <div class ="button_holder_holder">
                     <div class="button_holder">
                     <h5>Easy training&nbsp;</h5>
@@ -210,6 +209,18 @@
                     </div><p></p>
 
                 </div>
+                <div style="padding-top: 0px" class="aber">
+                    <h8>Controls</h8>
+                    <br>
+                    Arrow keys: &#8593; &#8595; Defocus
+                    <br>
+                    &#8592; &#8594; Step size
+                    <br>
+                    WASD: Shift aberration
+                    <br>
+                    Q,E: Switch selection
+                    
+                </div>
             </div>
         
             </div>
@@ -217,7 +228,7 @@
 
         <div class="main-child main-rightPanel">
             <div class="title">
-                <h6>VASCO</h6>
+
                 <a href=".." class="flagCorner" id="triangle">
                     <h7>
                         Back to Home
@@ -260,15 +271,7 @@
 
 
                 </div>
-                <div>
-                    <h3> Controls </h3>
-                    Arrow keys: &#8593; &#8595; Defocus , &#8592; &#8594; Step size
-                    <br>
-                    WASD: Selected aberration (horizontal and vertical components)
-                    <br>
-                    Q,E: Select next/previous aberration
-                    
-                </div>
+
                 <div>
                     <h3 > Settings </h3>
                     <p><input type="checkbox" id="draw_overlay" checked>Show image overlays</input> | <input type="checkbox" id="realMode" checked> Random Uses Real-Life Values</input> | Correction training terms: <input type="text" id="correct_terms" size=4 value="3" class="input_right"> </p>
