@@ -73,8 +73,8 @@ h7 {
     padding-top: 0px;
     padding-left: 0px;
     position:absolute;
-    top: 25px;
-    left: 25px;
+    top: 27px;
+    left: 21px;
     background: none;
     transform: rotate(45deg);
 }
@@ -422,8 +422,8 @@ input:checked + .slider:before {
     position: absolute;
     top: 0;
     right: 0;
-    width: 125px;
-    height: 125px;
+    width: 135px;
+    height: 135px;
     clip-path: polygon(0 0, 100% 0, 100% 100%);
   }
   

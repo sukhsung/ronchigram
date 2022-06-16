@@ -52,7 +52,12 @@ h4 {
   transform: rotate(45deg);
 }
 
-.body {
+body {
+  padding: 0;
+  margin:0;
+}
+
+.body2 {
   margin: 0;
   padding-top: 10px;
   font-size: 0.78em;
@@ -252,6 +257,7 @@ input {
 }
 
 .footer {
+  
   left: 0;
   bottom: 0;
   padding: 5px;
@@ -262,6 +268,7 @@ input {
 .footer p {
   font-family:"input-mono";
   font-style:normal;font-weight:400;font-stretch:normal;
+  
   margin: 0;
   padding: 0;
   background: #124559;
@@ -269,6 +276,7 @@ input {
 
 .footer a {
   background-color: #124559; 
+  
 }
 
 .rounded {
@@ -483,11 +491,13 @@ input {
     padding-left: 7%
   }
 
-  .body {
-    margin: 0;
-    padding-top: 10px;
-    font-size: 0.65em;
-  }
+
+
+.body2 {
+  margin: 0;
+  padding-top: 10px;
+  font-size: 0.65em;
+}
 
 }
 
