@@ -328,6 +328,7 @@ float* calcRonch(float* buffer, int bufSize) {
     float obj_ap_r = buffer[2]; //mrad
     int scalefactor = buffer[3];
     float keV = buffer[4];
+    float calcStrehl = buffer[5];
     float* outputScalars = new float[5];
     float alrr[numPx * numPx];
     float alpp[numPx * numPx];
@@ -338,7 +339,7 @@ float* calcRonch(float* buffer, int bufSize) {
 
     complex<float>* trans = generateTransmissionFn(sample, numPx, numPx, calculateInteractionParam(keV));
 
-    float* chi0 = calculateChi0( & buffer[5], & buffer[19], alrr, alpp, numPx, 14, keV);
+    float* chi0 = calculateChi0( & buffer[6], & buffer[20], alrr, alpp, numPx, 14, keV);
 
     complex<float>* chi = calculateChi(chi0, numPx);
     // Calculate r_max and return,  and turn chi0 into pi/4map Normalized
@@ -347,17 +348,33 @@ float* calcRonch(float* buffer, int bufSize) {
     float strehl = singleStrehl(outputScalars[0], chi, al_max, numPx);
     outputScalars[1] = strehl;
 
+    if(calcStrehl == true){
     float* strehl_search_results = pointEightStrehlSearch(outputScalars[0], chi, al_max, numPx);
 
     outputScalars[2] = strehl_search_results[1]; //strehl ratio achieved
     outputScalars[3] = strehl_search_results[0]*1000; //strehl radius
     outputScalars[4] = strehl_search_results[2]; //number of iterations needed to find strehl
+    }
+    else{
+        outputScalars[2] = -1; //strehl ratio achieved
+        outputScalars[3] = 0; //strehl radius
+        outputScalars[4] = 0; //count
+    }
 
     float strr[numPx * numPx];
     float stpp[numPx * numPx];
     float sapp[numPx * numPx];
-    float  strehl_radius = strehl_search_results[0];
+    float  strehl_radius = outputScalars[3]/1000;
+
+
+   if(calcStrehl == true){
     polarMeshnOapp(strr, stpp, sapp, al_max, strehl_radius, numPx);
+    }
+    else{
+    polarMeshnOapp(strr, stpp, sapp, al_max, outputScalars[0]/1000, numPx);
+    
+    }
+    
     float* probe = probeGeneration(chi, numPx, sapp);
 
     // Normalize to 0-255 for output

@@ -63,6 +63,22 @@ h6 {
     margin: 0;
 }
 
+h7 {
+    font-family:"input-mono";
+    font-style:bold ;font-weight:700;font-stretch:normal;
+    background-color: transparent;
+    color:#01161E;
+    font-size: 1em;
+    margin: 0px;
+    padding-top: 0px;
+    padding-left: 0px;
+    position:absolute;
+    top: 25px;
+    left: 25px;
+    background: none;
+    transform: rotate(45deg);
+}
+
 .main-container {
     display:flex;
 }
@@ -361,7 +377,7 @@ input {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #567f8f;
+  background-color: #6d7787;
   -webkit-transition: .4s;
   transition: .4s;
   box-shadow: 0 0 3px #01161E;
@@ -380,7 +396,7 @@ input {
 }
 
 input:checked + .slider {
-  background-color: #84c3db;
+  background-color: #35c44d;
 }
 
 input:focus + .slider {
@@ -400,6 +416,28 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+#triangle {
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 125px;
+    height: 125px;
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+  }
+  
+  .flagCorner {
+    background-color: #AEC3B0;
+    border: none;
+  
+    color: #01161E;
+  }
+  
+  
+  .flagCorner:hover {
+    background-color:#92a694;
+  }
 
 @import url("https://p.typekit.net/p.css?s=1&k=mtg1mgq&ht=tk&f=30497.30538.30539&a=109963572&app=typekit&e=css");
 

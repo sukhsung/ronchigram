@@ -268,7 +268,12 @@ function getDispSizePx() {
             "Select a display size in pixels that is a power of 2 greater than 0"
         );
         return;
-    } else {
+    } 
+    if(forceJS.checked && (disp_size_px == 512 || disp_size_px == 1024)){        //by default, the javascript calculation will use 256 pixels so that the site does not crash.
+        document.getElementById("disp_size_px").value = 256;
+        return 256;
+    }
+    else {
         return disp_size_px;
     }
 }
@@ -619,8 +624,23 @@ function calculateJS() {
     let out_phase_map = returnVals[0];
     let rmax = returnVals[1];
     let current_strehl = singleStrehl(rmax, chi, al_max, numPx);    
+    let best_strehl;
+    let best_r;
+    let count;
+    let calcStrehl = document.getElementById("calcStrehl").checked;
+    if(calcStrehl){
     let point_eight_strehl = pointEightStrehl(rmax, chi, al_max, numPx);
+    best_strehl = point_eight_strehl[0];
+    best_r = point_eight_strehl[1];
+    count = point_eight_strehl[2];
     out_probe = generateProbe(al_max, point_eight_strehl[1], numPx, chi);
+    }
+    else{
+        best_strehl = -1;
+        best_r = 0;
+        count = -1;
+        out_probe = generateProbe(al_max, rmax, numPx, chi);
+    }
 
     drawEverything(
         out_ronch,
@@ -631,10 +651,10 @@ function calculateJS() {
         obj_ap_r,
         rmax,
         out_probe,
-        point_eight_strehl[0],
-        point_eight_strehl[1],
+        best_strehl,
+        best_r,
         current_strehl,
-        point_eight_strehl[2],
+        count,
         draw_overlay
     );
 }
@@ -657,8 +677,10 @@ function calculateWASM(Module) {
     let abers = getAberrations();
     let ab_mags = abers[0];
     let ab_angles = abers[1];
+
+    let calcStrehl = document.getElementById("calcStrehl").checked;
     globalTest = 250;
-    let params = [numPx, al_max, obj_ap_r, scalefactor, keV];
+    let params = [numPx, al_max, obj_ap_r, scalefactor, keV, calcStrehl];
     const arrayDataToPass = params.concat(ab_mags, ab_angles);
     let buffer;
     let error;
@@ -895,6 +917,8 @@ var ctx3 = canvas3.getContext("2d");
 var forceJS = document.getElementById("forceJS");
 var interactiveMode = document.getElementById("interactiveMode");
 var real = document.getElementById("realMode");
+
+
 var aberration_list = [
     "C10",
     "C12",
