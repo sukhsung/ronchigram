@@ -149,16 +149,49 @@ let obj_ap_r = Number(document.getElementById("aperture").value) * mrad;
 
 function randButton() {
     //document.getElementById('loading').innerHTML = "Calculating..."
-    if(real.checked){
-        setTimeout(function () {
-            randomize_real();
-        }, 0);
+    
+   
+    if(ab_cor_mode == true){
+        
+        switch_easy.checked = false;
+        switch_hard.checked = false;
+        allZero();
+        if(real.checked){
+            setTimeout(function () {
+                randomize_real();
+            }, 0);
+        }
+        else{
+            setTimeout(function () {
+                randomize_realistic(); //randomize_realistic
+            }, 0);
+        }
+        if(ab_cor_hard == 'easy'){
+            switch_easy.checked = true;
+            setTimeout(function() {TrainingModeEasy();} , 0);
+            
+        }
+        else{
+            switch_hard.checked = true;
+            setTimeout(function() {TrainingModeHard();} , 0);
+        }
+        
     }
+
     else{
-        setTimeout(function () {
-            randomize_realistic(); //randomize_realistic
-        }, 0);
+        if(real.checked){
+            setTimeout(function () {
+                randomize_real();
+            }, 0);
+            
+        }
+        else{
+            setTimeout(function () {
+                randomize_realistic(); //randomize_realistic
+            }, 0);
+        }
     }
+
 }
 
 
