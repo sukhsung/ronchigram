@@ -179,10 +179,25 @@ button:active {
     border: none;
     box-shadow: 0 3px #01161E;
     color: #01161E;
+    
+}
+
+.cream_tutorial {
+    padding: 10px;
+    background-color: #EFF6E0;
+    color: #01161E;
+    border: 3px solid  #01161E;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1.3em;
 }
   
 .cream:hover {
   background-color: #afb5a1;
+}
+
+.cream_tutorial:hover {
+    background-color: #afb5a1;
 }
 
 .aber_wrapper {
