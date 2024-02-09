@@ -153,10 +153,10 @@ function drawGrayscaleBitmap2( ctx, input, numPx ) {
     for (let i = 0; i < numPx; i++ ){
         for (let j = 0; j <numPx; j++ ){
             red = i * (numPx * 4) + j * 4
-
-            data[red] = input[i][j]
-            data[red+1] = input[i][j]
-            data[red+2] = input[i][j]
+            y_index = (numPx-1)-i // To flip y
+            data[red]   = input[y_index][j]
+            data[red+1] = input[y_index][j]
+            data[red+2] = input[y_index][j]
             data[red+3] = 255
         }
 
