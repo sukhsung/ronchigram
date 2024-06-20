@@ -491,6 +491,7 @@ function calculateWASM(Module) {
         current_strehl,
         count
     );
+    ronchigram_array = out_ronch;
 }
 
 function calculate() {
@@ -983,6 +984,7 @@ var corr_start_time = 0;
 var corr_threshold = 0;
 var corr_max_order = 0;
 var hid_ab;
+var ronchigram_array;
 
 
 for (var it = 0; it < aberration_list.length; it++) {
