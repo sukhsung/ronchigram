@@ -107,10 +107,10 @@ function drawGrayscaleBitmap2( ctx, input, numPx ) {
     for (let i = 0; i < numPx; i++ ){
         for (let j = 0; j <numPx; j++ ){
             red = i * (numPx * 4) + j * 4;
-
-            data[red] = input[i][j];
-            data[red + 1] = input[i][j];
-            data[red + 2] = input[i][j];
+            y_index = (numPx-1)-i // To flip y
+            data[red]   = input[y_index][j]
+            data[red+1] = input[y_index][j]
+            data[red+2] = input[y_index][j]
             data[red + 3] = 255;
         }
     }
@@ -491,6 +491,7 @@ function calculateWASM(Module) {
         current_strehl,
         count
     );
+    ronchigram_array = out_ronch;
 }
 
 function calculate() {
@@ -983,6 +984,7 @@ var corr_start_time = 0;
 var corr_threshold = 0;
 var corr_max_order = 0;
 var hid_ab;
+var ronchigram_array;
 
 
 for (var it = 0; it < aberration_list.length; it++) {
