@@ -217,7 +217,7 @@ button:active {
     float: center;
     display: inline;
     font-size: 1em;
-    padding: 8px;
+    padding: 2px;
     color: #01161E;
 
 }
@@ -227,6 +227,7 @@ button:active {
 }
 .aber input {
     font-size: 1em;
+    height: 24px;
 }
 .aber_wrapper:hover .tooltiptext {
     visibility: visible;

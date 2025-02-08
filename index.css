@@ -349,6 +349,10 @@ input {
   color: #01161E;
 }
 
+input[type="text"] {
+  line-height: normal; /* Reset to default */
+}
+
 
 .flagCorner:hover {
   background-color:#92a694;
